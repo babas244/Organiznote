@@ -1,0 +1,138 @@
+div#frameOfTree
+{
+	background-color: #f2f2aa;
+	display: block;
+}
+
+
+div#frameOfTree div
+{
+	width: 250px;
+	background-color: #ffff00;
+	border: 1px black solid;
+	border-radius: 5px;
+}
+
+
+div#topic
+{
+
+}
+
+div#fondPageEntrerTexte
+{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	z-index: 1;
+	background-color: black; 
+	height: 100%;
+	width: 100%;
+	opacity: 0.6;
+	display: none; 
+}
+
+div#textBox
+{
+	position: absolute;
+	left: 20%;
+	top: 10%;
+	z-index: 2;
+	background-color: white; 
+	height: 20%;
+	width: 60%;
+	border: 2px black solid;
+	display: none; 
+}
+
+div#enregistrerNouvelleNote
+{
+	position: absolute;
+	left: 70%;
+	top: 33%;
+	z-index: 2;
+	background-color: #11ff11;
+	height: 5%;
+	width: 10%;
+	border: 1px black solid;
+	display: none; 
+	text-align: center; 
+}
+
+div#reinitialiserFormulaireEntrerNote
+{
+	position: absolute;
+	left: 50%;
+	top: 33%;
+	z-index: 2;
+	background-color: blue;
+	height: 5%;
+	width: 10%;
+	border: 1px black solid;
+	display: none; 
+	text-align: center; 
+}
+
+div#annulerEntrerNote
+{
+	position: absolute;
+	left: 20%;
+	top: 33%;
+	z-index: 2;
+	background-color: red;
+	height: 5%;
+	width: 10%;
+	border: 1px black solid;
+	display: none; 
+	text-align: center; 
+}
+
+
+div#enregistrerNouvelleNote:hover 
+{
+	background-color: #22ff11;	
+}
+
+form#formulaireEntrerNote
+{
+	width: 100%;
+	height: 100%;
+}
+
+textarea#zoneFormulaireEntrerNote
+{
+	width: 100%;
+	height: 100%;
+}
+
+#chargerfichierXML
+{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	z-index: 2;
+	display: none; 
+}
+
+
+	
+li div, li
+{
+	background-color : #19c589;
+	display:inline-block;
+	vertical-align: top;
+	float: left;
+	margin-right: 1px;
+}
+
+div#menu
+{
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	font-size : 22px;
+}
+
+ul ul {display: none; position: absolute; left: 0px; bottom: 0px; margin: 0px; padding: 0px;}
+li {list-style-type: none; position: relative; left: 0px; bottom: 28px; width: 100px; border: 1px black solid}
+li:hover ul.Niveau2 {display: block;}
