@@ -112,13 +112,13 @@ document.getElementById("NouvelleNote").addEventListener('click', function Entre
 }, false);
 
 
-function requeteXhrInsertNewNote(fCallback, sNewNote) {
+function requeteXhrInsertNewNote(sNewNote) {
 	var xhr = new XMLHttpRequest(); 
 	xhr.open ('GET', 'ajax/insertNewNote.php?idTopic=' + idTopic + '&newNote=' + sNewNote );
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			alert ("Nouvelle note insérée"); //fCallback(xhr.responseText, sCategoriePere); rien ici non ??
+			alert ("Nouvelle note insérée : "+xhr.responseText); 
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
 				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);

@@ -1,8 +1,16 @@
 <?php
 
+header("Content-Type: text/plain");
+
 session_start();
 
+//echo '$_SESSION["id"] = '.$_SESSION['id'];
+
 if (isset($_SESSION['id']) && isset($_GET["newNote"]) && isset($_GET["idTopic"])) {
+	
+	//echo "coucou dans insertNewNote ! ";
+	
+	//echo '$_GET["idTopic"]= '.$_GET["idTopic"];
 	
 	include '../../log_in_bdd.php';
 	
@@ -19,7 +27,7 @@ if (isset($_SESSION['id']) && isset($_GET["newNote"]) && isset($_GET["idTopic"])
 	'idUser' => $_SESSION['id'],
 	'idTopic' => $_GET["idTopic"], 
 	'idNote' => $idNote,
-	'content' => $_GET["newNote"],
+	'newNote' => $_GET["newNote"],
 	'nbOfItems' => $nbOfItems,
 	'isCategory' => $isCategory,
 	'levelInTree' => $levelInTree,
