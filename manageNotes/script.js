@@ -29,15 +29,17 @@ on affichera le temps qu'il reste en premier dans l'affichage, ou expiré si exp
 
 // fabriquer une sorte de code d'erreur en comparant le nb de catégories écrit dans la bdd et le nb de catégories instanciées part js ??
 
+
+
 recupererToutesCategories();
 
 function recupererToutesCategories() { // faire qu'une seule fonction qui réunit les 3 fonctions ??
-	requeteXhrRecupererArborescence(instancierArborescenceRecuperee, "racine")
+	requeteXhrRecupererArborescence(instancierArborescenceRecuperee, "1")
 }
 
 function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePere ) {
 	//alert ("sCategoriePere = " + sCategoriePere);
-	//alert (sCategoriesRecuperees);
+	//alert ("sCategoriesRecuperees =" + sCategoriesRecuperees);
 	var CategorieParsee = sCategoriesRecuperees.split('|'); // interdiction d'utiliser ce caractère dans une note (on pourrait mettre une interdiction au moment d'enregistrer une note et au moment de l'importation) 
 	var nbdItemsDansCategorieParsee = CategorieParsee.length; 
 	
@@ -46,13 +48,13 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 		var sContent = CategorieParsee[i+1];
 		var nNiveauDeCategorie = CategorieParsee[i+2];
 		var nNbDeComposants = CategorieParsee[i+3];
-		//var ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, nNiveauDeCategorie, nNbDeComposants);
+		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, nNiveauDeCategorie, nNbDeComposants);
 		var oCategorieAffichageDOM = document.createElement("div");
 		oCategorieAffichageDOM.id = sIdCategorie;
 		/* oCategorieAffichageDOM.addEventListener('click', function(e) {
 			arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id);
 		}, false); // false or true??
-		 */
+ */		
 		oCategorieAffichageDOM.style.marginLeft = iRetraitAffichagedUneCategorie*(nNiveauDeCategorie) + 'px'; // mettre la marge en fonction du niveau de la catégorie
 		oCategorieAffichageDOM.innerHTML = sContent; 
 		document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM);
@@ -146,10 +148,10 @@ document.getElementById("importerXML").addEventListener('click', function import
 // Instancier la catégorie racine : 
 //document.getElementById("catRacine").innerHTML = titreNotes;
 //document.getElementById("catRacine").style.display = 'block';
-ToutesCategories["catRacine"] = new CategorieAbstraite("catRacine", 0, null);
+//ToutesCategories["catRacine"] = new CategorieAbstraite("catRacine", 0, null);
 //ToutesCategories["catRacine"].chargerContenuCategorie();
 
-//arborescenceNotes = new ArborescenceReduiteAffichee("racine");
+arborescenceNotes = new ArborescenceReduiteAffichee("racine");
 
 
 
@@ -215,7 +217,7 @@ function CategorieAbstraite(id, sContent, niveauDeCategorie, nbDeComposants) {
 }
 
 
-/*
+
 function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 	this.derniereCategorieDepliee = derniereCategorieDepliee;
 	this.afficherArborescenceReduite = function () {
@@ -276,7 +278,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 }
 }
 
-*/
+
 
 /* function ArborescenceAffichee(aListeCategoriesAffichees) { // aListeCategoriesAffichees est la liste des catégories à afficher à un instant donné 
 	this.listeCategoriesAffichees = aListeCategoriesAffichees;

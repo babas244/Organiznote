@@ -38,11 +38,11 @@ if (isset($_SESSION['id']) && isset($_GET["sCategoriePere"]) && isset($_GET["idT
 	Non inutile car $_SESSION['id'] n'est pas manipulable (c'est bien sûr ça ??). Et que si on met un idTopic qui n'appartient pas à cet user aucun résultat ne va revenir.
 	*/
 		
-	$req = $bdd -> prepare('SELECT idNote, content, levelInTree, NbOfItems FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote LIKE :aTrouver AND idNote NOT LIKE :categoriepere AND isCategory=\'1\' ORDER BY idNote');
+	$req = $bdd -> prepare('SELECT idNote, content, levelInTree, NbOfItems FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote REGEXP :aTrouver AND idNote NOT LIKE :categoriepere AND isCategory=\'1\' ORDER BY idNote');
 	$req -> execute(array(
 	'idUser' => $_SESSION['id'],
 	'idTopic' => $_GET["idTopic"], 
-	'aTrouver' => $sCategoriePere.'%',
+	'aTrouver' => '^'.$sCategoriePere.'a[1-9]{1,3}$',
 	'categoriepere' => $sCategoriePere));
 
 	$sCategoriesRecuperees = "";

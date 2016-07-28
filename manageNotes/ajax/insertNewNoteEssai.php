@@ -5,16 +5,16 @@
 	
 	include '../../log_in_bdd.php';
 	
-	$idUser = 23;
-	$idTopic = 14;
-	$idNote = "1a2a3";
-	$newNote = "blabla";
-	$nbOfItems = 0;
-	$isCategory = "1";
-	$levelInTree = 5;
-	$rowOfNoteInCategory = 43;
+	$idUser = '23';
+	$idTopic = '14';
+	$idNote = '1a2a4';
+	$newNote = 'blabla';
+	$nbOfItems = '0';
+	$isCategory = '1';
+	$levelInTree = '5';
+	$rowOfNoteInCategory = '43';
 	
-	$req = $bdd -> prepare('INSERT INTO notes(idUser,idTopic,idNote,content,NbOfItems,dateCreation,isCategory,levelInTree,rowOfNoteInCategory) VALUES (:idUser,:idTopic,:idNote,:newNote,:nbOfItems, CURDATE(),:isCategory,:levelInTree,:rowOfNoteInCategory');
+	$req = $bdd -> prepare('INSERT INTO notes(idUser,idTopic,idNote,content,NbOfItems,dateCreation,isCategory,levelInTree,rowOfNoteInCategory) VALUES (:idUser,:idTopic,:idNote,:newNote,:nbOfItems, NOW(),:isCategory,:levelInTree,:rowOfNoteInCategory)');
 	$req -> execute(array(
 	'idUser' => $idUser,
 	'idTopic' => $idTopic, 
@@ -26,6 +26,8 @@
 	'rowOfNoteInCategory' => $rowOfNoteInCategory));
 
 	//INSERT INTO `notes`(`id`, `idUser`, `idTopic`, `idNote`, `content`, `NbOfItems`, `dateCreation`, `dateExpired`, `dateArchive`, `isCategory`, `levelInTree`, `rowOfNoteInCategory`) VALUES ([value-1],[value-2],[value-3],[value-4],[value-5],[value-6],[value-7],[value-8],[value-9],[value-10],[value-11],[value-12])
+	
+	//INSERT INTO `notes`(`idUser`, `idTopic`, `idNote`, `content`, `NbOfItems`, `dateCreation`, `isCategory`,`levelInTree`, `rowOfNoteInCategory`) VALUES ('23', '14','1a2a3','blavblaa',0,NOW(),b'1','5','43')
 	
 	$req->closeCursor();	
 /* }
