@@ -42,7 +42,7 @@ if (isset($_SESSION['id']) && isset($_GET["sCategoriePere"]) && isset($_GET["idT
 	$req -> execute(array(
 	'idUser' => $_SESSION['id'],
 	'idTopic' => $_GET["idTopic"], 
-	'aTrouver' => '^'.$sCategoriePere.'a[1-9]{1,3}$',
+	'aTrouver' => '^'.$sCategoriePere.'(a[1-9]{1,3}$|[1-9]{1,3}$)',
 	'categoriepere' => $sCategoriePere));
 
 	$sCategoriesRecuperees = "";

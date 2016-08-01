@@ -105,7 +105,7 @@ echo $_SESSION['id']." connecté sur ".$_GET['idTopic'];
 			echo "var idTopic = ". $_GET['idTopic'].";";
 			?>
 		</script>
-		
+
 		<script src="script.js"></script>	
 	</body>
 </html> 
