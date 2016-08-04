@@ -28,14 +28,9 @@ on affichera le temps qu'il reste en premier dans l'affichage, ou expiré si exp
 // tout objet du DOM devrait changer de couleur au clic (on peut voir qu'on a cliqué comme ça)
 
 // fabriquer une sorte de code d'erreur en comparant le nb de catégories écrit dans la bdd et le nb de catégories instanciées part js ??
-/* 
-categorieAeffacer = "1a2";
-categorieAeffacer = categorieAeffacer.replace(/a[1-9]+$/, "")
-alert(categorieAeffacer);
- */
-					
+	
  
-ToutesCategories["racine"] = new CategorieAbstraite("racine", null, 0, 1); // 1 est a recalculer  !!
+ToutesCategories["racine"] = new CategorieAbstraite("racine", null, 0, 2); // 2 est a recalculer  !!
 recupererToutesCategories();
 
 arborescenceNotes = new ArborescenceReduiteAffichee("racine");
@@ -71,8 +66,9 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 		//alert ("dans seDeplacerDanslArborescenceReduite ! \n\n idCategorieaDeplier = "+idCategorieaDeplier+" et this.derniereCategorieDepliee = "+this.derniereCategorieDepliee);
 		if (idCategorieaDeplier !== this.derniereCategorieDepliee) { // on enlève le cas ou rien de nouveau n'est demandé
 			
-			if (idCategorieaDeplier === "topic") { // && this.derniereCategorieDepliee.includes('a') ?
+			if (idCategorieaDeplier === "racine") { // && this.derniereCategorieDepliee.includes('a') ?
 				for (var k = 0 ; k < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; k++) { // d'abord replier les filles de derniereCategorieDepliee
+					//alert("this.derniereCategorieDepliee+'a'+(k+1) = "+(this.derniereCategorieDepliee+'a'+(k+1)));
 					document.getElementById(this.derniereCategorieDepliee+'a'+(k+1)).style.display = 'none';
 				}
 				var categorieAeffacer = this.derniereCategorieDepliee;
@@ -88,7 +84,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 					if ((j+1) !== parseInt(categorieAeffacer)) {
 						document.getElementById(j+1).style.display = 'block';
 					}
-				}			
+				}
 			}
 			
 			if (idCategorieaDeplier.length < this.derniereCategorieDepliee.length && this.derniereCategorieDepliee!=="racine") { // on a donc cliqué sur une categorie antécédente de derniereCategorieDepliee
@@ -140,23 +136,26 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 				}
 				
 				else { // on vient donc de cliquer sur une catégorie fille de derniereCategorieDepliee et qui n'est pas racine
-					for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; i++) { // on replie toutes les filles // Vaut mieux le faire dans l'ordre décroissant puisqu'on déplie, non ?
-						//console.log("else, "+idCategorieaDeplier+(i+1));
-						if (this.derniereCategorieDepliee+'a'+(i+1) !== idCategorieaDeplier) {
-							document.getElementById(this.derniereCategorieDepliee+'a'+(i+1)).style.display = 'none';
+					if (idCategorieaDeplier !== "racine") {
+						
+						for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; i++) { // on replie toutes les filles // Vaut mieux le faire dans l'ordre décroissant puisqu'on déplie, non ?
+							//console.log("else, "+idCategorieaDeplier+(i+1));
+							if (this.derniereCategorieDepliee+'a'+(i+1) !== idCategorieaDeplier) {
+								document.getElementById(this.derniereCategorieDepliee+'a'+(i+1)).style.display = 'none';
+							}
+							  
 						}
-						  
-					}
-					var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a'+1);
-					//alert(idCategorieaDeplier+'a'+1);
-					//alert(alreadyLoadedInDOM)
-					if (alreadyLoadedInDOM === null) {
-						requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
-					}
-					else {
-						for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbDeComposants; j++) { 
-							//console.log("!! idCategorieaDeplier+'a'+(j+1) = "+idCategorieaDeplier+'a'+(j+1));
-							document.getElementById(idCategorieaDeplier+'a'+(j+1)).style.display = 'block';
+						var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a'+1);
+						//alert(idCategorieaDeplier+'a'+1);
+						//alert(alreadyLoadedInDOM)
+						if (alreadyLoadedInDOM === null) {
+							requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
+						}
+						else {
+							for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbDeComposants; j++) { 
+								//console.log("!! idCategorieaDeplier+'a'+(j+1) = "+idCategorieaDeplier+'a'+(j+1));
+								document.getElementById(idCategorieaDeplier+'a'+(j+1)).style.display = 'block';
+							}
 						}
 					}
 				}
@@ -167,10 +166,9 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 	}
 }
 
-
 function recupererToutesCategories() { // faire qu'une seule fonction qui réunit les 3 fonctions ??
 	requeteXhrRecupererArborescence(instancierArborescenceRecuperee, "racine");
-	document.getElementById("topic").addEventListener('click', function(e) {
+	document.getElementById("racine").addEventListener('click', function(e) {
 			arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id);//;
 		}, false);
 }
@@ -192,15 +190,17 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 		oCategorieAffichageDOM.addEventListener('click', function(e) {
 			//console.log("e.target.id  = " + e.target.id);
 			arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id);//;
-		}, false); // false or true??	
+		}, false);
+		oCategorieAffichageDOM.addEventListener('contextmenu', function(e) {
+			e.preventDefault();
+			//document.getElementById("fondMenuCategorie").style.display = 'block';
+			insertNewNote(e.target.id);
+		}, false);
 		oCategorieAffichageDOM.style.marginLeft = iRetraitAffichagedUneCategorie*(nNiveauDeCategorie) + 'px'; // mettre la marge en fonction du niveau de la catégorie
 		oCategorieAffichageDOM.innerHTML = sContent; 
 		document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM);
 	}
 }
-
-
-
 
 function requeteXhrRecupererArborescence(fCallback, sCategoriePere) {
 	var xhr = new XMLHttpRequest(); 
@@ -217,7 +217,15 @@ function requeteXhrRecupererArborescence(fCallback, sCategoriePere) {
 }
 
 
-document.getElementById("NouvelleNote").addEventListener('click', function EntrerTexte() {
+document.getElementById("NouvelleNote").addEventListener('click', insertNewNote, false);
+
+/* document.getElementById("insertNewNote").addEventListener('click', function(e) {
+	insertNewNote(e.target.id);
+}, false);
+ */
+
+function insertNewNote(idCategoriePere) {
+	//alert("idCategoriePere = "+idCategoriePere);
 	document.getElementById("fondPageEntrerTexte").style.display = 'block';
 	document.getElementById("textBox").style.display = 'block';
 	document.getElementById("enregistrerNouvelleNote").style.display = 'block';
@@ -231,7 +239,12 @@ document.getElementById("NouvelleNote").addEventListener('click', function Entre
 		// griser la catégorie mère
 		sNewNote = document.getElementById("zoneFormulaireEntrerNote").value;
 		//alert(document.getElementById("zoneFormulaireEntrerNote").value);
-		requeteXhrInsertNewNote(sNewNote);
+		if (idCategoriePere) {
+			requeteXhrInsertNewNote(sNewNote, idCategoriePere);
+		}
+		else { // marche pas.. // if (typeof v !== 'undefined' && v !== null) 
+			alert("note pas encore placée");
+		}
 		//dégriser la catégorie mère
 	}, false);
 
@@ -248,16 +261,18 @@ document.getElementById("NouvelleNote").addEventListener('click', function Entre
 		document.getElementById("annulerEntrerNote").style.display = 'none';
 		document.getElementById("formulaireEntrerNote").reset();
 	}, false);
-}, false);
+}
 
 
-function requeteXhrInsertNewNote(sNewNote) {
+function requeteXhrInsertNewNote(sNewNote, idCategoriePere) {
 	var xhr = new XMLHttpRequest(); 
-	xhr.open ('GET', 'ajax/insertNewNote.php?idTopic=' + idTopic + '&newNote=' + sNewNote );
+	xhr.open ('GET', 'ajax/insertNewNote.php?idTopic=' + idTopic + '&newNote=' + sNewNote + '&idCategoriePere=' + idCategoriePere);
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			alert ("Nouvelle note insérée : "+xhr.responseText); 
+			//alert('idCategoriePere = '+idCategoriePere);
+			ToutesCategories[idCategoriePere].nbDeComposants +=1;
+			//alert ("Nouvelle note insérée : "+xhr.responseText); 
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
 				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);

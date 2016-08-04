@@ -23,7 +23,7 @@ echo $_SESSION['id']." connecté sur ".$_GET['idTopic'];
 	    <h3>Organiznote</h3>
 		<!-- -->
 		<div id="frameOfTree">
-			<div id="topic">
+			<div id="racine">   <!-- changer "racine" par "topic" ?? ou par "root" ??--> 
 				<?php
 					$req = $bdd -> prepare('SELECT topic FROM topics WHERE idUser=:idUser AND id=:idTopic'); // plutot transmettre la variable depuis la page d'avant ??
 					$req -> execute(array(
@@ -94,6 +94,8 @@ echo $_SESSION['id']." connecté sur ".$_GET['idTopic'];
 				<textarea name="zoneFormulaireEntrerNote" id="zoneFormulaireEntrerNote" placeholder="Ecrire ici"></textarea>
 			</form>
 		</div>
+		<div id="fondMenuCategorie"><div id="insertNewNote">Nouveau</div></div>
+		
 		<div id="enregistrerNouvelleNote"></div>
 		<div id="reinitialiserFormulaireEntrerNote"></div>
 		<div id="annulerEntrerNote"></div>
