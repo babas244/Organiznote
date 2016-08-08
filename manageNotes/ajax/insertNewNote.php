@@ -30,11 +30,11 @@ if (isset($_SESSION['id']) && isset($_GET["newNote"]) && isset($_GET["idTopic"])
 	//echo'             $nbOfItemsOfDad = '.$nbOfItemsOfDad."           \n\n";
 	$reqGetFeaturesOfDad -> closeCursor();	
 		
-	$idNote = $_GET["idCategoriePere"].'a'.($nbOfItemsOfDad+1); // faut-il convertir en string ??
+	$idNote = $_GET["idCategoriePere"].'a'.($nbOfItemsOfDad+1); // faut-il convertir en string ?? : apparemment non
 	//echo("\n\n idNote à insérer = $idNote");
 	$nbOfItems = 0;
 	$levelInTree = $levelInTreeOfDad + 1;
-	$rowOfNoteInCategory = $nbOfItemsOfDad + 1;
+	$rowOfNoteInCategory = $nbOfItemsOfDad + 1; // en fait ça suffit pas ici, il faut trouver la valeur MAX de rowOfNoteInCategory, puis l'incrémenter !! 
 	
 	// inserer la note
 	$reqInsertNote = $bdd -> prepare('INSERT INTO notes(idUser,idTopic,idNote,content,NbOfItems,dateCreation,isCategory,levelInTree,rowOfNoteInCategory) VALUES (:idUser,:idTopic,:idNote,:newNote,:nbOfItems, NOW(),:isCategory,:levelInTree,:rowOfNoteInCategory)');

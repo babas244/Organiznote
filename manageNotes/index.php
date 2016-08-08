@@ -88,17 +88,24 @@ echo $_SESSION['id']." connecté sur ".$_GET['idTopic'];
 		</ul>
 		</div>
 		<br/>
-		<div id="fondPageEntrerTexte"></div>
-		<div id="textBox">
-			<form id="formulaireEntrerNote">
-				<textarea name="zoneFormulaireEntrerNote" id="zoneFormulaireEntrerNote" placeholder="Ecrire ici"></textarea>
-			</form>
-		</div>
-		<div id="fondMenuCategorie"><div id="insertNewNote">Nouveau</div></div>
 		
-		<div id="enregistrerNouvelleNote"></div>
-		<div id="reinitialiserFormulaireEntrerNote"></div>
-		<div id="annulerEntrerNote"></div>
+		<div id="fondPageEntrerTexte">
+			<div id="textBox">
+				<form id="formulaireEntrerNote">
+					<textarea name="zoneFormulaireEntrerNote" id="zoneFormulaireEntrerNote" placeholder="Ecrire ici"></textarea>
+				</form>
+			</div>
+		<div id="enregistrerNouvelleNote">Enregistrer</div>
+		<div id="reinitialiserFormulaireEntrerNote">Réinitialiser</div>
+		<div id="annulerEntrerNote">Annuler</div>
+		</div>
+		
+		<div id="fondMenuCategorie">
+			<div id="insertNewNote">Nouveau</div>
+			<div id="deleteNote">Effacer</div>
+			<div id="cancel">Annuler</div>
+		</div>
+		
 		<input id="chargerfichierXML" type="file" />
 		
 		<script>

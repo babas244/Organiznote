@@ -45,6 +45,33 @@ div#insertNewNote
 	border: 2px black solid; 
 }
 
+div#deleteNote
+{
+	position: absolute;
+	left: 20%;
+	top: 20%;
+	/*z-index: 1; */
+	background-color: #ff11ff; 
+	color: black;
+	height: 10%;
+	width: 10%;
+	border: 2px black solid; 
+}
+
+div#cancel
+{
+	position: absolute;
+	left: 20%;
+	top: 30%;
+	/*z-index: 1; */
+	background-color: #ff11ff; 
+	color: black;
+	height: 10%;
+	width: 10%;
+	border: 2px black solid; 
+}
+
+
 div#fondPageEntrerTexte
 {
 	position: absolute;
@@ -68,8 +95,8 @@ div#textBox
 	height: 20%;
 	width: 60%;
 	border: 2px black solid;
-	display: none; 
-}
+	opacity: 1;
+	}
 
 div#enregistrerNouvelleNote
 {
@@ -81,8 +108,13 @@ div#enregistrerNouvelleNote
 	height: 5%;
 	width: 10%;
 	border: 1px black solid;
-	display: none; 
 	text-align: center; 
+	opacity: 1;
+}
+
+div#enregistrerNouvelleNote:hover 
+{
+	background-color: #ffff11;	
 }
 
 div#reinitialiserFormulaireEntrerNote
@@ -95,8 +127,8 @@ div#reinitialiserFormulaireEntrerNote
 	height: 5%;
 	width: 10%;
 	border: 1px black solid;
-	display: none; 
 	text-align: center; 
+	opacity: 1;
 }
 
 div#annulerEntrerNote
@@ -109,15 +141,11 @@ div#annulerEntrerNote
 	height: 5%;
 	width: 10%;
 	border: 1px black solid;
-	display: none; 
 	text-align: center; 
+	opacity: 1;
 }
 
 
-div#enregistrerNouvelleNote:hover 
-{
-	background-color: #22ff11;	
-}
 
 form#formulaireEntrerNote
 {
