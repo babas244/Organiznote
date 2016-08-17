@@ -33,7 +33,7 @@ if (isset($_SESSION['id']) && isset($_POST['newTopic']) && isset($_POST['colorBa
 		//echo "\nId = ".$idTopic;
 		
 		// insérer Root comme première catégorie de la table Notes
-		$reqInsertRootIntoNotesTable = $bdd->prepare('INSERT INTO Notes(idUser,idTopic,idNote,content,NbOfItems,dateCreation,isCategory,levelInTree,rowOfNoteInCategory) VALUES (:idUser,:idTopic,"root",:newNote,"0", NOW(),"1","0","1")');
+		$reqInsertRootIntoNotesTable = $bdd->prepare('INSERT INTO Notes(idUser,idTopic,idNote,content,NbOfItems,dateCreation,isCategory,levelInTree,rowOfNoteInCategory) VALUES (:idUser,:idTopic,"racine",:newNote,"0", NOW(),"1","0","1")');
 		$reqInsertRootIntoNotesTable -> execute(array(
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $idTopic, 

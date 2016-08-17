@@ -32,7 +32,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		echo '"nNbDeComposants":"'.$resultat['nNbDeComposants'].'"}';
 	$reqGetNbOfItemsOfRoot->closeCursor();	
  */
-	$reqGetNbOfItemsOfRoot = $bdd -> prepare('SELECT NbOfItems FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote="root"');
+	$reqGetNbOfItemsOfRoot = $bdd -> prepare('SELECT NbOfItems FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote="racine"');
 		$reqGetNbOfItemsOfRoot -> execute(array(
 		'idUser' => $_SESSION['id'],
 		'idTopic' => $_GET["idTopic"]));
