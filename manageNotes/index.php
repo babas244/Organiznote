@@ -24,15 +24,6 @@ echo $_SESSION['id']." connecté sur ".$_GET['idTopic'];
 		<!-- -->
 		<div id="frameOfTree">
 			<div id="racine">   <!-- changer "racine" par "topic" ?? ou par "root" ??--> 
-				<?php
-					$req = $bdd -> prepare('SELECT topic FROM topics WHERE idUser=:idUser AND id=:idTopic'); // plutot transmettre la variable depuis la page d'avant ??
-					$req -> execute(array(
-					'idUser' => $_SESSION['id'],
-					'idTopic' => $_GET['idTopic']));
-					$resultat = $req -> fetch();
-					echo $resultat['topic'];
-					$req -> closeCursor();
-				?>			
 			</div>
 		</div>
 		<div id="menu">
@@ -95,14 +86,21 @@ echo $_SESSION['id']." connecté sur ".$_GET['idTopic'];
 					<textarea name="zoneFormulaireEntrerNote" id="zoneFormulaireEntrerNote" placeholder="Ecrire ici"></textarea>
 				</form>
 			</div>
-		<div id="enregistrerNouvelleNote">Enregistrer</div>
-		<div id="reinitialiserFormulaireEntrerNote">Réinitialiser</div>
-		<div id="annulerEntrerNote">Annuler</div>
+			<div id="enregistrerNouvelleNote">Enregistrer</div>
+			<div id="reinitialiserFormulaireEntrerNote">Réinitialiser</div>
+			<div id="annulerEntrerNote">Annuler</div>
 		</div>
 		
 		<div id="fondMenuCategorie">
-			<div id="insertNewNote">Nouveau</div>
+			<div id="insertNewCategory">Nouvelle catégorie fille</div>		
+			<div id="insertNewNote">Nouvelle note</div>
+			<div id="editNote">Editer</div>	
 			<div id="deleteNote">Effacer</div>
+			<div id="archiveNote">Archiver(maintenant/date (choisie))</div>
+			<div id="archiveToDo">Fait(maintenant/date (choisie))</div>
+			<div id="DisplayContentCategory">Afficher contenu de la catégorie"</div>
+			<div id="changeCategoryIntoNote">Transformer catégorie en note</div>							
+			<div id="changeNoteIntoCategory">Transformer note en catégorie</div>						
 			<div id="cancel">Annuler</div>
 		</div>
 		

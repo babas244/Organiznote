@@ -1,11 +1,11 @@
-#topic0{
-	background-color: red;
+#apercu, div[id*="topic"]
+{
+	width: 250px;
+	border: 1px black solid;
+	border-radius: 5px;
 }
 
-#topic1{
-	background-color: green;
-}
-
-#topic2{
-	background-color: yellow;
+#apercu
+{
+	display: inline-block;
 }

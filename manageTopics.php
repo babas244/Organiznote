@@ -59,7 +59,7 @@ if (!isset($_SESSION['id'])) { // il faudra am√©liorer le script pour les cas o√
 				
 			// include 'log_in_bdd.php'; // besoin ou pas ??
 			
-			$req = $bdd -> prepare('SELECT topic,id FROM topics WHERE idUser= :idUser'); //
+			$req = $bdd -> prepare('SELECT topic,id,colorBackGround,colorFont FROM topics WHERE idUser= :idUser'); //
 			$req -> execute (array (
 				'idUser' => $_SESSION['id'])); 
 			
@@ -68,7 +68,7 @@ if (!isset($_SESSION['id'])) { // il faudra am√©liorer le script pour les cas o√
 			
 			while ($donnees = $req->fetch()) {
 				$atLeastOneCaetgory = true;
-				$topics .= "<div id=\"topic".$donnees['id']."\" onclick=\"document.location.href='manageNotes/index.php?idTopic=".$donnees['id']."'\">".$donnees['topic']."</div>";	
+				$topics .= "<div id=\"topic".$donnees['id']."\" style=\"Background-color : ".$donnees['colorBackGround'].";color : ".$donnees['colorFont']."\" onclick=\"document.location.href='manageNotes/index.php?idTopic=".$donnees['id']."'\">".$donnees['topic']."</div>";
 			}
 			
 			if ($atLeastOneCaetgory) {
@@ -86,14 +86,23 @@ if (!isset($_SESSION['id'])) { // il faudra am√©liorer le script pour les cas o√
 				<fieldset>
 					<legend>Cr√©er un nouveau <strong>sujet</strong> de notes</legend>
 					Titre :<input type="text" name="newTopic"><br><br>
-					Couleur de fond :<input type="color" name="colorTopic"><br><br>
+					Couleur de fond :<input type="color" id="colorBackGround" name="colorBackGround" value="#ffff11" onchange="updateApercu()"><br><br>
+					Couleur du texte : <input type="color" id="colorFont" name="colorFont" value="#000000" onchange="updateApercu()"><br><br>
+					Aper√ßu : <div id="apercu">Sujet</div><br><br>
 					<input type="submit" value="Envoyer">
 				</fieldset>
 			</form>
-			<br><br><a href="logout.php"> Deconnexion </a>
 		<?php
 		}	
-		?>		
+		?>
+		<a href="logout.php"> Deconnexion </a>
+		<script>
+			updateApercu();
+			function updateApercu () {
+				document.getElementById("apercu").style.backgroundColor = document.getElementById("colorBackGround").value;
+				document.getElementById("apercu").style.color = document.getElementById("colorFont").value;				
+			}
+		</script>
 		<br><br><a href="index.php"> vers la page d'accueil </a>
 		<br>
 	</body>

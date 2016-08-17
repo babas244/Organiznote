@@ -19,43 +19,61 @@ on affichera le temps qu'il reste en premier dans l'affichage, ou expiré si exp
 
 // import arborescences en json
 
-// espace membre et page d'accueil, avec mes TitreNote et la possbilité d'en commencer un nouveau
-
-// les option d'une catégoeire : editer, afficher contenu(nouvelle fenetre), archiver/fait (maintenant/->date (choisie)), transformer en catégorie, effacer
-
 // donner un code couleur : afa et ref
-
-// tout objet du DOM devrait changer de couleur au clic (on peut voir qu'on a cliqué comme ça)
 
 // fabriquer une sorte de code d'erreur en comparant le nb de catégories écrit dans la bdd et le nb de catégories instanciées part js ??
 	
  
-ToutesCategories["racine"] = new CategorieAbstraite("racine", null, 0, 2); // 2 est a recalculer  !! A récupérer de la bdd
 
-fInstanciateRootAsCategory()
-
-recupererToutesCategories();
-
-arborescenceNotes = new ArborescenceReduiteAffichee("racine");
+fInstantiateRoot();
 
 //alert (arborescenceNotes.derniereCategorieDepliee);
 //arborescenceNotes.seDeplacerDanslArborescenceReduite("1");
-
 //arborescenceNotes.seDeplacerDanslArborescenceReduite("1a2");
 
-function fInstanciateRootAsCategory() {
-	document.getElementById("racine").addEventListener('contextmenu', function(e) {
-		e.preventDefault();
-		var idCategorieMenu = e.target.id; // ="racine" 
-		document.getElementById("fondMenuCategorie").style.display = 'block';
-		
-		document.getElementById("insertNewNote").addEventListener('click', function(e) { // insertNewNote
-			document.getElementById("fondMenuCategorie").style.display = 'none';
-			//alert('idCategorieMenu = '+idCategorieMenu);
-			insertNewNote(idCategorieMenu);
-			//alert("Note correctemennt insérée.");
-		}, false);
-	}, false);
+function fInstantiateRoot() {
+	var xhr = new XMLHttpRequest(); 
+	xhr.open ('GET', 'ajax/InstantiateRoot.php?idTopic=' + idTopic);
+	xhr.send(null);
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4 && xhr.status == 200) {
+			//alert (xhr.responseText);
+			var response = JSON.parse(xhr.responseText);
+			document.getElementById("racine").innerHTML = response.topic;
+			ToutesCategories["racine"] = new CategorieAbstraite("racine", null, 0, response.nNbDeComposants);
+			//alert (response.nNbDeComposants);
+			arborescenceNotes = new ArborescenceReduiteAffichee("racine");					
+			requeteXhrRecupererArborescence(instancierArborescenceRecuperee, "racine");
+
+			document.getElementById("racine").addEventListener('click', function(e) {
+				fCategoryClickEvent(e.target.id)
+			}, false);					
+			
+			document.getElementById("racine").addEventListener('contextmenu', function(e) {
+				e.preventDefault();
+				var idCategorieMenu = e.target.id; // ="racine" 
+				document.getElementById("fondMenuCategorie").style.display = 'block';
+				
+				document.getElementById("insertNewNote").addEventListener('click', function(e) { // insertNewNote
+					document.getElementById("fondMenuCategorie").style.display = 'none';
+					//alert('idCategorieMenu = '+idCategorieMenu);
+					insertNewNote(idCategorieMenu);
+					//alert("Note correctement insérée.");
+				}, false);
+			}, false);
+			
+		} 
+		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
+				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
+		}
+	}	
+}
+
+function fCategoryClickEvent(idCategory) {
+	arborescenceNotes.seDeplacerDanslArborescenceReduite(idCategory);
+}
+
+function fCategoryContextMenuEvent(idCategory) {
 }
 
 function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
@@ -91,7 +109,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 				
 				while (categorieAeffacer.includes("a")) {
 					document.getElementById(categorieAeffacer).style.display = 'none';
-					categorieAeffacer = categorieAeffacer.replace(/a[1-9]+$/, "");
+					categorieAeffacer = categorieAeffacer.replace(/a[1-9]+$/, ""); // et la cas 10 ?? hihi
 				}				
 				for (var j = 0 ; j < ToutesCategories.racine.nbDeComposants; j++) { 
 					//alert("j + 1 = "+(j+1));
@@ -182,12 +200,6 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 	}
 }
 
-function recupererToutesCategories() { // faire qu'une seule fonction qui réunit les 3 fonctions ??
-	requeteXhrRecupererArborescence(instancierArborescenceRecuperee, "racine");
-	document.getElementById("racine").addEventListener('click', function(e) {
-			arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id);//;
-		}, false);
-}
 
 function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePere ) {
 	//alert ("sCategoriePere = " + sCategoriePere);
@@ -204,9 +216,9 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 		var oCategorieAffichageDOM = document.createElement("div");
 		oCategorieAffichageDOM.id = sIdCategorie;
 		oCategorieAffichageDOM.addEventListener('click', function(e) {
-			//console.log("e.target.id  = " + e.target.id);
-			arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id);
-		}, false);
+			fCategoryClickEvent(e.target.id)
+		}, false);					
+		
 		oCategorieAffichageDOM.addEventListener('contextmenu', function(e) {
 			e.preventDefault();
 			var idCategorieMenu = e.target.id; 
@@ -226,6 +238,8 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 				//alert('idCategorieMenu to delete = '+idCategorieMenu);
 			}, false);
 		}, false);
+		
+		
 		oCategorieAffichageDOM.style.marginLeft = iRetraitAffichagedUneCategorie*(nNiveauDeCategorie) + 'px'; // mettre la marge en fonction du niveau de la catégorie
 		oCategorieAffichageDOM.innerHTML = sContent; 
 		document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM);
@@ -412,7 +426,7 @@ function CategorieAbstraite(id, sContent, niveauDeCategorie, nbDeComposants) {
 	this.niveauDeCategorie = niveauDeCategorie;
 	this.nbDeComposants = nbDeComposants;
 	this.chargerContenuCategorie = function (){
-		requeteXhrRecupererCategories(fInstancierCategories, this.id);
+		requeteXhrRecupererCategories(fInstancierCategories, this.id); // obsolete ??
 	}
 }
 

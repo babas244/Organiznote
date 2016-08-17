@@ -25,51 +25,34 @@ div#fondMenuCategorie
 	left: 0px;
 	top: 0px;
 	z-index: 1;
-	background-color: black; 
+	background-color: rgba(0,0,0,0.4); 
 	height: 100%;
 	width: 100%;
-	opacity: 0.4;
 	display: none; 
 }
 
-div#insertNewNote
+#insertNewNote, #deleteNote, #insertNewCategory, #editNote, #archiveNote, #archiveToDo, #DisplayContentCategory, #changeCategoryIntoNote, #changeNoteIntoCategory, #cancel
 {
 	position: absolute;
 	left: 20%;
-	top: 10%;
 	/*z-index: 1; */
 	background-color: #ff11ff; 
 	color: black;
-	height: 10%;
-	width: 10%;
+	height: 5%;
+	width: 20%;
 	border: 2px black solid; 
 }
 
-div#deleteNote
-{
-	position: absolute;
-	left: 20%;
-	top: 20%;
-	/*z-index: 1; */
-	background-color: #ff11ff; 
-	color: black;
-	height: 10%;
-	width: 10%;
-	border: 2px black solid; 
-}
-
-div#cancel
-{
-	position: absolute;
-	left: 20%;
-	top: 30%;
-	/*z-index: 1; */
-	background-color: #ff11ff; 
-	color: black;
-	height: 10%;
-	width: 10%;
-	border: 2px black solid; 
-}
+#insertNewNote {top: 10%;}
+#deleteNote {top: 15%;}
+#insertNewCategory{top: 20%;}
+#editNote{top: 25%;}
+#archiveNote{top: 30%;}
+#archiveToDo{top: 35%;}
+#DisplayContentCategory{top: 40%;}
+#changeCategoryIntoNote{top: 45%;}
+#changeNoteIntoCategory{top: 50%;}
+#cancel{top: 55%;}
 
 
 div#fondPageEntrerTexte
@@ -78,10 +61,9 @@ div#fondPageEntrerTexte
 	left: 0px;
 	top: 0px;
 	z-index: 1;
-	background-color: black; 
+	background-color: rgba(0,0,0,0.6); 
 	height: 100%;
 	width: 100%;
-	opacity: 0.6;
 	display: none; 
 }
 
