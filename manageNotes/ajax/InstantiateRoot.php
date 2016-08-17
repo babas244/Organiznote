@@ -22,7 +22,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 	$reqGetTopic -> closeCursor();
 	
 	
-	$reqGetNbOfItemsOfRoot = $bdd -> prepare('SELECT COUNT(*) as nNbDeComposants FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote REGEXP :aTrouver AND isCategory=\'1\'');
+/* 	$reqGetNbOfItemsOfRoot = $bdd -> prepare('SELECT COUNT(*) as nNbDeComposants FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote REGEXP :aTrouver AND isCategory=\'1\'');
 		$reqGetNbOfItemsOfRoot -> execute(array(
 		'idUser' => $_SESSION['id'],
 		'idTopic' => $_GET["idTopic"], 
@@ -31,6 +31,17 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		$resultat = $reqGetNbOfItemsOfRoot -> fetch();
 		echo '"nNbDeComposants":"'.$resultat['nNbDeComposants'].'"}';
 	$reqGetNbOfItemsOfRoot->closeCursor();	
+ */
+	$reqGetNbOfItemsOfRoot = $bdd -> prepare('SELECT NbOfItems FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote="root"');
+		$reqGetNbOfItemsOfRoot -> execute(array(
+		'idUser' => $_SESSION['id'],
+		'idTopic' => $_GET["idTopic"]));
+
+		$resultat = $reqGetNbOfItemsOfRoot -> fetch();
+		echo '"nNbDeComposants":"'.$resultat['NbOfItems'].'"}';
+	$reqGetNbOfItemsOfRoot->closeCursor();	
+	
+
 }
 
 else {
