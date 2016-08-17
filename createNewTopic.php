@@ -42,7 +42,7 @@ if (isset($_SESSION['id']) && isset($_POST['newTopic']) && isset($_POST['colorBa
 
 	}
 	
-	//header ('Location: manageTopics.php');
+	header ('Location: manageTopics.php');
 	exit;
 }
 	
