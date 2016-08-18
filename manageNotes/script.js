@@ -96,7 +96,8 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 			}
 		}
 	}	
-	this.seDeplacerDanslArborescenceReduite = function (idCategorieaDeplier) {
+	
+/* 	this.seDeplacerDanslArborescenceReduite = function (idCategorieaDeplier) {
 		//alert ("dans seDeplacerDanslArborescenceReduite ! \n\n idCategorieaDeplier = "+idCategorieaDeplier+" et this.derniereCategorieDepliee = "+this.derniereCategorieDepliee);
 		if (idCategorieaDeplier !== this.derniereCategorieDepliee) { // on enlève le cas ou rien de nouveau n'est demandé
 			
@@ -198,7 +199,112 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 		arborescenceNotes.derniereCategorieDepliee = idCategorieaDeplier;  
 		//alert("en fin de function, arborescenceNotes.derniereCategorieDepliee = " + arborescenceNotes.derniereCategorieDepliee);
 	}
-}
+ */
+
+	this.seDeplacerDanslArborescenceReduite = function (idCategorieaDeplier) {
+		//alert ("dans seDeplacerDanslArborescenceReduite ! \n\n idCategorieaDeplier = "+idCategorieaDeplier+" et this.derniereCategorieDepliee = "+this.derniereCategorieDepliee);
+		if (idCategorieaDeplier !== this.derniereCategorieDepliee) { // on enlève le cas ou rien de nouveau n'est demandé
+			
+			if (idCategorieaDeplier === "racine") { // si on déplie racine :
+				for (var k = 0 ; k < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; k++) { // d'abord replier les filles de derniereCategorieDepliee
+					//alert("this.derniereCategorieDepliee+'a'+(k+1) = "+(this.derniereCategorieDepliee+'a'+(k+1)));
+					document.getElementById(this.derniereCategorieDepliee+'a'+(k+1)).style.display = 'none';
+				}
+				var categorieAeffacer = this.derniereCategorieDepliee;
+				
+				while (categorieAeffacer.includes("a")) {
+					document.getElementById(categorieAeffacer).style.display = 'none';
+					categorieAeffacer = categorieAeffacer.replace(/a[1-9]+$/, ""); // et la cas 10 ?? hihi
+				}				
+				for (var j = 0 ; j < ToutesCategories.racine.nbDeComposants; j++) { 
+					//alert("j + 1 = "+(j+1));
+					//alert(typeof(toString(j+1)));
+					//alert("toString(j+1) = "+toString((j+1)));
+					if ((j+1) !== parseInt(categorieAeffacer)) {
+						document.getElementById(j+1).style.display = 'block';
+					}
+				}
+			}
+
+			else { // sinon, si derniere=racine :
+				if (this.derniereCategorieDepliee === "racine") { // on ne peut donc avoir cliqué que sur 1,2,3,...
+					for (var p = 0 ; p < ToutesCategories.racine.nbDeComposants; p++) { // on efface les 1,2,3.., sauf celle à déplier
+						if ((p+1) !== parseInt(idCategorieaDeplier)) {
+							document.getElementById(p+1).style.display = 'none';
+						}
+					}
+					// A partir de là, on déplie les catégories filles de idCategorieaDeplier
+					//console.log(ToutesCategories[idCategorieaDeplier]);
+					var alreadyLoadedInDOM = document.getElementById((ToutesCategories[idCategorieaDeplier])+'a'+1);
+					//console.log(alreadyLoadedInDOM);
+					if (alreadyLoadedInDOM === null) {
+						requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
+					}
+					else {
+						for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbDeComposants; j++) { 
+							//console.log(idCategorieaDeplier+'a'+(j+1));
+							document.getElementById(idCategorieaDeplier+'a'+(j+1)).style.display = 'block';
+						}
+					}
+				}
+				else {	
+					if (idCategorieaDeplier.length < this.derniereCategorieDepliee.length) { // on a donc cliqué sur une categorie antécédente de derniereCategorieDepliee
+
+						for (var k = 0 ; k < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; k++) { // d'abord replier les filles de derniereCategorieDepliee
+							document.getElementById(this.derniereCategorieDepliee+'a'+(k+1)).style.display = 'none';
+						}
+						//alert(typeof(this.derniereCategorieDepliee));
+						var categorieAeffacer = this.derniereCategorieDepliee;
+						
+						while (categorieAeffacer !== idCategorieaDeplier) {
+							document.getElementById(categorieAeffacer).style.display = 'none';
+							categorieAeffacer = categorieAeffacer.replace(/a[1-9]+$/, "");
+						}
+						// puis déplier le nouveau derniereCategorieDepliee :	
+						var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a'+1);
+						//alert(idCategorieaDeplier+'a'+1);
+						//alert(alreadyLoadedInDOM)
+						if (alreadyLoadedInDOM === null) {
+							requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
+						}
+						else {
+							for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbDeComposants; j++) { 
+								//console.log("!! idCategorieaDeplier+'a'+(j+1) = "+idCategorieaDeplier+'a'+(j+1));
+								document.getElementById(idCategorieaDeplier+'a'+(j+1)).style.display = 'block';
+							}
+						}			
+					}						
+					else { // on vient donc de cliquer sur une catégorie fille de derniereCategorieDepliee et qui n'est pas racine
+						if (idCategorieaDeplier !== "racine") {
+							
+							for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; i++) { // on replie toutes les filles // Vaut mieux le faire dans l'ordre décroissant puisqu'on déplie, non ?
+								//console.log("else, "+idCategorieaDeplier+(i+1));
+								if (this.derniereCategorieDepliee+'a'+(i+1) !== idCategorieaDeplier) {
+									document.getElementById(this.derniereCategorieDepliee+'a'+(i+1)).style.display = 'none';
+								}
+								  
+							}
+							var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a'+1);
+							//alert(idCategorieaDeplier+'a'+1);
+							//alert(alreadyLoadedInDOM)
+							if (alreadyLoadedInDOM === null) {
+								requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
+							}
+							else {
+								for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbDeComposants; j++) { 
+									//console.log("!! idCategorieaDeplier+'a'+(j+1) = "+idCategorieaDeplier+'a'+(j+1));
+									document.getElementById(idCategorieaDeplier+'a'+(j+1)).style.display = 'block';
+								}
+							}
+						}
+					}	
+				}
+			}
+		}
+		arborescenceNotes.derniereCategorieDepliee = idCategorieaDeplier;  
+		//alert("en fin de function, arborescenceNotes.derniereCategorieDepliee = " + arborescenceNotes.derniereCategorieDepliee);
+	}
+ }
 
 
 function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePere ) {
