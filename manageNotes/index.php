@@ -7,7 +7,7 @@ include '../sessionAuthentication.php';
 
 // il faut vérifier que idTopic est de la bonne forme
 
-echo $_SESSION['id']." connecté sur ".$_GET['idTopic'];
+echo $_SESSION['id']." connecté sur ".$_GET['idTopic']; // il faut placer après doctype sinon il est hors du header
 
 ?>
 

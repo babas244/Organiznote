@@ -40,7 +40,7 @@ function fInstantiateRoot() {
 			//alert (xhr.responseText);
 			var response = JSON.parse(xhr.responseText);
 			document.getElementById("racine").innerHTML = response.topic;
-			ToutesCategories["racine"] = new CategorieAbstraite("racine", null, 0, response.nNbDeComposants);
+			ToutesCategories["racine"] = new CategorieAbstraite("racine", null, 0, parseInt(response.nNbDeComposants));
 			//alert (response.nNbDeComposants);
 			arborescenceNotes = new ArborescenceReduiteAffichee("racine");					
 			requeteXhrRecupererArborescence(instancierArborescenceRecuperee, "racine");
@@ -96,111 +96,6 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 			}
 		}
 	}	
-	
-/* 	this.seDeplacerDanslArborescenceReduite = function (idCategorieaDeplier) {
-		//alert ("dans seDeplacerDanslArborescenceReduite ! \n\n idCategorieaDeplier = "+idCategorieaDeplier+" et this.derniereCategorieDepliee = "+this.derniereCategorieDepliee);
-		if (idCategorieaDeplier !== this.derniereCategorieDepliee) { // on enlève le cas ou rien de nouveau n'est demandé
-			
-			if (idCategorieaDeplier === "racine") { // && this.derniereCategorieDepliee.includes('a') ?
-				for (var k = 0 ; k < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; k++) { // d'abord replier les filles de derniereCategorieDepliee
-					//alert("this.derniereCategorieDepliee+'a'+(k+1) = "+(this.derniereCategorieDepliee+'a'+(k+1)));
-					document.getElementById(this.derniereCategorieDepliee+'a'+(k+1)).style.display = 'none';
-				}
-				var categorieAeffacer = this.derniereCategorieDepliee;
-				
-				while (categorieAeffacer.includes("a")) {
-					document.getElementById(categorieAeffacer).style.display = 'none';
-					categorieAeffacer = categorieAeffacer.replace(/a[1-9]+$/, ""); // et la cas 10 ?? hihi
-				}				
-				for (var j = 0 ; j < ToutesCategories.racine.nbDeComposants; j++) { 
-					//alert("j + 1 = "+(j+1));
-					//alert(typeof(toString(j+1)));
-					//alert("toString(j+1) = "+toString((j+1)));
-					if ((j+1) !== parseInt(categorieAeffacer)) {
-						document.getElementById(j+1).style.display = 'block';
-					}
-				}
-			}
-			
-			if (idCategorieaDeplier.length < this.derniereCategorieDepliee.length && this.derniereCategorieDepliee!=="racine") { // on a donc cliqué sur une categorie antécédente de derniereCategorieDepliee
-
-				for (var k = 0 ; k < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; k++) { // d'abord replier les filles de derniereCategorieDepliee // vaudrait-il mieux que les catégories du DOM héritent les unes des autres ??
-					document.getElementById(this.derniereCategorieDepliee+'a'+(k+1)).style.display = 'none';
-				}
-				//alert(typeof(this.derniereCategorieDepliee));
-				var categorieAeffacer = this.derniereCategorieDepliee;
-				
-				while (categorieAeffacer !== idCategorieaDeplier) {
-					document.getElementById(categorieAeffacer).style.display = 'none';
-					categorieAeffacer = categorieAeffacer.replace(/a[1-9]+$/, "");
-				}
-				// puis déplier le nouveau derniereCategorieDepliee :	
-				var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a'+1);
-				//alert(idCategorieaDeplier+'a'+1);
-				//alert(alreadyLoadedInDOM)
-				if (alreadyLoadedInDOM === null) {
-					requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
-				}
-				else {
-					for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbDeComposants; j++) { 
-						//console.log("!! idCategorieaDeplier+'a'+(j+1) = "+idCategorieaDeplier+'a'+(j+1));
-						document.getElementById(idCategorieaDeplier+'a'+(j+1)).style.display = 'block';
-					}
-				}			
-			}	
-			else {  // on vient donc de cliquer sur une catégorie fille de racine
-				if (this.derniereCategorieDepliee === "racine") {
-					for (var p = 0 ; p < ToutesCategories.racine.nbDeComposants; p++) {
-						if ((p+1) !== parseInt(idCategorieaDeplier)) {
-							document.getElementById(p+1).style.display = 'none';
-						}
-					}
-					// déplier les catégories filles de idCategorieaDeplier
-					//console.log(ToutesCategories[idCategorieaDeplier]);
-					var alreadyLoadedInDOM = document.getElementById((ToutesCategories[idCategorieaDeplier])+'a'+1);
-					//console.log(alreadyLoadedInDOM);
-					if (alreadyLoadedInDOM === null) {
-						requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
-					}
-					else {
-						for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbDeComposants; j++) { 
-							//console.log(idCategorieaDeplier+'a'+(j+1));
-							document.getElementById(idCategorieaDeplier+'a'+(j+1)).style.display = 'block';
-						}
-					}
-				}
-				
-				else { // on vient donc de cliquer sur une catégorie fille de derniereCategorieDepliee et qui n'est pas racine
-					if (idCategorieaDeplier !== "racine") {
-						
-						for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; i++) { // on replie toutes les filles // Vaut mieux le faire dans l'ordre décroissant puisqu'on déplie, non ?
-							//console.log("else, "+idCategorieaDeplier+(i+1));
-							if (this.derniereCategorieDepliee+'a'+(i+1) !== idCategorieaDeplier) {
-								document.getElementById(this.derniereCategorieDepliee+'a'+(i+1)).style.display = 'none';
-							}
-							  
-						}
-						var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a'+1);
-						//alert(idCategorieaDeplier+'a'+1);
-						//alert(alreadyLoadedInDOM)
-						if (alreadyLoadedInDOM === null) {
-							requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
-						}
-						else {
-							for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbDeComposants; j++) { 
-								//console.log("!! idCategorieaDeplier+'a'+(j+1) = "+idCategorieaDeplier+'a'+(j+1));
-								document.getElementById(idCategorieaDeplier+'a'+(j+1)).style.display = 'block';
-							}
-						}
-					}
-				}
-			}	
-		}
-		arborescenceNotes.derniereCategorieDepliee = idCategorieaDeplier;  
-		//alert("en fin de function, arborescenceNotes.derniereCategorieDepliee = " + arborescenceNotes.derniereCategorieDepliee);
-	}
- */
-
 	this.seDeplacerDanslArborescenceReduite = function (idCategorieaDeplier) {
 		//alert ("dans seDeplacerDanslArborescenceReduite ! \n\n idCategorieaDeplier = "+idCategorieaDeplier+" et this.derniereCategorieDepliee = "+this.derniereCategorieDepliee);
 		if (idCategorieaDeplier !== this.derniereCategorieDepliee) { // on enlève le cas ou rien de nouveau n'est demandé
@@ -235,8 +130,10 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 					}
 					// A partir de là, on déplie les catégories filles de idCategorieaDeplier
 					//console.log(ToutesCategories[idCategorieaDeplier]);
-					var alreadyLoadedInDOM = document.getElementById((ToutesCategories[idCategorieaDeplier])+'a'+1);
-					//console.log(alreadyLoadedInDOM);
+					var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a'+1);
+					//console.log("On ne déplie pas racine et le dernier déplié n'est pas racine \n et ToutesCategories[idCategorieaDeplier])+'a'+1 ="
+					//+((ToutesCategories[idCategorieaDeplier].id)+'a'+1) + "\net alreadyLoadedInDOM = "+alreadyLoadedInDOM);
+					console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a'+1+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);					
 					if (alreadyLoadedInDOM === null) {
 						requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
 					}
@@ -248,9 +145,10 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 					}
 				}
 				else {	
-					if (idCategorieaDeplier.length < this.derniereCategorieDepliee.length) { // on a donc cliqué sur une categorie antécédente de derniereCategorieDepliee
+					if (idCategorieaDeplier.length < this.derniereCategorieDepliee.length) { // dernier!=racine et on a cliqué sur une categorie antécédente de derniereCategorieDepliee
 
 						for (var k = 0 ; k < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; k++) { // d'abord replier les filles de derniereCategorieDepliee
+							console.log(this.derniereCategorieDepliee+'a'+(k+1));
 							document.getElementById(this.derniereCategorieDepliee+'a'+(k+1)).style.display = 'none';
 						}
 						//alert(typeof(this.derniereCategorieDepliee));
@@ -262,8 +160,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 						}
 						// puis déplier le nouveau derniereCategorieDepliee :	
 						var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a'+1);
-						//alert(idCategorieaDeplier+'a'+1);
-						//alert(alreadyLoadedInDOM)
+						console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a'+1+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);
 						if (alreadyLoadedInDOM === null) {
 							requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
 						}
@@ -275,7 +172,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 						}			
 					}						
 					else { // on vient donc de cliquer sur une catégorie fille de derniereCategorieDepliee et qui n'est pas racine
-						if (idCategorieaDeplier !== "racine") {
+						if (idCategorieaDeplier !== "racine") { // a enlever car evident
 							
 							for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; i++) { // on replie toutes les filles // Vaut mieux le faire dans l'ordre décroissant puisqu'on déplie, non ?
 								//console.log("else, "+idCategorieaDeplier+(i+1));
@@ -285,8 +182,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 								  
 							}
 							var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a'+1);
-							//alert(idCategorieaDeplier+'a'+1);
-							//alert(alreadyLoadedInDOM)
+							console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a'+1+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);
 							if (alreadyLoadedInDOM === null) {
 								requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
 							}
@@ -306,7 +202,6 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 	}
  }
 
-
 function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePere ) {
 	//alert ("sCategoriePere = " + sCategoriePere);
 	//alert ("sCategoriesRecuperees =" + sCategoriesRecuperees);
@@ -318,7 +213,7 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 		var sContent = CategorieParsee[i+1];
 		var nNiveauDeCategorie = CategorieParsee[i+2];
 		var nNbDeComposants = CategorieParsee[i+3];
-		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, nNiveauDeCategorie, nNbDeComposants);
+		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, parseInt(nNiveauDeCategorie), parseInt(nNbDeComposants));
 		var oCategorieAffichageDOM = document.createElement("div");
 		oCategorieAffichageDOM.id = sIdCategorie;
 		oCategorieAffichageDOM.addEventListener('click', function(e) {
@@ -396,8 +291,9 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 }
 
 function insertNewNote(idCategoriePere) {
-	alert("idCategoriePere = "+idCategoriePere);
+	//alert("idCategoriePere = "+idCategoriePere);
 	document.getElementById("fondPageEntrerTexte").style.display = 'block';
+	document.getElementById("formulaireEntrerNote").reset();
 	document.getElementById("zoneFormulaireEntrerNote").focus();
 	document.getElementById("enregistrerNouvelleNote").addEventListener('click', ecrireNoteDsBdd, false);
  	/* document.getElementById("zoneFormulaireEntrerNote").addEventListener('keyup', function(e) { // à faire en snippet
@@ -445,9 +341,15 @@ function requeteXhrInsertNewNote(sNewNote, idCategoriePere) {
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			//alert('idCategoriePere = '+idCategoriePere);
 			ToutesCategories[idCategoriePere].nbDeComposants +=1;
-			//alert ("Nouvelle note insérée : "+xhr.responseText); 
+			//alert((idCategoriePere ==="racine" ? "" : idCategoriePere+"a"));
+			sCategorieInseree = (idCategoriePere ==="racine" ? "" : idCategoriePere+"a")+ToutesCategories[idCategoriePere].nbDeComposants
+								+"|"+sNewNote+"|"+(ToutesCategories[idCategoriePere].niveauDeCategorie+1)+"|0";
+			//alert (sCategorieInseree);					
+			instancierArborescenceRecuperee ( sCategorieInseree , idCategoriePere )
+			//alert('idCategoriePere = '+idCategoriePere+" et ToutesCategories[idCategoriePere].nbDeComposants = "+ToutesCategories[idCategoriePere].nbDeComposants  );
+			//alert ("Nouvelle note insérée : "+xhr.responseText);
+			//if (idCategoriePere === )
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
 				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);

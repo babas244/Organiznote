@@ -11,7 +11,11 @@ div#frameOfTree div
 	background-color: #ffff00;
 	border: 1px black solid;
 	border-radius: 5px;
+	word-wrap: break-word;
 }
+
+div#frameOfTree div:active {background-color: #ff3300;}
+div#frameOfTree div:hover {background-color: #ffaa00;}
 
 
 div#topic
@@ -41,6 +45,11 @@ div#fondMenuCategorie
 	height: 5%;
 	width: 20%;
 	border: 2px black solid; 
+}
+
+#insertNewNote:hover, #deleteNote:hover, #insertNewCategory:hover, #editNote:hover, #archiveNote:hover, #archiveToDo:hover, #DisplayContentCategory:hover, #changeCategoryIntoNote:hover, #changeNoteIntoCategory:hover, #cancel:hover
+{
+	background-color: #ff66ff; 	
 }
 
 #insertNewNote {top: 10%;}
