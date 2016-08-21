@@ -202,7 +202,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 	}
  }
 
-function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePere ) {
+function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePere ) { // rajouter un booleen isVisible
 	//alert ("sCategoriePere = " + sCategoriePere);
 	//alert ("sCategoriesRecuperees =" + sCategoriesRecuperees);
 	var CategorieParsee = sCategoriesRecuperees.split('|'); // interdiction d'utiliser ce caractère dans une note (on pourrait mettre une interdiction au moment d'enregistrer une note et au moment de l'importation) 
@@ -229,8 +229,7 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 				document.getElementById("fondMenuCategorie").style.display = 'none';
 				//alert('idCategorieMenu = '+idCategorieMenu);
 				insertNewNote(idCategorieMenu);
-				//alert("Note correctemennt insérée.");
-				// enfin surtout il faut afficher à ce moment là la nouvelle note !! Enfin si elle est dans la partie dépliée !
+				//alert("Note correctemennt insérée."); Non car asynchrone ??
 			}, false);
 			
 			document.getElementById("deleteNote").addEventListener('click', function(e) { //deleteNote
@@ -238,14 +237,72 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 				queryXhrDeleteNote(idCategorieMenu);
 				//alert('idCategorieMenu to delete = '+idCategorieMenu);
 			}, false);
+			
+			document.getElementById("editNote").addEventListener('click', function(e) { //editNote
+				document.getElementById("fondMenuCategorie").style.display = 'none';
+				editNote(idCategorieMenu);
+				//alert('idCategorieMenu to edit = '+idCategorieMenu);
+			}, false);
+			
 		}, false);
 		
 		
 		oCategorieAffichageDOM.style.marginLeft = iRetraitAffichagedUneCategorie*(nNiveauDeCategorie) + 'px'; // mettre la marge en fonction du niveau de la catégorie
 		oCategorieAffichageDOM.innerHTML = sContent; 
 		document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM);
+		// if (!isVisible) {oCategorieAffichageDOM.style.display = 'none';}
 	}
 }
+
+function editNote(sIdCategoryToEdit) {
+	//alert("Dans editNote, sIdCategoryToEdit = "+sIdCategoryToEdit);
+	document.getElementById("fondPageEntrerTexte").style.display = 'block';
+	document.getElementById("formulaireEntrerNote").reset();
+	document.getElementById("zoneFormulaireEntrerNote").focus();
+	document.getElementById("enregistrerNouvelleNote").addEventListener('click', function () {
+		if (sIdCategoryToEdit !== "") {
+			sNewNote = document.getElementById("zoneFormulaireEntrerNote").value;
+			document.getElementById("fondPageEntrerTexte").style.display = 'none';
+			queryXhrEditNote(sNewNote, sIdCategoryToEdit);
+			//dégriser la catégorie mère		
+		}
+		else {
+			alert("La note est vide, recommencez.")
+		}
+	}, false);
+
+	document.getElementById("reinitialiserFormulaireEntrerNote").addEventListener('click', function reinitialiserFormulaireEntrerNote() {
+		document.getElementById("formulaireEntrerNote").reset();
+		document.getElementById("zoneFormulaireEntrerNote").focus();
+	}, false);
+
+	document.getElementById("annulerEntrerNote").addEventListener('click', AnnulerEntrerNote, false);
+	
+	function AnnulerEntrerNote() {
+		document.getElementById("fondPageEntrerTexte").style.display = 'none';
+		document.getElementById("formulaireEntrerNote").reset();
+	}
+	
+}
+
+function queryXhrEditNote(sNewNote, sIdCategoryToEdit) {
+	var xhr = new XMLHttpRequest(); 
+	xhr.open ('GET', 'ajax/editNote.php?idTopic=' + idTopic + '&sIdCategoryToEdit=' + sIdCategoryToEdit + '&sNewNote=' + sNewNote);
+	xhr.send(null);
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4 && xhr.status == 200) {	
+		//alert("Dans queryXhrEditNote, sIdCategoryToEdit = "+sIdCategoryToEdit);
+
+		document.getElementById(sIdCategoryToEdit).innerHTML = sNewNote;
+		document.getElementById(sIdCategoryToEdit).style.backgroundColor = "#ffff00";
+		} 
+		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
+				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
+		}
+	}
+}
+
+
 
 function requeteXhrRecupererArborescence(fCallback, sCategoriePere) {
 	var xhr = new XMLHttpRequest(); 
@@ -273,7 +330,7 @@ document.getElementById("NouvelleNote").addEventListener('click', insertNewNote,
  */
 
 function queryXhrDeleteNote(sCategoryToDelete) {
-	sCategoryOfDad = sCategoryToDelete.replace(/a[1-9]+$/, "");// on détermine la catégorie père
+	sCategoryOfDad = sCategoryToDelete.replace(/a[1-9]+$/, "");// on détermine la catégorie père //il faut envisager le cas racine aussi
 	alert("Etes vous sûr de vouloir effacer " + sCategoryToDelete +"?\n\navec CategoryOfDad = " + sCategoryOfDad);
 	document.getElementById(sCategoryToDelete).style.backgroundColor = '#cccccc'; // on grise la categorie a effacer
 	var xhr = new XMLHttpRequest(); 
@@ -281,7 +338,7 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			document.getElementById("frameOfTree").removeChild(document.getElementById(sCategoryToDelete));
+			document.getElementById("frameOfTree").removeChild(document.getElementById(sCategoryToDelete)); //il faudrait aussi effacer toutes les div de categories fille
 			ToutesCategories[sCategoryOfDad].nbDeComposants -=1;
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
@@ -291,7 +348,7 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 }
 
 function insertNewNote(idCategoriePere) {
-	//alert("idCategoriePere = "+idCategoriePere);
+	alert("Dans InsertNote, idCategoriePere = "+idCategoriePere);
 	document.getElementById("fondPageEntrerTexte").style.display = 'block';
 	document.getElementById("formulaireEntrerNote").reset();
 	document.getElementById("zoneFormulaireEntrerNote").focus();
@@ -309,12 +366,13 @@ function insertNewNote(idCategoriePere) {
 		if (sNewNote !== "") {
 			if (idCategoriePere) {
 				requeteXhrInsertNewNote(sNewNote, idCategoriePere);
+				alert('coucu');
 			}
 			else { // marche pas.. // if (typeof v !== 'undefined' && v !== null) 
 				alert("note pas encore placée");
 			}
 			document.getElementById("fondPageEntrerTexte").style.display = 'none';
-			//dégriser la catégorie mère			
+			//dégriser la catégorie mère		
 		}
 		else {
 			alert("La note est vide, recommencez.")
@@ -345,7 +403,7 @@ function requeteXhrInsertNewNote(sNewNote, idCategoriePere) {
 			//alert((idCategoriePere ==="racine" ? "" : idCategoriePere+"a"));
 			sCategorieInseree = (idCategoriePere ==="racine" ? "" : idCategoriePere+"a")+ToutesCategories[idCategoriePere].nbDeComposants
 								+"|"+sNewNote+"|"+(ToutesCategories[idCategoriePere].niveauDeCategorie+1)+"|0";
-			//alert (sCategorieInseree);					
+			alert (sCategorieInseree);					
 			instancierArborescenceRecuperee ( sCategorieInseree , idCategoriePere )
 			//alert('idCategoriePere = '+idCategoriePere+" et ToutesCategories[idCategoriePere].nbDeComposants = "+ToutesCategories[idCategoriePere].nbDeComposants  );
 			//alert ("Nouvelle note insérée : "+xhr.responseText);
