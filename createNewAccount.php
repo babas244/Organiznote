@@ -4,7 +4,7 @@
 if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['rePass']) && isset($_POST['email'])) {
 
 	if ($_POST['user']=="") {
-		echo "- le champ du nom d'utilisateur est vide.<br><br>";
+		echo "- le champ du nom d'utilisateur est vide.<br><br>"; //à faire du côté client plutot
 		$user = NULL;
 	}
 	else {
@@ -48,28 +48,40 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['rePass']) &&
 		include 'log_in_bdd.php';
 	
 		//tester si le nom d'user existe déjà
-		$req = $bdd->prepare('SELECT user FROM users WHERE user= :user');
-		$req->execute(array('user' => $user));
+		$reqUserExists = $bdd->prepare('SELECT user FROM users WHERE user= :user');
+		$reqUserExists->execute(array('user' => $user));
 		
-		$resultat = $req->fetch();
+		$resultat = $reqUserExists->fetch();
 		if ($resultat) {
 			echo "- il faut choisir un autre nom d'utilisateur car celui-ci est déjà pris.<br>"; 
 		}
 		else {
 			// Insertion
-			$req = $bdd->prepare('INSERT INTO users(user, hashPass, email, dateInscription) VALUES(:user, :hashPass, :email, CURDATE())');
-			$req->execute(array(
+			$reqUserExists -> closeCursor();
+			
+			$reqInsertUser = $bdd->prepare('INSERT INTO users(user, hashPass, email, dateInscription) VALUES(:user, :hashPass, :email, CURDATE())');
+			$reqInsertUser->execute(array(
 				'user' => $user,
 				'hashPass' => $hashPass,
 				'email' => $email)); // ne faut-il pas aussi démarrer la session ?? SI !!
+			$reqInsertUser -> closeCursor();
 			
 			session_start();
-			// $_SESSION['id'] = ....; a remplir avec requete avant !!	
+			
+			$reqGetIdUser = $bdd -> prepare('SELECT id FROM users WHERE user=:user'); // ouverture de la session
+			$reqGetIdUser -> execute(array(
+				'user' => $user));
+			$result = $reqGetIdUser -> fetch();
+			$idUser = $result["id"];
+			$reqGetIdUser -> closeCursor();
+			
+			$_SESSION['id'] = $idUser;	
+			$_SESSION['user'] = $user;
 			header ('Location: manageTopics.php');		
 			exit;
 			 
 		}
-	}	
+	}
 
 	
 }
@@ -83,6 +95,6 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['rePass']) &&
         <meta charset="utf-8"/>
     </head>
     <body>
-		
+		<br><br><a href="index.php"> vers la page d'accueil </a>
 	</body>
 </html>

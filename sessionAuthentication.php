@@ -9,6 +9,7 @@ if (!isset($_SESSION['id'])) {
 		$resultat = $req->fetch();
 		if ($resultat) {		
 			$_SESSION['id'] = $resultat['id'];
+			$_SESSION['user']= $_COOKIE['user'];
 		}
 		$req->closeCursor();
 	}

@@ -6,9 +6,6 @@ include '../log_in_bdd.php';
 include '../sessionAuthentication.php';
 
 // il faut vérifier que idTopic est de la bonne forme
-
-echo $_SESSION['id']." connecté sur ".$_GET['idTopic']; // il faut placer après doctype sinon il est hors du header
-
 ?>
 
 
@@ -20,8 +17,11 @@ echo $_SESSION['id']." connecté sur ".$_GET['idTopic']; // il faut placer aprè
 		<link rel="stylesheet" href="style.css" />
     </head>
     <body>
-	    <h3>Organiznote</h3>
 		<!-- -->
+		<?php 
+			echo "L'utilisateur <strong>".$_SESSION['user']."</strong>, d'identifiant ".$_SESSION['id']." est connecté sur ".$_GET['idTopic'];
+		?>
+		<a href="logout.php">(se déconnecter)</a>;
 		<div id="frameOfTree">
 			<div id="racine">   <!-- changer "racine" par "topic" ?? ou par "root" ??--> 
 			</div>

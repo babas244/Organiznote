@@ -9,3 +9,9 @@
 {
 	display: inline-block;
 }
+
+div[id*="topic"]:hover
+{
+	text-decoration: underline;
+	font-weight: bold;
+}

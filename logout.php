@@ -9,6 +9,7 @@ session_destroy();
 setcookie('user', '');
 setcookie('hashpass', '');
 
+header ('Location: index.php');
 ?>
 
 
@@ -21,5 +22,6 @@ setcookie('hashpass', '');
     <body>
 		Ca y est, vous êtes déconnecté de votre compte.
 		<br><br><a href="index.php"> Revenir vers la page de connexion </a>
+		
 	</body>
 </html>

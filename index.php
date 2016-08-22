@@ -1,9 +1,8 @@
 <?php
-	if (isset($_COOKIE['user'])) {
-		header ('Location: manageTopics.php');		
-		exit;
-	}
-
+if (isset($_COOKIE['user'])) {
+	header ('Location: manageTopics.php');		
+	exit;
+}
 ?>
  
 <!DOCTYPE html>
@@ -18,7 +17,7 @@
 		<form method="post" action="manageTopics.php"> 
 			<fieldset>
 				<legend>Connexion</legend>
-				Pseudo : <input type="text" name="user"><br><br>
+				Pseudo : <input type="text" name="user" autofocus><br><br>
 				Mot de passe : <input type="password" name="pass"><br><br>
 				<input type="checkbox" name="stayConnected"> Rester connecté<br>
 				<input type="submit" value="Se connecter">

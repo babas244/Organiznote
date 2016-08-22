@@ -12,7 +12,7 @@ if (isset($_SESSION['id']) && isset($_POST['newTopic']) && isset($_POST['colorBa
 	else {
 		$newTopic = htmlspecialchars($_POST['newTopic']);
 
-		// Insérer le nouveau topic. Faut-il vérifier qu'il n'existe pas déjà pour cet user ??...oui...
+		// Insérer le nouveau topic. Faut-il vérifier qu'il n'existe pas déjà pour cet user ??...oui...peut-être mieux de le faire côté client : oui
 		$reqInsertTopic = $bdd->prepare('INSERT INTO topics(topic, idUser, colorBackGround, colorFont) VALUE (:topic, :idUser, :colorBackGround, :colorFont)');
 		$reqInsertTopic -> execute (array(
 			'topic' => $newTopic,
