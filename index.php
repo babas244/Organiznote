@@ -11,9 +11,10 @@
     <head>
         <title>Index</title>
         <meta charset="utf-8"/>
+		<link rel="stylesheet" href="index.css" />
     </head>
     <body>
-		<h1>Organiznote</h1>
+		<br><br><h1>Organiznote</h1><br><br><br><br>
 		<form method="post" action="manageTopics.php"> 
 			<fieldset>
 				<legend>Connexion</legend>

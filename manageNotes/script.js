@@ -15,7 +15,7 @@ on affichera le temps qu'il reste en premier dans l'affichage, ou expiré si exp
 
 // donner un code couleur : afa et ref
 	
-
+	var countt = 1;
 fInstantiateRoot();
 
 function fInstantiateRoot() {
@@ -242,7 +242,7 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 }
 
 function insertNewNote(idCategoriePere) {
-	alert("Dans InsertNote, idCategoriePere = "+idCategoriePere);
+	//alert("Dans InsertNote, idCategoriePere = "+idCategoriePere);
 	document.getElementById("fondPageEntrerTexte").style.display = 'block';
 	document.getElementById("formulaireEntrerNote").reset();
 	document.getElementById("zoneFormulaireEntrerNote").focus();
@@ -260,7 +260,7 @@ function insertNewNote(idCategoriePere) {
 		if (sNewNote !== "") {
 			if (idCategoriePere) {
 				requeteXhrInsertNewNote(sNewNote, idCategoriePere);
-				alert('coucu');
+				//alert('coucou dans ecrireNoteDsBdd');
 			}
 			else { // marche pas.. // if (typeof v !== 'undefined' && v !== null) 
 				alert("note pas encore placée");
@@ -292,12 +292,15 @@ function requeteXhrInsertNewNote(sNewNote, idCategoriePere) {
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
+			alert("countt = "+countt);
+			countt +=1;
 			ToutesCategories[idCategoriePere].nbDeComposants +=1;
+			//alert(ToutesCategories[idCategoriePere].nbDeComposants)
 			//alert((idCategoriePere ==="racine" ? "" : idCategoriePere+"a"));
-			sCategorieInseree = (idCategoriePere ==="racine" ? "" : idCategoriePere+"a")+ToutesCategories[idCategoriePere].nbDeComposants
-								+"|"+sNewNote+"|"+(ToutesCategories[idCategoriePere].niveauDeCategorie+1)+"|0";
-			alert (sCategorieInseree);					
-			instancierArborescenceRecuperee ( sCategorieInseree , idCategoriePere )
+			var sIdCategorieInseree = (idCategoriePere ==="racine" ? "" : idCategoriePere+"a")+ToutesCategories[idCategoriePere].nbDeComposants;
+			var sInstanciationCategorieInseree = sIdCategorieInseree+"|"+sNewNote+"|"+(ToutesCategories[idCategoriePere].niveauDeCategorie+1)+"|0";
+			//alert (sInstanciationCategorieInseree);					
+			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , sIdCategorieInseree )
 			//alert('idCategoriePere = '+idCategoriePere+" et ToutesCategories[idCategoriePere].nbDeComposants = "+ToutesCategories[idCategoriePere].nbDeComposants  );
 			//alert ("Nouvelle note insérée : "+xhr.responseText);
 			//if (idCategoriePere === )
@@ -307,7 +310,6 @@ function requeteXhrInsertNewNote(sNewNote, idCategoriePere) {
 		}
 	}
 }
-
 
 function editNote(sIdCategoryToEdit) {
 	//alert("Dans editNote, sIdCategoryToEdit = "+sIdCategoryToEdit);
@@ -356,7 +358,6 @@ function queryXhrEditNote(sNewNote, sIdCategoryToEdit) {
 		}
 	}
 }
-
 
 function requeteXhrRecupererArborescence(fCallback, sCategoriePere) {
 	var xhr = new XMLHttpRequest(); 
