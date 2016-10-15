@@ -15,7 +15,9 @@ on affichera le temps qu'il reste en premier dans l'affichage, ou expiré si exp
 
 // donner un code couleur : afa et ref
 	
-	var countt = 1;
+
+//var countt = 1;
+
 fInstantiateRoot();
 
 function fInstantiateRoot() {
@@ -255,6 +257,7 @@ function insertNewNote(idCategoriePere) {
   */
 	function ecrireNoteDsBdd() { // à mettre en dehors de la function insertNewNote ?
 		// griser la catégorie mère
+		document.getElementById("enregistrerNouvelleNote").removeEventListener('click', ecrireNoteDsBdd, false);
 		sNewNote = document.getElementById("zoneFormulaireEntrerNote").value;
 		//alert(document.getElementById("zoneFormulaireEntrerNote").value);
 		if (sNewNote !== "") {
@@ -278,7 +281,7 @@ function insertNewNote(idCategoriePere) {
 		document.getElementById("zoneFormulaireEntrerNote").focus();
 	}, false);
 
-	document.getElementById("annulerEntrerNote").addEventListener('click', AnnulerEntrerNote, false);
+	document.getElementById("annulerEntrerNote").addEventListener('click', AnnulerEntrerNote, false); // a mettre dehors
 	
 	function AnnulerEntrerNote() {
 		document.getElementById("fondPageEntrerTexte").style.display = 'none';
