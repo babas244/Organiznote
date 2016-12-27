@@ -1,23 +1,6 @@
 var iRetraitAffichagedUneCategorie= 10;
 ToutesCategories = {};
 
-//alert ("idUser est " + idUser + "  et idTopic est "+ idTopic);
-
-/* au formulaire des a faire, ajouter des boutons : urgent et important, décochés par défaut. qui permettront de faire figurer sur l'écran de démarrage. 
-ceux-ci peuvent être enregistrés comme des tags. On peut rajouter aussi une date (ou un temps) limite, et une d'expiration, vides par défaut. 
-on affichera le temps qu'il reste en premier dans l'affichage, ou expiré si expiré
- */  
- 
-// affichage des afa : une div avec un scroll qui permet de descendre vers les moins urgents et important, et permet quand même de voir le menu en bas
-// et il faut les colorer en dégradé pour pour pouvoir les distinguer (double dégradé des 2 extrémités ??)
- 
-// faire deux menus selon que afa ou ref ?  
-
-// donner un code couleur : afa et ref
-	
-
-//var countt = 1;
-
 fInstantiateRoot();
 
 function fInstantiateRoot() {
@@ -58,12 +41,6 @@ function fInstantiateRoot() {
 	}	
 }
 
-function fCategoryClickEvent(idCategory) {
-	arborescenceNotes.seDeplacerDanslArborescenceReduite(idCategory);
-}
-
-function fCategoryContextMenuEvent(idCategory) {
-}
 
 function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 	this.derniereCategorieDepliee = derniereCategorieDepliee;
