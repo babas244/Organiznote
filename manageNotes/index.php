@@ -92,16 +92,16 @@ include '../sessionAuthentication.php';
 		</div>
 		
 		<div id="fondMenuCategorie">
-			<div id="insertNewCategory">Nouvelle catégorie fille</div>		
-			<div id="insertNewNote">Nouvelle note</div>
-			<div id="editNote">Editer</div>	
-			<div id="deleteNote">Effacer</div>
-			<div id="archiveNote">Archiver(maintenant/date (choisie))</div>
-			<div id="archiveToDo">Fait(maintenant/date (choisie))</div>
-			<div id="DisplayContentCategory">Afficher contenu de la catégorie"</div>
-			<div id="changeCategoryIntoNote">Transformer catégorie en note</div>							
-			<div id="changeNoteIntoCategory">Transformer note en catégorie</div>						
-			<div id="cancel">Annuler</div>
+			<div id="insertNewCategory" class="root folder note">Nouvelle catégorie fille</div>		
+			<div id="insertNewNote" class="root folder note">Nouvelle note</div>
+			<div id="editNote" class="folder note">Editer</div>	
+			<div id="deleteNote" class="folder note">Effacer</div>
+			<div id="archiveNote" class="folder note">Archiver(maintenant/date (choisie))</div>
+			<div id="archiveToDo" class="folder note">Fait(maintenant/date (choisie))</div>
+			<div id="DisplayContentCategory" class="root folder">Afficher l'arbre contenu dedans</div>
+			<div id="changeCategoryIntoNote" class="folder">Transformer catégorie en note</div>							
+			<div id="changeNoteIntoCategory" class="note">Transformer note en catégorie</div>						
+			<div id="cancel" class="root folder note">Annuler</div>
 		</div>
 		
 		<input id="chargerfichierXML" type="file" />

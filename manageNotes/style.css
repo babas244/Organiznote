@@ -45,6 +45,7 @@ div#fondMenuCategorie
 	height: 5%;
 	width: 20%;
 	border: 2px black solid; 
+	display: none;
 }
 
 #insertNewNote:hover, #deleteNote:hover, #insertNewCategory:hover, #editNote:hover, #archiveNote:hover, #archiveToDo:hover, #DisplayContentCategory:hover, #changeCategoryIntoNote:hover, #changeNoteIntoCategory:hover, #cancel:hover

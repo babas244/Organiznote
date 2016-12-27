@@ -1,5 +1,6 @@
 var iRetraitAffichagedUneCategorie= 10;
 ToutesCategories = {};
+var pathFocused = null; 
 
 fInstantiateRoot();
 
@@ -18,30 +19,50 @@ function fInstantiateRoot() {
 			requeteXhrRecupererArborescence(instancierArborescenceRecuperee, "racine");
 
 			document.getElementById("racine").addEventListener('click', function(e) {
-				fCategoryClickEvent(e.target.id)
+				arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id);
 			}, false);					
 			
 			document.getElementById("racine").addEventListener('contextmenu', function(e) {
 				e.preventDefault();
-				var idCategorieMenu = e.target.id; // ="racine" 
-				document.getElementById("fondMenuCategorie").style.display = 'block';
-				
-				document.getElementById("insertNewNote").addEventListener('click', function(e) { // insertNewNote
-					document.getElementById("fondMenuCategorie").style.display = 'none';
-					//alert('idCategorieMenu = '+idCategorieMenu);
-					insertNewNote(idCategorieMenu);
-					//alert("Note correctement insérée.");
-				}, false);
+				pathFocused = e.target.id;				
+				displayContextMenu("racine");
 			}, false);
-			
-		} 
+		} 	
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
+			alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
 		}
-	}	
+	}
+}	
+
+
+function displayContextMenu(path) {
+	//alert (path);
+	openContextMenu = document.getElementById("fondMenuCategorie");
+	openContextMenu.style.display = 'block';
+	switch (path) {
+		case "racine":
+			aElementsToDisplay = openContextMenu.getElementsByClassName("root"); // plutot queryselectorall pour plusieurs classes
+		break;
+		//case ... 
+		default :
+			aElementsToDisplay = openContextMenu.getElementsByClassName("folder");
+	}
+	for (var i = 0 ; i < aElementsToDisplay.length ; i++ ) {
+		aElementsToDisplay[i].style.display = 'block';
+	}
 }
 
-
+function hideContextMenu() {
+	openContextMenu = document.getElementById("fondMenuCategorie");
+	openContextMenu.style.display = 'none';
+	aElementsToHide = openContextMenu.children;
+	for (var i = 0 ; i < aElementsToHide.length ; i++ ) {
+		//alert (aElementsToHide[i]);
+		aElementsToHide[i].style.display = 'none';
+	}
+	
+}
+	
 function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 	this.derniereCategorieDepliee = derniereCategorieDepliee;
 	this.afficherArborescenceReduite = function () {
@@ -183,35 +204,14 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 		var oCategorieAffichageDOM = document.createElement("div");
 		oCategorieAffichageDOM.id = sIdCategorie;
 		oCategorieAffichageDOM.addEventListener('click', function(e) {
-			fCategoryClickEvent(e.target.id)
+			arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id)
 		}, false);					
 		
 		oCategorieAffichageDOM.addEventListener('contextmenu', function(e) {
 			e.preventDefault();
-			var idCategorieMenu = e.target.id; 
-			document.getElementById("fondMenuCategorie").style.display = 'block';
-			
-			document.getElementById("insertNewNote").addEventListener('click', function(e) { // insertNewNote
-				document.getElementById("fondMenuCategorie").style.display = 'none';
-				//alert('idCategorieMenu = '+idCategorieMenu);
-				insertNewNote(idCategorieMenu);
-				//alert("Note correctemennt insérée."); Non car asynchrone ??
-			}, false);
-			
-			document.getElementById("deleteNote").addEventListener('click', function(e) { //deleteNote
-				document.getElementById("fondMenuCategorie").style.display = 'none';
-				queryXhrDeleteNote(idCategorieMenu);
-				//alert('idCategorieMenu to delete = '+idCategorieMenu);
-			}, false);
-			
-			document.getElementById("editNote").addEventListener('click', function(e) { //editNote
-				document.getElementById("fondMenuCategorie").style.display = 'none';
-				editNote(idCategorieMenu);
-				//alert('idCategorieMenu to edit = '+idCategorieMenu);
-			}, false);
-			
+			pathFocused = e.target.id;
+			displayContextMenu(pathFocused);
 		}, false);
-		
 		
 		oCategorieAffichageDOM.style.marginLeft = iRetraitAffichagedUneCategorie*(nNiveauDeCategorie) + 'px'; // mettre la marge en fonction du niveau de la catégorie
 		oCategorieAffichageDOM.innerHTML = sContent; 
@@ -219,6 +219,26 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 		// if (!isVisible) {oCategorieAffichageDOM.style.display = 'none';}
 	}
 }
+
+document.getElementById("insertNewNote").addEventListener('click', function() {
+	hideContextMenu();
+	insertNewNote(pathFocused);
+}, false);
+
+document.getElementById("deleteNote").addEventListener('click', function() {
+	hideContextMenu();
+	queryXhrDeleteNote(pathFocused);
+}, false);
+
+document.getElementById("editNote").addEventListener('click', function() {
+	hideContextMenu();
+	editNote(pathFocused);
+}, false);
+
+document.getElementById("cancel").addEventListener('click', function () {
+	hideContextMenu();
+}, false);
+			
 
 function insertNewNote(idCategoriePere) {
 	//alert("Dans InsertNote, idCategoriePere = "+idCategoriePere);
@@ -380,10 +400,6 @@ function CategorieAbstraite(id, sContent, niveauDeCategorie, nbDeComposants) {
 	this.nbDeComposants = nbDeComposants;
 	
 }
-
-document.getElementById("cancel").addEventListener('click', function () {
-	document.getElementById("fondMenuCategorie").style.display = 'none';
-}, false);
 
 document.getElementById("NouvelleNote").addEventListener('click', insertNewNote, false);
 
