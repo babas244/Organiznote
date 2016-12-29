@@ -85,9 +85,9 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 	}	
 	this.seDeplacerDanslArborescenceReduite = function (idCategorieaDeplier) {
 		//alert ("dans seDeplacerDanslArborescenceReduite ! \n\n idCategorieaDeplier = "+idCategorieaDeplier+" et this.derniereCategorieDepliee = "+this.derniereCategorieDepliee);
-		if (idCategorieaDeplier !== this.derniereCategorieDepliee) { // on enlÃ¨ve le cas ou rien de nouveau n'est demandÃ©
+		if (idCategorieaDeplier !== this.derniereCategorieDepliee) { // on enlève le cas ou rien de nouveau n'est demandé
 			
-			if (idCategorieaDeplier === "racine") { // si on dÃ©plie racine :
+			if (idCategorieaDeplier === "racine") { // si on déplie racine :
 				for (var k = 0 ; k < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; k++) { // d'abord replier les filles de derniereCategorieDepliee
 					//alert("this.derniereCategorieDepliee+'a'+(k+1) = "+(this.derniereCategorieDepliee+'a'+(k+1)));
 					document.getElementById(this.derniereCategorieDepliee+'a'+(k+1)).style.display = 'none';
@@ -109,16 +109,16 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 			}
 
 			else { // sinon, si derniere=racine :
-				if (this.derniereCategorieDepliee === "racine") { // on ne peut donc avoir cliquÃ© que sur 1,2,3,...
-					for (var p = 0 ; p < ToutesCategories.racine.nbDeComposants; p++) { // on efface les 1,2,3.., sauf celle Ã  dÃ©plier
+				if (this.derniereCategorieDepliee === "racine") { // on ne peut donc avoir cliqué que sur 1,2,3,...
+					for (var p = 0 ; p < ToutesCategories.racine.nbDeComposants; p++) { // on efface les 1,2,3.., sauf celle à déplier
 						if ((p+1) !== parseInt(idCategorieaDeplier)) {
 							document.getElementById(p+1).style.display = 'none';
 						}
 					}
-					// A partir de lÃ , on dÃ©plie les catÃ©gories filles de idCategorieaDeplier
+					// A partir de là, on déplie les catégories filles de idCategorieaDeplier
 					//console.log(ToutesCategories[idCategorieaDeplier]);
 					var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a'+1);
-					//console.log("On ne dÃ©plie pas racine et le dernier dÃ©pliÃ© n'est pas racine \n et ToutesCategories[idCategorieaDeplier])+'a'+1 ="
+					//console.log("On ne déplie pas racine et le dernier déplié n'est pas racine \n et ToutesCategories[idCategorieaDeplier])+'a'+1 ="
 					//+((ToutesCategories[idCategorieaDeplier].id)+'a'+1) + "\net alreadyLoadedInDOM = "+alreadyLoadedInDOM);
 					console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a'+1+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);					
 					if (alreadyLoadedInDOM === null) {
@@ -132,7 +132,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 					}
 				}
 				else {	
-					if (idCategorieaDeplier.length < this.derniereCategorieDepliee.length) { // dernier!=racine et on a cliquÃ© sur une categorie antÃ©cÃ©dente de derniereCategorieDepliee
+					if (idCategorieaDeplier.length < this.derniereCategorieDepliee.length) { // dernier!=racine et on a cliqué sur une categorie antécédente de derniereCategorieDepliee
 
 						for (var k = 0 ; k < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; k++) { // d'abord replier les filles de derniereCategorieDepliee
 							console.log(this.derniereCategorieDepliee+'a'+(k+1));
@@ -145,7 +145,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 							document.getElementById(categorieAeffacer).style.display = 'none';
 							categorieAeffacer = categorieAeffacer.replace(/a[1-9]+$/, "");
 						}
-						// puis dÃ©plier le nouveau derniereCategorieDepliee :	
+						// puis déplier le nouveau derniereCategorieDepliee :	
 						var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a'+1);
 						console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a'+1+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);
 						if (alreadyLoadedInDOM === null) {
@@ -158,10 +158,10 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 							}
 						}			
 					}						
-					else { // on vient donc de cliquer sur une catÃ©gorie fille de derniereCategorieDepliee et qui n'est pas racine
+					else { // on vient donc de cliquer sur une catégorie fille de derniereCategorieDepliee et qui n'est pas racine
 						if (idCategorieaDeplier !== "racine") { // a enlever car evident
 							
-							for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; i++) { // on replie toutes les filles // Vaut mieux le faire dans l'ordre dÃ©croissant puisqu'on dÃ©plie, non ?
+							for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; i++) { // on replie toutes les filles // Vaut mieux le faire dans l'ordre décroissant puisqu'on déplie, non ?
 								//console.log("else, "+idCategorieaDeplier+(i+1));
 								if (this.derniereCategorieDepliee+'a'+(i+1) !== idCategorieaDeplier) {
 									document.getElementById(this.derniereCategorieDepliee+'a'+(i+1)).style.display = 'none';
@@ -192,10 +192,10 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePere ) { // rajouter un booleen isVisible
 	//alert ("sCategoriePere = " + sCategoriePere);
 	//alert ("sCategoriesRecuperees =" + sCategoriesRecuperees);
-	var CategorieParsee = sCategoriesRecuperees.split('|'); // interdiction d'utiliser ce caractÃ¨re dans une note (on pourrait mettre une interdiction au moment d'enregistrer une note et au moment de l'importation) 
+	var CategorieParsee = sCategoriesRecuperees.split('|'); // interdiction d'utiliser ce caractère dans une note (on pourrait mettre une interdiction au moment d'enregistrer une note et au moment de l'importation) 
 	var nbdItemsDansCategorieParsee = CategorieParsee.length; 
 	
-	for (i = 0 ; i < nbdItemsDansCategorieParsee-3; i = i + 4) { // vÃ©rifier le -3
+	for (i = 0 ; i < nbdItemsDansCategorieParsee-3; i = i + 4) { // vérifier le -3
 		var sIdCategorie = CategorieParsee[i];
 		var sContent = CategorieParsee[i+1];
 		var nNiveauDeCategorie = CategorieParsee[i+2];
@@ -213,7 +213,7 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 			displayContextMenu(pathFocused);
 		}, false);
 		
-		oCategorieAffichageDOM.style.marginLeft = iRetraitAffichagedUneCategorie*(nNiveauDeCategorie) + 'px'; // mettre la marge en fonction du niveau de la catÃ©gorie
+		oCategorieAffichageDOM.style.marginLeft = iRetraitAffichagedUneCategorie*(nNiveauDeCategorie) + 'px'; // mettre la marge en fonction du niveau de la catégorie
 		oCategorieAffichageDOM.innerHTML = sContent; 
 		document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM);
 		// if (!isVisible) {oCategorieAffichageDOM.style.display = 'none';}
@@ -240,20 +240,35 @@ document.getElementById("cancel").addEventListener('click', function () {
 }, false);
 			
 
-function insertNewNote(idCategoriePere) {
-	//alert("Dans InsertNote, idCategoriePere = "+idCategoriePere);
-	document.getElementById("fondPageEntrerTexte").style.display = 'block';
+document.getElementById("reinitialiserFormulaireEntrerNote").addEventListener('click', function reinitialiserFormulaireEntrerNote() {
 	document.getElementById("formulaireEntrerNote").reset();
 	document.getElementById("zoneFormulaireEntrerNote").focus();
-	document.getElementById("enregistrerNouvelleNote").addEventListener('click', ecrireNoteDsBdd, false);
- 	/* document.getElementById("zoneFormulaireEntrerNote").addEventListener('keyup', function(e) { // Ã  faire en snippet
+}, false);
+
+document.getElementById("annulerEntrerNote").addEventListener('click', AnnulerEntrerNote, false);
+function AnnulerEntrerNote() {
+	document.getElementById("fondPageEntrerTexte").style.display = 'none';
+	document.getElementById("formulaireEntrerNote").reset();
+}
+
+function initializeFormEnterNote() {
+	document.getElementById("fondPageEntrerTexte").style.display = 'block';
+	document.getElementById("formulaireEntrerNote").reset();
+	document.getElementById("zoneFormulaireEntrerNote").focus();	
+ 	/* document.getElementById("zoneFormulaireEntrerNote").addEventListener('keyup', function(e) { // à faire en snippet
 		if (e.keycode == 13) {ecrireNoteDsBdd()};
 		if (e.keycode == 27) {AnnulerEntrerNote()};
-		// mettre ici le test pour savoir si le caractÃ¨re pipe est utilisÃ©
+		// mettre ici le test pour savoir si le caractère pipe est utilisé
 	}, false);
   */
-	function ecrireNoteDsBdd() { // Ã  mettre en dehors de la function insertNewNote ?
-		// griser la catÃ©gorie mÃ¨re
+}
+			
+function insertNewNote(idCategoriePere) {
+	//alert("Dans InsertNote, idCategoriePere = "+idCategoriePere);
+	initializeFormEnterNote();
+	document.getElementById("enregistrerNouvelleNote").addEventListener('click', ecrireNoteDsBdd, false);
+	function ecrireNoteDsBdd() { // à mettre en dehors de la function insertNewNote ?
+		// griser la catégorie mère??
 		document.getElementById("enregistrerNouvelleNote").removeEventListener('click', ecrireNoteDsBdd, false);
 		sNewNote = document.getElementById("zoneFormulaireEntrerNote").value;
 		//alert(document.getElementById("zoneFormulaireEntrerNote").value);
@@ -263,26 +278,34 @@ function insertNewNote(idCategoriePere) {
 				//alert('coucou dans ecrireNoteDsBdd');
 			}
 			else { // marche pas.. // if (typeof v !== 'undefined' && v !== null) 
-				alert("note pas encore placÃ©e");
+				alert("note pas encore placée");
 			}
 			document.getElementById("fondPageEntrerTexte").style.display = 'none';
-			//dÃ©griser la catÃ©gorie mÃ¨re		
+			//dégriser la catégorie mère		
 		}
 		else {
 			alert("La note est vide, recommencez.")
 		}
 	}
+}
 
-	document.getElementById("reinitialiserFormulaireEntrerNote").addEventListener('click', function reinitialiserFormulaireEntrerNote() {
-		document.getElementById("formulaireEntrerNote").reset();
-		document.getElementById("zoneFormulaireEntrerNote").focus();
-	}, false);
 
-	document.getElementById("annulerEntrerNote").addEventListener('click', AnnulerEntrerNote, false); // a mettre dehors
+function editNote(sIdCategoryToEdit) {
+	//alert("Dans editNote, sIdCategoryToEdit = "+sIdCategoryToEdit);
+	initializeFormEnterNote();
+	document.getElementById("enregistrerNouvelleNote").addEventListener('click', editNoteInDbb, false);
 	
-	function AnnulerEntrerNote() {
-		document.getElementById("fondPageEntrerTexte").style.display = 'none';
-		document.getElementById("formulaireEntrerNote").reset();
+	function editNoteInDbb() {
+		document.getElementById("enregistrerNouvelleNote").removeEventListener('click', editNoteInDbb, false);
+		if (sIdCategoryToEdit !== "") {
+			sNewNote = document.getElementById("zoneFormulaireEntrerNote").value;
+			document.getElementById("fondPageEntrerTexte").style.display = 'none';
+			queryXhrEditNote(sNewNote, sIdCategoryToEdit);
+			//dégriser la catégorie mère		
+		}
+		else {
+			alert("La note est vide, recommencez.")
+		}
 	}
 }
 
@@ -292,8 +315,6 @@ function requeteXhrInsertNewNote(sNewNote, idCategoriePere) {
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			alert("countt = "+countt);
-			countt +=1;
 			ToutesCategories[idCategoriePere].nbDeComposants +=1;
 			//alert(ToutesCategories[idCategoriePere].nbDeComposants)
 			//alert((idCategoriePere ==="racine" ? "" : idCategoriePere+"a"));
@@ -302,44 +323,13 @@ function requeteXhrInsertNewNote(sNewNote, idCategoriePere) {
 			//alert (sInstanciationCategorieInseree);					
 			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , sIdCategorieInseree )
 			//alert('idCategoriePere = '+idCategoriePere+" et ToutesCategories[idCategoriePere].nbDeComposants = "+ToutesCategories[idCategoriePere].nbDeComposants  );
-			//alert ("Nouvelle note insÃ©rÃ©e : "+xhr.responseText);
+			//alert ("Nouvelle note insérée : "+xhr.responseText);
 			//if (idCategoriePere === )
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
 				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
 		}
 	}
-}
-
-function editNote(sIdCategoryToEdit) {
-	//alert("Dans editNote, sIdCategoryToEdit = "+sIdCategoryToEdit);
-	document.getElementById("fondPageEntrerTexte").style.display = 'block';
-	document.getElementById("formulaireEntrerNote").reset();
-	document.getElementById("zoneFormulaireEntrerNote").focus();
-	document.getElementById("enregistrerNouvelleNote").addEventListener('click', function () {
-		if (sIdCategoryToEdit !== "") {
-			sNewNote = document.getElementById("zoneFormulaireEntrerNote").value;
-			document.getElementById("fondPageEntrerTexte").style.display = 'none';
-			queryXhrEditNote(sNewNote, sIdCategoryToEdit);
-			//dÃ©griser la catÃ©gorie mÃ¨re		
-		}
-		else {
-			alert("La note est vide, recommencez.")
-		}
-	}, false);
-
-	document.getElementById("reinitialiserFormulaireEntrerNote").addEventListener('click', function reinitialiserFormulaireEntrerNote() {
-		document.getElementById("formulaireEntrerNote").reset();
-		document.getElementById("zoneFormulaireEntrerNote").focus();
-	}, false);
-
-	document.getElementById("annulerEntrerNote").addEventListener('click', AnnulerEntrerNote, false);
-	
-	function AnnulerEntrerNote() {
-		document.getElementById("fondPageEntrerTexte").style.display = 'none';
-		document.getElementById("formulaireEntrerNote").reset();
-	}
-	
 }
 
 function queryXhrEditNote(sNewNote, sIdCategoryToEdit) {
@@ -374,8 +364,8 @@ function requeteXhrRecupererArborescence(fCallback, sCategoriePere) {
 }
 
 function queryXhrDeleteNote(sCategoryToDelete) {
-	sCategoryOfDad = sCategoryToDelete.replace(/a[1-9]+$/, "");// on dÃ©termine la catÃ©gorie pÃ¨re //il faut envisager le cas racine aussi
-	alert("Etes vous sÃ»r de vouloir effacer " + sCategoryToDelete +"?\n\navec CategoryOfDad = " + sCategoryOfDad);
+	sCategoryOfDad = sCategoryToDelete.replace(/a[1-9]+$/, "");// on détermine la catégorie père //il faut envisager le cas racine aussi
+	alert("Etes vous sûr de vouloir effacer " + sCategoryToDelete +"?\n\navec CategoryOfDad = " + sCategoryOfDad);
 	document.getElementById(sCategoryToDelete).style.backgroundColor = '#cccccc'; // on grise la categorie a effacer
 	var xhr = new XMLHttpRequest(); 
 	xhr.open ('GET', 'ajax/deleteNote.php?idTopic=' + idTopic + '&sCategoryToDelete=' + sCategoryToDelete +'&sCategoryOfDad=' + sCategoryOfDad);
@@ -401,7 +391,7 @@ function CategorieAbstraite(id, sContent, niveauDeCategorie, nbDeComposants) {
 	
 }
 
-document.getElementById("NouvelleNote").addEventListener('click', insertNewNote, false);
+document.getElementById("NouvelleNote").addEventListener('click', insertNewNote, false); // insert depuis le menu html, att! pas encore implémenté
 
 /*
 document.getElementById("importerXML").addEventListener('click', function importerXML() {
