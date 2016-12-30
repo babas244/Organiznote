@@ -239,6 +239,7 @@ document.getElementById("editNote").addEventListener('click', function() {
 
 document.getElementById("cancel").addEventListener('click', function () {
 	hideContextMenu();
+	pathFocused = null;
 }, false);
 		
 document.getElementById("reinitialiserFormulaireEntrerNote").addEventListener('click', function reinitialiserFormulaireEntrerNote() {
@@ -250,6 +251,8 @@ document.getElementById("annulerEntrerNote").addEventListener('click', AnnulerEn
 function AnnulerEntrerNote() {
 	document.getElementById("fondPageEntrerTexte").style.display = 'none';
 	document.getElementById("formulaireEntrerNote").reset();
+	// faut-il ici remove handler ? : document.getElementById("enregistrerNouvelleNote").removeEventListener('click', ecrireNoteDsBdd, false); 
+	// a priori oui car dès que le form est ouvert, le handler est lancé
 }
 
 function initializeFormEnterNote() {
@@ -285,7 +288,7 @@ function insertNewNote(idCategoriePere) {
 			//dégriser la catégorie mère		
 		}
 		else {
-			alert("La note est vide, recommencez.")
+			alert("La note est vide, recommencez.") // pourquoi ça met à jour le contenu de la div avec une chaine vide quand même ??
 		}
 	}
 }
@@ -343,7 +346,7 @@ function queryXhrEditNote(sNewNote, sIdCategoryToEdit) {
 		//alert("Dans queryXhrEditNote, sIdCategoryToEdit = "+sIdCategoryToEdit);
 		ToutesCategories[sIdCategoryToEdit].sContent = sNewNote;
 		document.getElementById(sIdCategoryToEdit).innerHTML = sNewNote;
-		document.getElementById(sIdCategoryToEdit).style.backgroundColor = "#ffff00";
+		//document.getElementById(sIdCategoryToEdit).style.backgroundColor = "#ffff00"; // ça sert à quoi, à dégriser ?? Mais pb ça semble écraser le comportement du hover
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
 				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
