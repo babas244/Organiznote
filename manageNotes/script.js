@@ -293,6 +293,7 @@ function insertNewNote(idCategoriePere) {
 function editNote(sIdCategoryToEdit) {
 	//alert("Dans editNote, sIdCategoryToEdit = "+sIdCategoryToEdit);
 	initializeFormEnterNote();
+	document.getElementById("zoneFormulaireEntrerNote").value = ToutesCategories[sIdCategoryToEdit].sContent;
 	document.getElementById("enregistrerNouvelleNote").addEventListener('click', editNoteInDbb, false);
 	
 	function editNoteInDbb() {
