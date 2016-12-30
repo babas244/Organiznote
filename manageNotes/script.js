@@ -377,7 +377,7 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			document.getElementById("frameOfTree").removeChild(document.getElementById(sCategoryToDelete)); //il faudrait aussi effacer toutes les div de categories fille
+			document.getElementById("frameOfTree").removeChild(document.getElementById(sCategoryToDelete)); //il faudrait aussi effacer toutes les div de categories fille, mais ils le seront à la prochaine réouverture de la page de toutes façons
 			ToutesCategories[sCategoryOfDad].nbDeComposants -=1;
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
