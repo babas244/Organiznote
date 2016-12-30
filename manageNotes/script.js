@@ -300,7 +300,7 @@ function editNote(sIdCategoryToEdit) {
 		document.getElementById("enregistrerNouvelleNote").removeEventListener('click', editNoteInDbb, false);
 		if (sIdCategoryToEdit !== "") {
 			sNewNote = document.getElementById("zoneFormulaireEntrerNote").value;
-			document.getElementById("fondPageEntrerTexte").style.display = 'none';
+			document.getElementById("fondPageEntrerTexte").style.display = 'none'; // à inclure dans queryEditNote ??
 			queryXhrEditNote(sNewNote, sIdCategoryToEdit);
 			//dégriser la catégorie mère		
 		}
@@ -341,7 +341,7 @@ function queryXhrEditNote(sNewNote, sIdCategoryToEdit) {
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {	
 		//alert("Dans queryXhrEditNote, sIdCategoryToEdit = "+sIdCategoryToEdit);
-
+		ToutesCategories[sIdCategoryToEdit].sContent = sNewNote;
 		document.getElementById(sIdCategoryToEdit).innerHTML = sNewNote;
 		document.getElementById(sIdCategoryToEdit).style.backgroundColor = "#ffff00";
 		} 
