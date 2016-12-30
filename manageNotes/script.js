@@ -90,21 +90,21 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 			
 			if (idCategorieaDeplier === "racine") { // si on déplie racine :
 				for (var k = 0 ; k < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; k++) { // d'abord replier les filles de derniereCategorieDepliee
-					//alert("this.derniereCategorieDepliee+'a'+(k+1) = "+(this.derniereCategorieDepliee+'a'+(k+1)));
-					document.getElementById(this.derniereCategorieDepliee+'a'+(k+1)).style.display = 'none';
+					//alert("this.derniereCategorieDepliee+'a'+XX(k+1) = "+(this.derniereCategorieDepliee+'a'+XX(k+1)));
+					document.getElementById(this.derniereCategorieDepliee+'a'+XX(k+1)).style.display = 'none';
 				}
 				var categorieAeffacer = this.derniereCategorieDepliee;
 				
-				while (categorieAeffacer.includes("a")) {
+				while (categorieAeffacer.includes("a")) { // puis effacer les enfants jusqu'à la racine non inclue
 					document.getElementById(categorieAeffacer).style.display = 'none';
-					categorieAeffacer = categorieAeffacer.replace(/a[1-9]+$/, ""); // et la cas 10 ?? hihi
+					categorieAeffacer = categorieAeffacer.slice(0,-3);
 				}				
-				for (var j = 0 ; j < ToutesCategories.racine.nbDeComposants; j++) { 
+				for (var j = 0 ; j < ToutesCategories.racine.nbDeComposants; j++) { // puis afficher les enfants de racine
 					//alert("j + 1 = "+(j+1));
 					//alert(typeof(toString(j+1)));
 					//alert("toString(j+1) = "+toString((j+1)));
-					if ((j+1) !== parseInt(categorieAeffacer)) {
-						document.getElementById(j+1).style.display = 'block';
+					if ((j+1) !== parseInt(categorieAeffacer)) { // on ne doit pas afficher quoi ???
+						document.getElementById(XX(j+1)).style.display = 'block';
 					}
 				}
 			}
@@ -113,22 +113,22 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 				if (this.derniereCategorieDepliee === "racine") { // on ne peut donc avoir cliqué que sur 1,2,3,...
 					for (var p = 0 ; p < ToutesCategories.racine.nbDeComposants; p++) { // on efface les 1,2,3.., sauf celle à déplier
 						if ((p+1) !== parseInt(idCategorieaDeplier)) {
-							document.getElementById(p+1).style.display = 'none';
+							document.getElementById(XX(p+1)).style.display = 'none';
 						}
 					}
 					// A partir de là, on déplie les catégories filles de idCategorieaDeplier
 					//console.log(ToutesCategories[idCategorieaDeplier]);
-					var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a'+1);
+					var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01');
 					//console.log("On ne déplie pas racine et le dernier déplié n'est pas racine \n et ToutesCategories[idCategorieaDeplier])+'a'+1 ="
 					//+((ToutesCategories[idCategorieaDeplier].id)+'a'+1) + "\net alreadyLoadedInDOM = "+alreadyLoadedInDOM);
-					console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a'+1+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);					
+					console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a01'+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);					
 					if (alreadyLoadedInDOM === null) {
 						requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
 					}
 					else {
 						for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbDeComposants; j++) { 
 							//console.log(idCategorieaDeplier+'a'+(j+1));
-							document.getElementById(idCategorieaDeplier+'a'+(j+1)).style.display = 'block';
+							document.getElementById(idCategorieaDeplier+'a'+XX(j+1)).style.display = 'block';
 						}
 					}
 				}
@@ -136,26 +136,26 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 					if (idCategorieaDeplier.length < this.derniereCategorieDepliee.length) { // dernier!=racine et on a cliqué sur une categorie antécédente de derniereCategorieDepliee
 
 						for (var k = 0 ; k < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; k++) { // d'abord replier les filles de derniereCategorieDepliee
-							console.log(this.derniereCategorieDepliee+'a'+(k+1));
-							document.getElementById(this.derniereCategorieDepliee+'a'+(k+1)).style.display = 'none';
+							console.log(this.derniereCategorieDepliee+'a'+XX(k+1));
+							document.getElementById(this.derniereCategorieDepliee+'a'+XX(k+1)).style.display = 'none';
 						}
 						//alert(typeof(this.derniereCategorieDepliee));
 						var categorieAeffacer = this.derniereCategorieDepliee;
 						
 						while (categorieAeffacer !== idCategorieaDeplier) {
 							document.getElementById(categorieAeffacer).style.display = 'none';
-							categorieAeffacer = categorieAeffacer.replace(/a[1-9]+$/, "");
+							categorieAeffacer = categorieAeffacer.slice(0,-3);
 						}
 						// puis déplier le nouveau derniereCategorieDepliee :	
-						var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a'+1);
-						console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a'+1+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);
+						var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01');
+						console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a01'+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);
 						if (alreadyLoadedInDOM === null) {
 							requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
 						}
 						else {
 							for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbDeComposants; j++) { 
-								//console.log("!! idCategorieaDeplier+'a'+(j+1) = "+idCategorieaDeplier+'a'+(j+1));
-								document.getElementById(idCategorieaDeplier+'a'+(j+1)).style.display = 'block';
+								//console.log("!! idCategorieaDeplier+'a'+(j+1) = "+idCategorieaDeplier+'a'+XX(j+1));
+								document.getElementById(idCategorieaDeplier+'a'+XX(j+1)).style.display = 'block';
 							}
 						}			
 					}						
@@ -164,20 +164,20 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 							
 							for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; i++) { // on replie toutes les filles // Vaut mieux le faire dans l'ordre décroissant puisqu'on déplie, non ?
 								//console.log("else, "+idCategorieaDeplier+(i+1));
-								if (this.derniereCategorieDepliee+'a'+(i+1) !== idCategorieaDeplier) {
-									document.getElementById(this.derniereCategorieDepliee+'a'+(i+1)).style.display = 'none';
+								if (this.derniereCategorieDepliee+'a'+XX(i+1) !== idCategorieaDeplier) {
+									document.getElementById(this.derniereCategorieDepliee+'a'+XX(i+1)).style.display = 'none';
 								}
 								  
 							}
-							var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a'+1);
-							console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a'+1+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);
+							var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01');
+							console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a01'+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);
 							if (alreadyLoadedInDOM === null) {
 								requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
 							}
 							else {
 								for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbDeComposants; j++) { 
 									//console.log("!! idCategorieaDeplier+'a'+(j+1) = "+idCategorieaDeplier+'a'+(j+1));
-									document.getElementById(idCategorieaDeplier+'a'+(j+1)).style.display = 'block';
+									document.getElementById(idCategorieaDeplier+'a'+XX(j+1)).style.display = 'block';
 								}
 							}
 						}
@@ -202,7 +202,7 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 		var nNiveauDeCategorie = CategorieParsee[i+2];
 		var nNbDeComposants = CategorieParsee[i+3];
 		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, parseInt(nNiveauDeCategorie), parseInt(nNbDeComposants));
-		var oCategorieAffichageDOM = document.createElement("div");
+		var oCategorieAffichageDOM = document.createElement("div"); // plutôt un button en fait ??
 		oCategorieAffichageDOM.id = sIdCategorie;
 		oCategorieAffichageDOM.addEventListener('click', function(e) {
 			arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id)
@@ -319,12 +319,12 @@ function requeteXhrInsertNewNote(sNewNote, idCategoriePere) {
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			//alert(ToutesCategories[idCategoriePere].nbDeComposants)
-			//alert((idCategoriePere ==="racine" ? "" : idCategoriePere+"a"));
-			var sIdCategorieInseree = (idCategoriePere ==="racine" ? "" : idCategoriePere+"a")+parseInt((ToutesCategories[idCategoriePere].nbDeComposants)+1); 
+			//alert(ToutesCategories[idCategoriePere].nbDeComposants);
+			var sIdCategorieInseree = (idCategoriePere ==="racine" ? "" : idCategoriePere+"a")+XX(parseInt((ToutesCategories[idCategoriePere].nbDeComposants)+1)); 
+			//alert ("sIdCategorieInseree = "+sIdCategorieInseree);
 			var sInstanciationCategorieInseree = sIdCategorieInseree+"|"+sNewNote+"|"+(ToutesCategories[idCategoriePere].niveauDeCategorie+1)+"|0";
 			//alert (sInstanciationCategorieInseree);
-			arborescenceNotes.seDeplacerDanslArborescenceReduite(idCategoriePere); // j'ai changé l'ordre et ajouté cette ligne // ca marche pas..
+			arborescenceNotes.seDeplacerDanslArborescenceReduite(idCategoriePere);
 			ToutesCategories[idCategoriePere].nbDeComposants +=1;
 			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , sIdCategorieInseree )
 			//alert('idCategoriePere = '+idCategoriePere+" et ToutesCategories[idCategoriePere].nbDeComposants = "+ToutesCategories[idCategoriePere].nbDeComposants  );
@@ -369,7 +369,7 @@ function requeteXhrRecupererArborescence(fCallback, sCategoriePere) {
 }
 
 function queryXhrDeleteNote(sCategoryToDelete) {
-	sCategoryOfDad = sCategoryToDelete.replace(/a[1-9]+$/, "");// on détermine la catégorie père //il faut envisager le cas racine aussi
+	sCategoryOfDad = sCategoryToDelete.slice(0,-3);// on détermine la catégorie père //il faut envisager le cas racine aussi
 	alert("Etes vous sûr de vouloir effacer " + sCategoryToDelete +"?\n\navec CategoryOfDad = " + sCategoryOfDad);
 	document.getElementById(sCategoryToDelete).style.backgroundColor = '#cccccc'; // on grise la categorie a effacer
 	var xhr = new XMLHttpRequest(); 
@@ -413,3 +413,6 @@ document.getElementById("importerXML").addEventListener('click', function import
 }, false);
 */
 
+function XX(integer) {
+	return integer>9 ? ""+integer : "0"+integer;
+}

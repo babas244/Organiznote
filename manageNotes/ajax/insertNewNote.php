@@ -6,6 +6,10 @@ session_start();
 
 //echo '$_SESSION["id"] = '.$_SESSION['id'];
 
+function XX($integer) {
+	return ($integer>9 ? "".$integer : "0".$integer);
+}
+
 if (isset($_SESSION['id']) && isset($_GET["newNote"]) && isset($_GET["idTopic"]) && isset($_GET["idCategoriePere"])) {
 	
 	//echo "coucou dans insertNewNote ! ";
@@ -30,7 +34,7 @@ if (isset($_SESSION['id']) && isset($_GET["newNote"]) && isset($_GET["idTopic"])
 	//echo'             $nbOfItemsOfDad = '.$nbOfItemsOfDad."           \n\n";
 	$reqGetFeaturesOfDad -> closeCursor();	
 	
-	$idNote = ($_GET["idCategoriePere"] ==="racine") ? ($nbOfItemsOfDad+1) : ($_GET["idCategoriePere"].'a'.($nbOfItemsOfDad+1));
+	$idNote = ($_GET["idCategoriePere"] ==="racine") ? XX($nbOfItemsOfDad+1) : ($_GET["idCategoriePere"].'a'.XX($nbOfItemsOfDad+1));
 	
 	//$idNote = $_GET["idCategoriePere"].'a'.($nbOfItemsOfDad+1); // faut-il convertir en string ?? : apparemment non
 	//echo("\n\n idNote à insérer = $idNote");
