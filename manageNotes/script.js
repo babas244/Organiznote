@@ -60,18 +60,18 @@ function hideContextMenu() {
 		//alert (aElementsToHide[i]);
 		aElementsToHide[i].style.display = 'none';
 	}
-	
 }
 	
 function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 	this.derniereCategorieDepliee = derniereCategorieDepliee;
-	this.afficherArborescenceReduite = function () {
+
+	this.afficherArborescenceReduite = function () { // marche ou pas ? 
 		var tableauArborescenceDecoupee = this.derniereCategorieDepliee.split('a');
 		var c = tableauArborescenceDecoupee.length;
 		var categorieAafficher = ""; 
 		for (var i = 0; i < c ; i++) { 
 			categorieAafficher += tableauArborescenceDecoupee[i]; //verifier si en fin de boucle existence ok
-			//alert(categorieAafficher);			
+			alert(categorieAafficher);			
 			document.getElementById(categorieAafficher).style.display = 'block';
 			categorieAafficher += 'a';
 		}
@@ -83,6 +83,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 			}
 		}
 	}	
+	
 	this.seDeplacerDanslArborescenceReduite = function (idCategorieaDeplier) {
 		//alert ("dans seDeplacerDanslArborescenceReduite ! \n\n idCategorieaDeplier = "+idCategorieaDeplier+" et this.derniereCategorieDepliee = "+this.derniereCategorieDepliee);
 		if (idCategorieaDeplier !== this.derniereCategorieDepliee) { // on enlève le cas ou rien de nouveau n'est demandé
@@ -223,6 +224,7 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 document.getElementById("insertNewNote").addEventListener('click', function() {
 	hideContextMenu();
 	insertNewNote(pathFocused);
+	// ajouter que pathFocused = null à nouveau ??
 }, false);
 
 document.getElementById("deleteNote").addEventListener('click', function() {
@@ -238,8 +240,7 @@ document.getElementById("editNote").addEventListener('click', function() {
 document.getElementById("cancel").addEventListener('click', function () {
 	hideContextMenu();
 }, false);
-			
-
+		
 document.getElementById("reinitialiserFormulaireEntrerNote").addEventListener('click', function reinitialiserFormulaireEntrerNote() {
 	document.getElementById("formulaireEntrerNote").reset();
 	document.getElementById("zoneFormulaireEntrerNote").focus();
@@ -289,7 +290,6 @@ function insertNewNote(idCategoriePere) {
 	}
 }
 
-
 function editNote(sIdCategoryToEdit) {
 	//alert("Dans editNote, sIdCategoryToEdit = "+sIdCategoryToEdit);
 	initializeFormEnterNote();
@@ -315,12 +315,13 @@ function requeteXhrInsertNewNote(sNewNote, idCategoriePere) {
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			ToutesCategories[idCategoriePere].nbDeComposants +=1;
 			//alert(ToutesCategories[idCategoriePere].nbDeComposants)
 			//alert((idCategoriePere ==="racine" ? "" : idCategoriePere+"a"));
-			var sIdCategorieInseree = (idCategoriePere ==="racine" ? "" : idCategoriePere+"a")+ToutesCategories[idCategoriePere].nbDeComposants;
+			var sIdCategorieInseree = (idCategoriePere ==="racine" ? "" : idCategoriePere+"a")+parseInt((ToutesCategories[idCategoriePere].nbDeComposants)+1); 
 			var sInstanciationCategorieInseree = sIdCategorieInseree+"|"+sNewNote+"|"+(ToutesCategories[idCategoriePere].niveauDeCategorie+1)+"|0";
-			//alert (sInstanciationCategorieInseree);					
+			//alert (sInstanciationCategorieInseree);
+			arborescenceNotes.seDeplacerDanslArborescenceReduite(idCategoriePere); // j'ai changé l'ordre et ajouté cette ligne // ca marche pas..
+			ToutesCategories[idCategoriePere].nbDeComposants +=1;
 			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , sIdCategorieInseree )
 			//alert('idCategoriePere = '+idCategoriePere+" et ToutesCategories[idCategoriePere].nbDeComposants = "+ToutesCategories[idCategoriePere].nbDeComposants  );
 			//alert ("Nouvelle note insérée : "+xhr.responseText);
@@ -380,8 +381,6 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 		}
 	}
 }
-
-
 
 function CategorieAbstraite(id, sContent, niveauDeCategorie, nbDeComposants) {
 	this.id = id;
