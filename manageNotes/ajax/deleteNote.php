@@ -16,40 +16,45 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryT
 	//echo "Le numéro de catégoryTodelete  est ".$_GET["sCategoryToDelete"];
 
 	include '../../log_in_bdd.php';
-									
-	$reqDelete = $bdd -> prepare('DELETE FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote=:idNote AND isCategory=:isCategory');
-		$reqDelete -> execute(array(
+	
+	// on efface sCategoryToDelete et ses descendants
+	$reqDeleteChildren = $bdd -> prepare('DELETE FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote lIKE :idNoteToDelete AND isCategory=:isCategory');
+		$reqDeleteChildren -> execute(array(
 		'idUser' => $_SESSION['id'],
 		'idTopic' => $_GET["idTopic"], 
-		'idNote' => $_GET["sCategoryToDelete"],
+		'idNoteToDelete' => $_GET["sCategoryToDelete"]."%",
 		'isCategory' => $isCategory));
-	$reqDelete->closeCursor();	
+	$reqDeleteChildren->closeCursor();	// att ! 01% efface aussi 01, ce qui sera interdit si 01 devient la racine. pour éviter ça on effacer 01a%, mais cela  n'inclut que les folders
 
+	// il faudrait faire aussi le cas où on efface qu'une seule catégorie ?
 
+										
 	// on update tous les items affectés par le décalage
 	$sPathParent = $_GET["sCategoryOfDad"];
 	$sRankDeleted = $_GET["sCategoryToDelete"];
-	$nRankDeleted = intval($sRankDeleted);
+	$nRankDeleted = intval(substr($sRankDeleted,-2));
 	$lengthPathParent = strlen($sPathParent);
-	//echo ($lengthPathParent);
-	$reqDeleteChildren = $bdd -> prepare('UPDATE notes SET idNote=CONCAT( :pathParent , "a" , LPAD((SUBSTRING(idNote, :lengthPathParent+2,2)-1),2,"0"), SUBSTRING(idNote, :lengthPathParent + 2)) WHERE idUser=:idUser AND idTopic=:idTopic AND idNote LIKE :startWithPathParent AND SUBSTRING(idNote, :lengthPathParent +2, 2) > :nRankDeleted');
-		$reqDeleteChildren -> execute(array(
+	$reqUpdateSiblingsAndChildren = $bdd -> prepare('	UPDATE notes 
+							SET idNote=CONCAT(:pathParent, "a" , LPAD((SUBSTRING(idNote,:lengthPathParent+2,2)-1),2,"0"),SUBSTRING(idNote,:lengthPathParent + 4)) 
+							WHERE idUser=:idUser AND idTopic=:idTopic AND idNote LIKE :startWithPathParent AND convert(SUBSTRING(idNote,:lengthPathParent+2,2),signed) > :nRankDeleted');
+	$reqUpdateSiblingsAndChildren -> execute(array(
 		'idUser' => $_SESSION['id'],
 		'idTopic' => $_GET["idTopic"],
 		'pathParent' => $sPathParent,
 		'lengthPathParent' => $lengthPathParent,
-		'startWithPathParent' => $sCategoriePere.'a%',
-		'nRankDeleted' => $nRankDeleted));	
-	$reqDeleteChildren->closeCursor();		
+		'startWithPathParent' => $sPathParent.'a%',
+		'nRankDeleted' => $nRankDeleted));		
+	$reqUpdateSiblingsAndChildren->closeCursor();  // attention la requete concerne les folders ET les notes 
 
 	//il faut aussi décrémenter NbOfItems de la catégorie Pere :
 	$reqUpdateDad = $bdd -> prepare('UPDATE notes SET nbOfItems=nbOfItems-1 WHERE idUser=:idUser AND idTopic=:idTopic AND idNote=:sCategoryOfDad AND isCategory=:isCategory');
 		$reqUpdateDad -> execute(array(
 		'idUser' => $_SESSION['id'],
 		'idTopic' => $_GET["idTopic"], 
-		'idNote' => $_GET["sCategoryOfDad"], 
+		'sCategoryOfDad' => $_GET["sCategoryOfDad"], 
 		'isCategory' => $isCategory));
 	$reqUpdateDad -> closeCursor();	
+										
 	
 }
 
