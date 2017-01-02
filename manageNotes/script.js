@@ -372,6 +372,8 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 	sCategoryOfDad = sCategoryToDelete.slice(0,-3);// on détermine la catégorie père //il faut envisager le cas racine aussi
 	//alert("Etes vous sûr de vouloir effacer " + sCategoryToDelete +"?\n\navec CategoryOfDad = " + sCategoryOfDad);
 	document.getElementById(sCategoryToDelete).style.backgroundColor = '#cccccc'; // on grise la categorie a effacer
+	arborescenceNotes.seDeplacerDanslArborescenceReduite(sCategoryOfDad);
+	alert("stop!");
 	var xhr = new XMLHttpRequest(); 
 	xhr.open ('GET', 'ajax/deleteNote.php?idTopic=' + idTopic + '&sCategoryToDelete=' + sCategoryToDelete +'&sCategoryOfDad=' + sCategoryOfDad);
 	xhr.send(null);
