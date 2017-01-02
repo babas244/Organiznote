@@ -16,6 +16,7 @@ div#frameOfTree div
 
 div#frameOfTree div:active {background-color: #ff3300;}
 div#frameOfTree div:hover {background-color: #ffaa00;}
+div#frameOfTree div {white-space: pre;}
 
 
 div#topic
