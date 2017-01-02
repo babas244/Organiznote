@@ -29,51 +29,47 @@ include '../sessionAuthentication.php';
 		<div id="menu">
 		<ul class="Niveau1">
 			<li>
-				<div>
-					Nouveau
-				</div>
+				<button>Nouveau</button>
 				<ul class="Niveau2">
-						<li>à faire</li>
-						<li>catégorie à faire</li>
-						<li><div id="NouvelleNote">Référence</div></li>
-						<li>catégorie référence</li>
+						<li><button>à faire</button></li>
+						<li><button>catégorie à faire</button></li>
+						<li><button id="NouvelleNote">Référence</button></li>
+						<li><button>catégorie référence</button></li>
 				</ul>
 			</li>
 			<li>
-				<div>
-					Recherche
-				</div>
+				<button>Recherche</button>
 				<ul class="Niveau2">
-					<li>référence</li>
-					<li>catégorie</li>
-					<li>référence +catégorie</li>
+					<li><button>référence</button></li>
+					<li><button>catégorie</button></li>
+					<li><button>référence +catégorie</button></li>
 				</ul>	
 			</li>
 			<li>
-				<div>Affichage</div>
+				<button>Affichage</button>
 				<ul class="Niveau2">
-					<li id="displayAllTree">tout</li>
-					<li>fait</li>
-					<li>arborescence</li>
-					<li>archives</li>
+					<li><button id="displayAllTree">tout</button></li>
+					<li><button>fait</button></li>
+					<li><button>arborescence</button></li>
+					<li><button>archives</button></li>
 				</ul>	
 			</li>
 			<li>
-				<div>Naviguer</div>
+				<button>Naviguer</button>
 				<ul class="Niveau2">
-					<li>déplacer des blocs</li>
-					<li><div id="importerXML">importer xml</div></li>
-					<li>exporter en xml</li>
+					<li><button>déplacer des blocs</button></li>
+					<li><button id="importerXML">importer xml</button></li>
+					<li><button>exporter en xml</button></li>
 				</ul>	
 			</li>
 			<li>
-				<div>Historique</div>
+				<button>Historique</button>
 				<ul class="Niveau2">
-					<li>&lt;-</li>
-					<li>-></li>
-					<li>3 dernières</li>
-					<li>10 dernières</li>
-					<li>24h</li>
+					<li><button>&lt;-</button></li>
+					<li><button>-></button></li>
+					<li><button>3 dernières</button></li>
+					<li><button>10 dernières</button></li>
+					<li><button>24h</button></li>
 				</ul>	
 			</li>
 		</ul>

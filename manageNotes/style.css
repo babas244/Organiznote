@@ -163,13 +163,20 @@ textarea#zoneFormulaireEntrerNote
 
 
 	
-li div, li
+li button, li
 {
 	background-color : #19c589;
 	display:inline-block;
 	vertical-align: top;
+	text-align: left;
 	float: left;
+	width: 100px;
 	margin-right: 1px;
+}
+
+li button:hover, li:hover
+{
+	background-color : #2dfbb3;	
 }
 
 div#menu
@@ -182,5 +189,5 @@ div#menu
 
 ul {padding: 0px;} /* il y a un padding par défaut des ul sinon !!*/
 ul ul {display: none; position: absolute; left: 0px; bottom: 0px; margin: 0px; padding: 0px;}
-li {list-style-type: none; position: relative; left: 0px; bottom: 28px; width: 100px; border: 1px black solid}
+li {list-style-type: none; position: relative; left: 0px; bottom: 20px; width: 100px; border: 1px black solid}
 li:hover ul.Niveau2 {display: block;}
