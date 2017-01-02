@@ -16,7 +16,7 @@ div#frameOfTree div
 
 div#frameOfTree div:active {background-color: #ff3300;}
 div#frameOfTree div:hover {background-color: #ffaa00;}
-div#frameOfTree div {white-space: pre;}
+/*div#frameOfTree div {white-space: pre;} : pb ceci entraine que les textes sortent des div*/
 
 
 div#topic
@@ -63,7 +63,7 @@ div#fondMenuCategorie
 #DisplayContentCategory{top: 40%;}
 #changeCategoryIntoNote{top: 45%;}
 #changeNoteIntoCategory{top: 50%;}
-#cancel{top: 55%;}
+#cancel{top: 55%;} /* mettre plutôt une taille de l'ordre de 22px comme les fonts ?*/
 
 
 div#fondPageEntrerTexte
