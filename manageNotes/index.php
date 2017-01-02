@@ -52,7 +52,7 @@ include '../sessionAuthentication.php';
 			<li>
 				<div>Affichage</div>
 				<ul class="Niveau2">
-					<li>tout</li>
+					<li id="displayAllTree">tout</li>
 					<li>fait</li>
 					<li>arborescence</li>
 					<li>archives</li>

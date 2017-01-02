@@ -400,6 +400,14 @@ function CategorieAbstraite(id, sContent, niveauDeCategorie, nbDeComposants) {
 
 document.getElementById("NouvelleNote").addEventListener('click', insertNewNote, false); // insert depuis le menu html, att! pas encore implémenté
 
+document.getElementById("displayAllTree").addEventListener('click', function () {
+	displayTreeInNewWindow("racine");
+}, false);
+
+function displayTreeInNewWindow(sOriginPathTreeToDisplay) {
+	window.open('displayTreeInNewWindow/displayTreeInNewWindow?idTopic='+idTopic+'&sOriginPathTreeToDisplay='+sOriginPathTreeToDisplay+'.php');
+}
+
 /*
 document.getElementById("importerXML").addEventListener('click', function importerXML() {
 	document.getElementById("fondPageEntrerTexte").style.display = 'block';
