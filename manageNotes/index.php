@@ -21,7 +21,7 @@ include '../sessionAuthentication.php';
 		<?php 
 			echo "L'utilisateur <strong>".$_SESSION['user']."</strong>, d'identifiant ".$_SESSION['id']." est connecté sur ".$_GET['idTopic'];
 		?>
-		<a href="logout.php">(se déconnecter)</a>;
+		<a href="../logout.php">(se déconnecter)</a>;
 		<div id="frameOfTree">
 			<div id="01">   <!--div "racine"--> 
 			</div>
