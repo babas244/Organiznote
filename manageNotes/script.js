@@ -109,31 +109,31 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 				}
 			}
 
-			else { // sinon, si derniere=racine :
-				if (this.derniereCategorieDepliee === "racine") { // on ne peut donc avoir cliqué que sur 1,2,3,...
-					for (var p = 0 ; p < ToutesCategories.racine.nbDeComposants; p++) { // on efface les 1,2,3.., sauf celle à déplier
+			else {  // sinon, donc si on ne cherche pas à afficher racine
+				if (this.derniereCategorieDepliee === "racine") { // si derniere=racine : on ne peut donc avoir cliqué que sur 01,02,03,...
+					for (var p = 0 ; p < ToutesCategories.racine.nbDeComposants; p++) { // on efface les 01,02,03.., sauf celle à déplier
 						if ((p+1) !== parseInt(idCategorieaDeplier)) {
 							document.getElementById(XX(p+1)).style.display = 'none';
 						}
 					}
-					// A partir de là, on déplie les catégories filles de idCategorieaDeplier
+					
 					//console.log(ToutesCategories[idCategorieaDeplier]);
-					var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01');
+					var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01'); // A partir de là, on déplie les catégories filles de idCategorieaDeplier
 					//console.log("On ne déplie pas racine et le dernier déplié n'est pas racine \n et ToutesCategories[idCategorieaDeplier])+'a'+1 ="
 					//+((ToutesCategories[idCategorieaDeplier].id)+'a'+1) + "\net alreadyLoadedInDOM = "+alreadyLoadedInDOM);
 					console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a01'+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);					
-					if (alreadyLoadedInDOM === null) {
+					if (alreadyLoadedInDOM === null) { // on vérifie si la div ..a01 n'existe pas déjà
 						requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
 					}
-					else {
+					else { // si elle existe on la déplie 
 						for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbDeComposants; j++) { 
 							//console.log(idCategorieaDeplier+'a'+(j+1));
 							document.getElementById(idCategorieaDeplier+'a'+XX(j+1)).style.display = 'block';
 						}
 					}
 				}
-				else {	
-					if (idCategorieaDeplier.length < this.derniereCategorieDepliee.length) { // dernier!=racine et on a cliqué sur une categorie antécédente de derniereCategorieDepliee
+				else {	// si derniere n'est pas racine
+					if (idCategorieaDeplier.length < this.derniereCategorieDepliee.length) { // si aDeplier est une categorie ancetre de derniereCategorieDepliee
 
 						for (var k = 0 ; k < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; k++) { // d'abord replier les filles de derniereCategorieDepliee
 							console.log(this.derniereCategorieDepliee+'a'+XX(k+1));
@@ -142,12 +142,12 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 						//alert(typeof(this.derniereCategorieDepliee));
 						var categorieAeffacer = this.derniereCategorieDepliee;
 						
-						while (categorieAeffacer !== idCategorieaDeplier) {
+						while (categorieAeffacer !== idCategorieaDeplier) { // puis effacer les intermédaires
 							document.getElementById(categorieAeffacer).style.display = 'none';
 							categorieAeffacer = categorieAeffacer.slice(0,-3);
 						}
-						// puis déplier le nouveau derniereCategorieDepliee :	
-						var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01');
+						
+						var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01'); // puis déplier le nouveau derniereCategorieDepliee
 						console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a01'+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);
 						if (alreadyLoadedInDOM === null) {
 							requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
@@ -159,17 +159,17 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 							}
 						}			
 					}						
-					else { // on vient donc de cliquer sur une catégorie fille de derniereCategorieDepliee et qui n'est pas racine
+					else { // on a cliqué sur une categorie ancetre de derniereCategorieDepliee on vient donc de cliquer sur une catégorie descendante de derniereCategorieDepliee et qui n'est pas racine
 						if (idCategorieaDeplier !== "racine") { // a enlever car evident
 							
-							for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; i++) { // on replie toutes les filles // Vaut mieux le faire dans l'ordre décroissant puisqu'on déplie, non ?
+							for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; i++) { // on replie les filles de dernière, sauf aDeplier// Vaut mieux le faire dans l'ordre décroissant puisqu'on déplie, non ?
 								//console.log("else, "+idCategorieaDeplier+(i+1));
 								if (this.derniereCategorieDepliee+'a'+XX(i+1) !== idCategorieaDeplier) {
 									document.getElementById(this.derniereCategorieDepliee+'a'+XX(i+1)).style.display = 'none';
 								}
 								  
 							}
-							var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01');
+							var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01'); // puis déplier les filles de aDeplier
 							console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a01'+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);
 							if (alreadyLoadedInDOM === null) {
 								requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
@@ -409,7 +409,7 @@ function displayTreeInNewWindow(sOriginPathTreeToDisplay) {
 	window.open('displayTreeInNewWindow/displayTreeInNewWindow?idTopic='+idTopic+'&sOriginPathTreeToDisplay='+sOriginPathTreeToDisplay+'.php');
 }
 
-/*
+
 document.getElementById("importerXML").addEventListener('click', function importerXML() {
 	document.getElementById("fondPageEntrerTexte").style.display = 'block';
 	document.getElementById("chargerfichierXML").style.display= 'block';
@@ -424,7 +424,7 @@ document.getElementById("importerXML").addEventListener('click', function import
 	document.getElementById("chargerfichierXML").style.display= 'none';
 	};
 }, false);
-*/
+
 
 function XX(integer) {
 	return integer>9 ? ""+integer : "0"+integer;
