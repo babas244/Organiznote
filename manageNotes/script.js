@@ -136,6 +136,18 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 	//alert("en fin de function, arborescenceNotes.derniereCategorieDepliee = " + arborescenceNotes.derniereCategorieDepliee);
 		}	
 	}
+	
+	this.reDisplayDerniereCategorieDepliee = function () { // affiche les enfants de derniereCategorieDepliee qui doivent avoir préalablement avoir été effacés
+		var alreadyLoadedInDOM = document.getElementById(this.derniereCategorieDepliee+'a01'); 
+		if (alreadyLoadedInDOM === null) {
+			requeteXhrRecupererArborescence(instancierArborescenceRecuperee, this.derniereCategorieDepliee);
+		}
+		else {
+			for (var j = 0 ; j < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; j++) { 
+				document.getElementById(this.derniereCategorieDepliee+'a'+XX(j+1)).style.display = 'block';
+			}
+		}		
+	}
 }
 
 
@@ -318,21 +330,30 @@ function requeteXhrRecupererArborescence(fCallback, sCategoriePere) {
 }
 
 function queryXhrDeleteNote(sCategoryToDelete) {
-	sCategoryOfDad = sCategoryToDelete.slice(0,-3);// on détermine la catégorie père //il faut envisager le cas racine aussi
+	sCategoryOfDad = sCategoryToDelete.slice(0,-3);// on détermine la catégorie père
 	//alert("Etes vous sûr de vouloir effacer " + sCategoryToDelete +"?\n\navec CategoryOfDad = " + sCategoryOfDad);
+
 	document.getElementById(sCategoryToDelete).style.backgroundColor = '#cccccc'; // on grise la categorie a effacer
-	arborescenceNotes.seDeplacerDanslArborescenceReduite(sCategoryOfDad);
-	var xhr = new XMLHttpRequest(); 
+
+	arborescenceNotes.seDeplacerDanslArborescenceReduite(sCategoryOfDad); // l'arborescente réduite s'affiche avec categorie pere est derniereCategorieDepliee
+
+	for (var k = 0 ; k < ToutesCategories[sCategoryOfDad].nNbDeComposants ; k++ ) {	// on efface les enfants du père
+		document.getElementById(sCategoryOfDad+'a'+XX(k+1)).style.display = 'none';		
+	}
+	
+	// ici on doit griser l'ensemble de l'arborescence 
+
+	var xhr = new XMLHttpRequest();
 	xhr.open ('GET', 'ajax/deleteNote.php?idTopic=' + idTopic + '&sCategoryToDelete=' + sCategoryToDelete +'&sCategoryOfDad=' + sCategoryOfDad);
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			ePathsToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+sCategoryToDelete+'"]');
+			ePathsToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+sCategoryOfDad+'a'+'"]');
 			for (var i=0 ; i < ePathsToDelete.length ; i++ ) {
 				document.getElementById("frameOfTree").removeChild(ePathsToDelete[i]);
 			}
-			//document.getElementById("frameOfTree").removeChild(document.getElementById(sCategoryToDelete)); //il faudrait aussi effacer toutes les div de categories fille, mais ils le seront à la prochaine réouverture de la page de toutes façons
 			ToutesCategories[sCategoryOfDad].nbDeComposants -=1;
+			arborescenceNotes.reDisplayDerniereCategorieDepliee();
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
 				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
