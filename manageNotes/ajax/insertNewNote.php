@@ -34,7 +34,7 @@ if (isset($_SESSION['id']) && isset($_GET["newNote"]) && isset($_GET["idTopic"])
 	//echo'             $nbOfItemsOfDad = '.$nbOfItemsOfDad."           \n\n";
 	$reqGetFeaturesOfDad -> closeCursor();	
 	
-	$idNote = ($_GET["idCategoriePere"] ==="racine") ? XX($nbOfItemsOfDad+1) : ($_GET["idCategoriePere"].'a'.XX($nbOfItemsOfDad+1));
+	$idNote = $_GET["idCategoriePere"].'a'.XX($nbOfItemsOfDad+1);
 	
 	//$idNote = $_GET["idCategoriePere"].'a'.($nbOfItemsOfDad+1); // faut-il convertir en string ?? : apparemment non
 	//echo("\n\n idNote à insérer = $idNote");

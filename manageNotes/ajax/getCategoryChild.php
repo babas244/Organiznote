@@ -19,9 +19,6 @@ if (isset($_SESSION['id']) && isset($_GET["sCategoriePere"]) && isset($_GET["idT
 	// faire une regex pour voir si sCategoriePere est de la forme correcte
 
 	//echo "Le numéro de catégorie père est " . $sCategoriePere . " ! ";
-	if ($sCategoriePere == "racine") {
-		$sCategoriePere = "";
-	}
 
 	include '../../log_in_bdd.php';
 							
