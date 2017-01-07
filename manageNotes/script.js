@@ -232,12 +232,12 @@ function insertNewNote(idCategoriePere) {
 	//alert("Dans InsertNote, idCategoriePere = "+idCategoriePere);
 	initializeFormEnterNote();
 	document.getElementById("enregistrerNouvelleNote").addEventListener('click', ecrireNoteDsBdd, false);
-	function ecrireNoteDsBdd() { // à mettre en dehors de la function insertNewNote : hmmm..elle a besoin de idCategoriePere.. Et en fait on la réutilose pas, il vaudrait mieux une anonyme  
+	function ecrireNoteDsBdd() { // à mettre en dehors de la function insertNewNote : hmmm..elle a besoin de idCategoriePere.. Et en fait on la réutilose pas, il vaudrait mieux une anonyme : non on n'a besoin qu'elle ait un nom pour enlever le listener plus tard 
 		// griser la catégorie mère??
-		document.getElementById("enregistrerNouvelleNote").removeEventListener('click', ecrireNoteDsBdd, false);
 		sNewNote = document.getElementById("zoneFormulaireEntrerNote").value;
 		//alert(document.getElementById("zoneFormulaireEntrerNote").value);
 		if (sNewNote !== "") {
+			document.getElementById("enregistrerNouvelleNote").removeEventListener('click', ecrireNoteDsBdd, false);
 			if (idCategoriePere) {
 				requeteXhrInsertNewNote(sNewNote, idCategoriePere);
 				//alert('coucou dans ecrireNoteDsBdd');
@@ -260,10 +260,11 @@ function editNote(sIdCategoryToEdit) {
 	document.getElementById("zoneFormulaireEntrerNote").value = ToutesCategories[sIdCategoryToEdit].sContent;
 	document.getElementById("enregistrerNouvelleNote").addEventListener('click', editNoteInDbb, false);
 	
+	
 	function editNoteInDbb() {
-		document.getElementById("enregistrerNouvelleNote").removeEventListener('click', editNoteInDbb, false);
-		if (sIdCategoryToEdit !== "") {
-			sNewNote = document.getElementById("zoneFormulaireEntrerNote").value;
+		sNewNote = document.getElementById("zoneFormulaireEntrerNote").value;
+		if (sNewNote !== "") {
+			document.getElementById("enregistrerNouvelleNote").removeEventListener('click', editNoteInDbb, false);
 			document.getElementById("fondPageEntrerTexte").style.display = 'none'; // à inclure dans queryEditNote ??
 			queryXhrEditNote(sNewNote, sIdCategoryToEdit);
 			//dégriser la catégorie mère		
