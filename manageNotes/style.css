@@ -19,11 +19,6 @@ div#frameOfTree div:hover {background-color: #ffaa00;}
 /*div#frameOfTree div {white-space: pre;} : pb ceci entraine que les textes sortent des div*/
 
 
-div#topic
-{
-
-}
-
 div#fondMenuCategorie
 {
 	position: absolute;
@@ -91,48 +86,48 @@ div#textBox
 	opacity: 1;
 	}
 
-div#enregistrerNouvelleNote
+#enregistrerNouvelleNote
 {
 	position: absolute;
-	left: 70%;
+	left: 60%;
 	top: 33%;
 	z-index: 2;
 	background-color: #11ff11;
-	height: 5%;
-	width: 10%;
+	height: 22px;
+	width: 100px;
 	border: 1px black solid;
 	text-align: center; 
 	opacity: 1;
 }
 
-div#enregistrerNouvelleNote:hover 
+#enregistrerNouvelleNote:hover 
 {
 	background-color: #ffff11;	
 }
 
-div#reinitialiserFormulaireEntrerNote
+#reinitialiserFormulaireEntrerNote
 {
 	position: absolute;
-	left: 50%;
+	left: 40%;
 	top: 33%;
 	z-index: 2;
 	background-color: blue;
-	height: 5%;
-	width: 10%;
+	height: 22px;
+	width: 100px;
 	border: 1px black solid;
 	text-align: center; 
 	opacity: 1;
 }
 
-div#annulerEntrerNote
+#annulerEntrerNote
 {
 	position: absolute;
 	left: 20%;
 	top: 33%;
 	z-index: 2;
 	background-color: red;
-	height: 5%;
-	width: 10%;
+	height: 22px;
+	width: 100px;
 	border: 1px black solid;
 	text-align: center; 
 	opacity: 1;

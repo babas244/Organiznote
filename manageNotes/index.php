@@ -82,9 +82,9 @@ include '../sessionAuthentication.php';
 					<textarea name="zoneFormulaireEntrerNote" id="zoneFormulaireEntrerNote" placeholder="Ecrire ici"></textarea>
 				</form>
 			</div>
-			<div id="enregistrerNouvelleNote">Enregistrer</div>
-			<div id="reinitialiserFormulaireEntrerNote">Réinitialiser</div>
-			<div id="annulerEntrerNote">Annuler</div>
+			<button id="enregistrerNouvelleNote">Enregistrer</button>
+			<button id="reinitialiserFormulaireEntrerNote">Réinitialiser</button>
+			<button id="annulerEntrerNote">Annuler</button>
 		</div>
 		
 		<div id="fondMenuCategorie">
