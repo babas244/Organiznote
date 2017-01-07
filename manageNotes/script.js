@@ -232,7 +232,7 @@ function insertNewNote(idCategoriePere) {
 	//alert("Dans InsertNote, idCategoriePere = "+idCategoriePere);
 	initializeFormEnterNote();
 	document.getElementById("enregistrerNouvelleNote").addEventListener('click', ecrireNoteDsBdd, false);
-	function ecrireNoteDsBdd() { // à mettre en dehors de la function insertNewNote ?
+	function ecrireNoteDsBdd() { // à mettre en dehors de la function insertNewNote : hmmm..elle a besoin de idCategoriePere.. Et en fait on la réutilose pas, il vaudrait mieux une anonyme  
 		// griser la catégorie mère??
 		document.getElementById("enregistrerNouvelleNote").removeEventListener('click', ecrireNoteDsBdd, false);
 		sNewNote = document.getElementById("zoneFormulaireEntrerNote").value;
@@ -280,17 +280,11 @@ function requeteXhrInsertNewNote(sNewNote, idCategoriePere) {
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			//alert(ToutesCategories[idCategoriePere].nbDeComposants);
-			var sIdCategorieInseree = idCategoriePere+"a"+XX(parseInt((ToutesCategories[idCategoriePere].nbDeComposants)+1)); 
-			//alert ("sIdCategorieInseree = "+sIdCategorieInseree);
+			var sIdCategorieInseree = idCategoriePere + "a" + XX(parseInt((ToutesCategories[idCategoriePere].nbDeComposants)+1)); 
 			var sInstanciationCategorieInseree = sIdCategorieInseree+"|"+sNewNote+"|"+(ToutesCategories[idCategoriePere].niveauDeCategorie+1)+"|0";
-			//alert (sInstanciationCategorieInseree);
-			arborescenceNotes.seDeplacerDanslArborescenceReduite(idCategoriePere);
 			ToutesCategories[idCategoriePere].nbDeComposants +=1;
 			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , sIdCategorieInseree )
-			//alert('idCategoriePere = '+idCategoriePere+" et ToutesCategories[idCategoriePere].nbDeComposants = "+ToutesCategories[idCategoriePere].nbDeComposants  );
-			//alert ("Nouvelle note insérée : "+xhr.responseText);
-			//if (idCategoriePere === )
+			arborescenceNotes.seDeplacerDanslArborescenceReduite(idCategoriePere);
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
 				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
@@ -354,6 +348,7 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 			}
 			ToutesCategories[sCategoryOfDad].nbDeComposants -=1;
 			arborescenceNotes.reDisplayDerniereCategorieDepliee();
+		// ici on doit dégriser l'ensemble de l'arborescence
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
 				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
