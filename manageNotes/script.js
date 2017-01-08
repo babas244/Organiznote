@@ -132,8 +132,8 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 					}
 				}
 			}
-	arborescenceNotes.derniereCategorieDepliee = idCategorieaDeplier;  
-	//alert("en fin de function, arborescenceNotes.derniereCategorieDepliee = " + arborescenceNotes.derniereCategorieDepliee);
+		arborescenceNotes.derniereCategorieDepliee = idCategorieaDeplier;  
+		//alert("en fin de function, arborescenceNotes.derniereCategorieDepliee = " + arborescenceNotes.derniereCategorieDepliee);
 		}	
 	}
 	
@@ -365,7 +365,7 @@ function CategorieAbstraite(id, sContent, niveauDeCategorie, nbDeComposants) {
 	
 }
 
-document.getElementById("NouvelleNote").addEventListener('click', insertNewNote, false); // insert depuis le menu html, att! pas encore implémenté
+// document.getElementById("NouvelleNote").addEventListener('click', insertNewNote, false); // insert depuis le menu html, att! pas encore implémenté
 
 document.getElementById("displayAllTree").addEventListener('click', function () {
 	displayTreeInNewWindow("01");
