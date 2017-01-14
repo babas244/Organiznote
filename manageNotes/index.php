@@ -23,7 +23,7 @@ include '../sessionAuthentication.php';
 		?>
 		<a href="../logout.php">(se déconnecter)</a>;
 		<div id="frameOfTree">
-			<div id="01">   <!--div "racine"--> 
+			<div id="01" class="folder">   <!--div "racine"--> 
 			</div>
 		</div>
 		<div id="menu">

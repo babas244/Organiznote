@@ -13,7 +13,7 @@ function fInstantiateRoot() {
 			//alert (xhr.responseText);
 			var response = JSON.parse(xhr.responseText);
 			document.getElementById("01").innerHTML = response.topic;
-			ToutesCategories["01"] = new CategorieAbstraite("01", null, 0, parseInt(response.nNbDeComposants));
+			ToutesCategories["01"] = new CategorieAbstraite("01", null, 0, parseInt(response.nNbDeComposants),false);
 			//alert (response.nNbDeComposants);
 			arborescenceNotes = new ArborescenceReduiteAffichee("01");					
 			requeteXhrRecupererArborescence(instancierArborescenceRecuperee, "01");
@@ -162,9 +162,11 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 		var sContent = CategorieParsee[i+1];
 		var nNiveauDeCategorie = CategorieParsee[i+2];
 		var nNbDeComposants = CategorieParsee[i+3];
-		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, parseInt(nNiveauDeCategorie), parseInt(nNbDeComposants));
+		var bIsNote = (sIdCategorie.substr(-3,1)==="b" ? true : false);// si path contient un "b" à 3 rangs de la fin c'est une note et pas un folder
+		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, parseInt(nNiveauDeCategorie), parseInt(nNbDeComposants), bIsNote);
 		var oCategorieAffichageDOM = document.createElement("div"); // plutôt un button en fait ??
 		oCategorieAffichageDOM.id = sIdCategorie;
+		oCategorieAffichageDOM.className = (bIsNote ? "note" : "folder");
 		oCategorieAffichageDOM.addEventListener('click', function(e) {
 			arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id)
 		}, false);					
@@ -357,12 +359,12 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 	}
 }
 
-function CategorieAbstraite(id, sContent, niveauDeCategorie, nbDeComposants) {
+function CategorieAbstraite(id, sContent, niveauDeCategorie, nbDeComposants, isNote) {
 	this.id = id;
 	this.sContent = sContent; 
 	this.niveauDeCategorie = niveauDeCategorie;
 	this.nbDeComposants = nbDeComposants;
-	
+	this.isNote = isNote;
 }
 
 // document.getElementById("NouvelleNote").addEventListener('click', insertNewNote, false); // insert depuis le menu html, att! pas encore implémenté
