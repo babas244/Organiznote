@@ -88,8 +88,8 @@ include '../sessionAuthentication.php';
 		</div>
 		
 		<div id="fondMenuCategorie">
-			<div id="insertNewCategory" class="root folder note">Nouvelle catégorie fille</div>		
-			<div id="insertNewNote" class="root folder note">Nouvelle note</div>
+			<div id="insertNewFolder" class="root folder">Nouvelle catégorie fille</div>		
+			<div id="insertNewNote" class="root folder">Nouvelle note</div>
 			<div id="editNote" class="folder note">Editer</div>	
 			<div id="deleteNote" class="folder note">Effacer</div>
 			<div id="archiveNote" class="folder note">Archiver(maintenant/date (choisie))</div>

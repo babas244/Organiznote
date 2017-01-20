@@ -13,7 +13,7 @@ function fInstantiateRoot() {
 			//alert (xhr.responseText);
 			var response = JSON.parse(xhr.responseText);
 			document.getElementById("01").innerHTML = response.topic;
-			ToutesCategories["01"] = new CategorieAbstraite("01", null, 0, null,null);
+			ToutesCategories["01"] = new CategorieAbstraite("01", null, 0, 0, 0);
 			//alert (response.nNbDeComposants);
 			arborescenceNotes = new ArborescenceReduiteAffichee("01");					
 			requeteXhrRecupererArborescence(instancierArborescenceRecuperee, "01");
@@ -175,9 +175,9 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 	for (i = 0 ; i < nbdItemsDansCategorieParsee-3; i = i + 4) { // vérifier le -3
 		var sIdCategorie = CategorieParsee[i];
 		var sContent = CategorieParsee[i+1];
-		var nNiveauDeCategorie = CategorieParsee[i+2];
+		var nNiveauDeCategorie = ((sIdCategorie.length+1)/3)-1; // ou ToutesCategories[sCategoriePere].niveauDeCategorie + 1 ? 
 		var nNbDeComposants = CategorieParsee[i+3]; // a enlever
-		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, parseInt(nNiveauDeCategorie), null,null);		
+		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, nNiveauDeCategorie, 0,0);		
 		var oCategorieAffichageDOM = document.createElement("div"); // plutôt un button en fait ??
 		oCategorieAffichageDOM.id = sIdCategorie;
 
@@ -204,13 +204,19 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 		// if (!isVisible) {oCategorieAffichageDOM.style.display = 'none';}
 		document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM);
 	}
-	ToutesCategories[sCategoriePere].nbOfFolders = nbOfFoldersInPathParent;	
-	ToutesCategories[sCategoriePere].nbOfNotes = nbOfNotesInPathParent;		
+	ToutesCategories[sCategoriePere].nbOfFolders += nbOfFoldersInPathParent ;	
+	ToutesCategories[sCategoriePere].nbOfNotes += nbOfNotesInPathParent;		
 }
+
+document.getElementById("insertNewFolder").addEventListener('click', function() {
+	hideContextMenu();
+	insertNewNote(false,pathFocused);
+	// ajouter que pathFocused = null à nouveau ??
+}, false);
 
 document.getElementById("insertNewNote").addEventListener('click', function() {
 	hideContextMenu();
-	insertNewNote(pathFocused);
+	insertNewNote(true,pathFocused);
 	// ajouter que pathFocused = null à nouveau ??
 }, false);
 
@@ -254,7 +260,7 @@ function initializeFormEnterNote() {
   */
 }
 			
-function insertNewNote(idCategoriePere) {
+function insertNewNote(bIsNote, idCategoriePere) {
 	//alert("Dans InsertNote, idCategoriePere = "+idCategoriePere);
 	initializeFormEnterNote();
 	document.getElementById("enregistrerNouvelleNote").addEventListener('click', ecrireNoteDsBdd, false);
@@ -264,8 +270,16 @@ function insertNewNote(idCategoriePere) {
 		//alert(document.getElementById("zoneFormulaireEntrerNote").value);
 		if (sNewNote !== "") {
 			document.getElementById("enregistrerNouvelleNote").removeEventListener('click', ecrireNoteDsBdd, false);
+			
 			if (idCategoriePere) {
-				requeteXhrInsertNewNote(sNewNote, idCategoriePere);
+				var sPathTreeItemToInsert = idCategoriePere;
+				if (bIsNote = true) {
+					sPathTreeItemToInsert += "b" + XX(parseInt(ToutesCategories[idCategoriePere].nbOfNotes)+1); // ParseInt nécessaire ?? 
+				}
+				else {
+					sPathTreeItemToInsert += "a" + XX(parseInt(ToutesCategories[idCategoriePere].nbOfFolders)+1);
+				}
+				requeteXhrInsertNewNote(sNewNote, sPathTreeItemToInsert);
 				//alert('coucou dans ecrireNoteDsBdd');
 			}
 			else { // marche pas.. // if (typeof v !== 'undefined' && v !== null) 
@@ -301,17 +315,15 @@ function editNote(sIdCategoryToEdit) {
 	}
 }
 
-function requeteXhrInsertNewNote(sNewNote, idCategoriePere) {
+function requeteXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
 	var xhr = new XMLHttpRequest(); 
-	xhr.open ('GET', 'ajax/insertNewNote.php?idTopic=' + idTopic + '&newNote=' + sNewNote + '&idCategoriePere=' + idCategoriePere);
+	xhr.open ('GET', 'ajax/insertNewNote.php?idTopic=' + idTopic + '&newNote=' + sNewNote + '&sPathTreeItemToInsert=' + sPathTreeItemToInsert);
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			var sIdCategorieInseree = idCategoriePere + "a" + XX(parseInt((ToutesCategories[idCategoriePere].nbOfFolders)+1)); 
-			var sInstanciationCategorieInseree = sIdCategorieInseree+"|"+sNewNote+"|"+(ToutesCategories[idCategoriePere].niveauDeCategorie+1)+"|0";
-			ToutesCategories[idCategoriePere].nbOfFolders +=1;
-			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , sIdCategorieInseree )
-			arborescenceNotes.seDeplacerDanslArborescenceReduite(idCategoriePere);
+			var sInstanciationCategorieInseree = sPathTreeItemToInsert+"|"+sNewNote+"|"+((sPathTreeItemToInsert.length+1)/3-1)+"|0|0";
+			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , sPathTreeItemToInsert )
+			arborescenceNotes.seDeplacerDanslArborescenceReduite(sPathTreeItemToInsert.slice(0,-3));
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
 				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
