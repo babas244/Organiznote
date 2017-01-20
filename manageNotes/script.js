@@ -157,13 +157,15 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 	var CategorieParsee = sCategoriesRecuperees.split('|'); // interdiction d'utiliser ce caractère dans une note (on pourrait mettre une interdiction au moment d'enregistrer une note et au moment de l'importation) 
 	var nbdItemsDansCategorieParsee = CategorieParsee.length; 
 	
+	var nbOfFoldersInPathParent = 0;
 	for (i = 0 ; i < nbdItemsDansCategorieParsee-3; i = i + 4) { // vérifier le -3
+		nbOfFoldersInPathParent += 1;
 		var sIdCategorie = CategorieParsee[i];
 		var sContent = CategorieParsee[i+1];
 		var nNiveauDeCategorie = CategorieParsee[i+2];
-		var nNbDeComposants = CategorieParsee[i+3];
+		var nNbDeComposants = CategorieParsee[i+3]; // a enlever
 		var bIsNote = (sIdCategorie.substr(-3,1)==="b" ? true : false);// si path contient un "b" à 3 rangs de la fin c'est une note et pas un folder
-		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, parseInt(nNiveauDeCategorie), parseInt(nNbDeComposants), bIsNote);
+		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, parseInt(nNiveauDeCategorie), null, bIsNote);
 		var oCategorieAffichageDOM = document.createElement("div"); // plutôt un button en fait ??
 		oCategorieAffichageDOM.id = sIdCategorie;
 		oCategorieAffichageDOM.className = (bIsNote ? "note" : "folder");
@@ -182,6 +184,7 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 		// if (!isVisible) {oCategorieAffichageDOM.style.display = 'none';}
 		document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM);
 	}
+	ToutesCategories[sCategoriePere].nbDeComposants = nbOfFoldersInPathParent;	
 }
 
 document.getElementById("insertNewNote").addEventListener('click', function() {
