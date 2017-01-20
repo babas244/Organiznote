@@ -14,11 +14,9 @@ if (isset($_SESSION['id'])&& isset($_GET["idTopic"]) && isset($_GET["sIdCategory
 	
 	include '../../log_in_bdd.php';
 
-	$isCategory = "1";
-
 	$sNewNote = htmlspecialchars($_GET["sNewNote"]);
 	
-	$reqUpdateContent = $bdd -> prepare('UPDATE notes SET content=:content WHERE idUser=:idUser AND idTopic=:idTopic AND idNote=:idNote AND isCategory=:isCategory'); // changer la date aussi ??
+	$reqUpdateContent = $bdd -> prepare('UPDATE notes SET content=:content WHERE idUser=:idUser AND idTopic=:idTopic AND idNote=:idNote'); // changer la date aussi ??
 		$reqUpdateContent -> execute(array(
 		'content' => $sNewNote,
 		'idUser' => $_SESSION['id'],
