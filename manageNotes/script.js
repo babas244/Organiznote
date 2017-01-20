@@ -13,7 +13,7 @@ function fInstantiateRoot() {
 			//alert (xhr.responseText);
 			var response = JSON.parse(xhr.responseText);
 			document.getElementById("01").innerHTML = response.topic;
-			ToutesCategories["01"] = new CategorieAbstraite("01", null, 0, parseInt(response.nNbDeComposants),false);
+			ToutesCategories["01"] = new CategorieAbstraite("01", null, 0, null,null);
 			//alert (response.nNbDeComposants);
 			arborescenceNotes = new ArborescenceReduiteAffichee("01");					
 			requeteXhrRecupererArborescence(instancierArborescenceRecuperee, "01");
@@ -75,10 +75,10 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 			document.getElementById(categorieAafficher).style.display = 'block';
 			categorieAafficher += 'a';
 		}
-		if (ToutesCategories[this.derniereCategorieDepliee].nbDeComposants = null) {
+		if (ToutesCategories[this.derniereCategorieDepliee].nbOfFolders = null) {
 			ToutesCategories[this.derniereCategorieDepliee].chargerContenuCategorie();
 		} else {
-			for (var j = 0 ; j < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; j++) {
+			for (var j = 0 ; j < ToutesCategories[this.derniereCategorieDepliee].nbOfFolders; j++) {
 				document.getElementById(categorieAafficher+(j+1)).style.display = 'block';
 			}
 		}
@@ -89,7 +89,11 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 		if (idCategorieaDeplier !== this.derniereCategorieDepliee) { // on enlève le cas ou rien de nouveau n'est demandé
 
 			if (idCategorieaDeplier.length < this.derniereCategorieDepliee.length) { // si aDeplier est une categorie ancetre de derniereCategorieDepliee
-				for (var k = 0 ; k < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; k++) { // d'abord replier les filles de derniereCategorieDepliee
+				for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbOfNotes; i++) { // d'abord replier les Notes filles de derniereCategorieDepliee
+					document.getElementById(this.derniereCategorieDepliee+'b'+XX(i+1)).style.display = 'none';					
+				}
+				
+				for (var k = 0 ; k < ToutesCategories[this.derniereCategorieDepliee].nbOfFolders; k++) { // Replier aussi les folders enfants de derniereCategorieDepliee
 					//console.log(this.derniereCategorieDepliee+'a'+XX(k+1));
 					document.getElementById(this.derniereCategorieDepliee+'a'+XX(k+1)).style.display = 'none';
 				}
@@ -106,30 +110,38 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 					requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
 				}
 				else { // sinon on a juste à les afficher
-					for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbDeComposants; j++) { 
+					for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbOfFolders; j++) { // afficher les folders
 						//console.log("!! idCategorieaDeplier+'a'+(j+1) = "+idCategorieaDeplier+'a'+XX(j+1));
 						document.getElementById(idCategorieaDeplier+'a'+XX(j+1)).style.display = 'block';
+					}
+				
+					for (var m = 0 ; m < ToutesCategories[idCategorieaDeplier].nbOfNotes; m++) { // afficher les notes
+						document.getElementById(idCategorieaDeplier+'b'+XX(m+1)).style.display = 'block';
 					}
 				}			
 			}						
 			else { // on vient donc de cliquer sur une catégorie descendante de derniereCategorieDepliee
-					
-				for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; i++) { // on replie les filles de dernière, sauf aDeplier// Vaut mieux le faire dans l'ordre décroissant puisqu'on déplie, non ?
-					//console.log("else, "+idCategorieaDeplier+(i+1));
+				for (var m = 0 ; m < ToutesCategories[this.derniereCategorieDepliee].nbOfNotes; m++) { // d'abord replier les Notes filles de derniereCategorieDepliee
+					document.getElementById(this.derniereCategorieDepliee+'b'+XX(m+1)).style.display = 'none';					
+				}				
+				for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbOfFolders; i++) { // Replier aussi les folders enfants de derniereCategorieDepliee // Vaut mieux le faire dans l'ordre décroissant puisqu'on déplie, non ?
 					if (this.derniereCategorieDepliee+'a'+XX(i+1) !== idCategorieaDeplier) {
 						document.getElementById(this.derniereCategorieDepliee+'a'+XX(i+1)).style.display = 'none';
 					}				  
 				}
+
 				var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01'); // puis déplier les filles de aDeplier
-				//console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a01'+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);
 				if (alreadyLoadedInDOM === null) {
 					requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
 				}
 				else {
-					for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbDeComposants; j++) { 
-						//console.log("!! idCategorieaDeplier+'a'+(j+1) = "+idCategorieaDeplier+'a'+(j+1));
+					for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbOfFolders; j++) {  // afficher les folders 
 						document.getElementById(idCategorieaDeplier+'a'+XX(j+1)).style.display = 'block';
 					}
+					for (var k = 0 ; k < ToutesCategories[idCategorieaDeplier].nbOfNotes; k++) { // afficher les notes
+						document.getElementById(idCategorieaDeplier+'b'+XX(k+1)).style.display = 'block';
+					}
+					
 				}
 			}
 		arborescenceNotes.derniereCategorieDepliee = idCategorieaDeplier;  
@@ -143,7 +155,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 			requeteXhrRecupererArborescence(instancierArborescenceRecuperee, this.derniereCategorieDepliee);
 		}
 		else {
-			for (var j = 0 ; j < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; j++) { 
+			for (var j = 0 ; j < ToutesCategories[this.derniereCategorieDepliee].nbOfFolders; j++) { 
 				document.getElementById(this.derniereCategorieDepliee+'a'+XX(j+1)).style.display = 'block';
 			}
 		}		
@@ -158,20 +170,28 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 	var nbdItemsDansCategorieParsee = CategorieParsee.length; 
 	
 	var nbOfFoldersInPathParent = 0;
+	var nbOfNotesInPathParent = 0;
+	
 	for (i = 0 ; i < nbdItemsDansCategorieParsee-3; i = i + 4) { // vérifier le -3
-		nbOfFoldersInPathParent += 1;
 		var sIdCategorie = CategorieParsee[i];
 		var sContent = CategorieParsee[i+1];
 		var nNiveauDeCategorie = CategorieParsee[i+2];
 		var nNbDeComposants = CategorieParsee[i+3]; // a enlever
-		var bIsNote = (sIdCategorie.substr(-3,1)==="b" ? true : false);// si path contient un "b" à 3 rangs de la fin c'est une note et pas un folder
-		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, parseInt(nNiveauDeCategorie), null, bIsNote);
+		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, parseInt(nNiveauDeCategorie), null,null);		
 		var oCategorieAffichageDOM = document.createElement("div"); // plutôt un button en fait ??
 		oCategorieAffichageDOM.id = sIdCategorie;
-		oCategorieAffichageDOM.className = (bIsNote ? "note" : "folder");
-		oCategorieAffichageDOM.addEventListener('click', function(e) {
-			arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id)
-		}, false);					
+
+		if (sIdCategorie.substr(-3,1)==="a") {// si path contient un "a" à 3 rangs de la fin c'est un folder et pas une note
+			nbOfFoldersInPathParent += 1;
+			oCategorieAffichageDOM.className = "folder";
+			oCategorieAffichageDOM.addEventListener('click', function(e) {
+				arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id)
+			}, false);					
+		}
+		else { // sinon c'est une note
+			nbOfNotesInPathParent += 1;
+			oCategorieAffichageDOM.className = "note";			
+		}
 		
 		oCategorieAffichageDOM.addEventListener('contextmenu', function(e) {
 			e.preventDefault();
@@ -184,7 +204,8 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 		// if (!isVisible) {oCategorieAffichageDOM.style.display = 'none';}
 		document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM);
 	}
-	ToutesCategories[sCategoriePere].nbDeComposants = nbOfFoldersInPathParent;	
+	ToutesCategories[sCategoriePere].nbOfFolders = nbOfFoldersInPathParent;	
+	ToutesCategories[sCategoriePere].nbOfNotes = nbOfNotesInPathParent;		
 }
 
 document.getElementById("insertNewNote").addEventListener('click', function() {
@@ -286,9 +307,9 @@ function requeteXhrInsertNewNote(sNewNote, idCategoriePere) {
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			var sIdCategorieInseree = idCategoriePere + "a" + XX(parseInt((ToutesCategories[idCategoriePere].nbDeComposants)+1)); 
+			var sIdCategorieInseree = idCategoriePere + "a" + XX(parseInt((ToutesCategories[idCategoriePere].nbOfFolders)+1)); 
 			var sInstanciationCategorieInseree = sIdCategorieInseree+"|"+sNewNote+"|"+(ToutesCategories[idCategoriePere].niveauDeCategorie+1)+"|0";
-			ToutesCategories[idCategoriePere].nbDeComposants +=1;
+			ToutesCategories[idCategoriePere].nbOfFolders +=1;
 			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , sIdCategorieInseree )
 			arborescenceNotes.seDeplacerDanslArborescenceReduite(idCategoriePere);
 		} 
@@ -352,7 +373,7 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 			for (var i=0 ; i < ePathsToDelete.length ; i++ ) {
 				document.getElementById("frameOfTree").removeChild(ePathsToDelete[i]);
 			}
-			ToutesCategories[sCategoryOfDad].nbDeComposants -=1;
+			ToutesCategories[sCategoryOfDad].nbOfFolders -=1;
 			arborescenceNotes.reDisplayDerniereCategorieDepliee();
 		// ici on doit dégriser l'ensemble de l'arborescence
 		} 
@@ -362,12 +383,12 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 	}
 }
 
-function CategorieAbstraite(id, sContent, niveauDeCategorie, nbDeComposants, isNote) {
+function CategorieAbstraite(id, sContent, niveauDeCategorie, nbOfFolders, nbOfNotes) {
 	this.id = id;
 	this.sContent = sContent; 
 	this.niveauDeCategorie = niveauDeCategorie;
-	this.nbDeComposants = nbDeComposants;
-	this.isNote = isNote;
+	this.nbOfFolders = nbOfFolders;
+	this.nbOfNotes = nbOfNotes;
 }
 
 // document.getElementById("NouvelleNote").addEventListener('click', insertNewNote, false); // insert depuis le menu html, att! pas encore implémenté
