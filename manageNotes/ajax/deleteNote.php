@@ -24,7 +24,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryT
 		'idTopic' => $_GET["idTopic"], 
 		'idNoteToDelete' => $_GET["sCategoryToDelete"]."%",
 		'isCategory' => $isCategory));
-	$reqDeleteChildren->closeCursor();	// att ! 01% efface aussi 01, ce qui sera interdit si 01 devient la racine. pour éviter ça on effacer 01a%, mais cela  n'inclut que les folders
+	$reqDeleteChildren->closeCursor();	// att ! 01% efface aussi 01, ce qui sera interdit si 01 devient la racine. pour éviter ça on effacer 01a%, mais cela  n'inclut que les folders, mais de risque car il n'y a pas d'appel de deleteNote pour la racine
 
 	// il faudrait faire aussi le cas où on efface qu'une seule catégorie ?
 

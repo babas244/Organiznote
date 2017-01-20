@@ -112,7 +112,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 					}
 				}			
 			}						
-			else { // on a cliqué sur une categorie ancetre de derniereCategorieDepliee on vient donc de cliquer sur une catégorie descendante de derniereCategorieDepliee et qui n'est pas 01
+			else { // on vient donc de cliquer sur une catégorie descendante de derniereCategorieDepliee
 					
 				for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbDeComposants; i++) { // on replie les filles de dernière, sauf aDeplier// Vaut mieux le faire dans l'ordre décroissant puisqu'on déplie, non ?
 					//console.log("else, "+idCategorieaDeplier+(i+1));
@@ -179,8 +179,8 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 		
 		oCategorieAffichageDOM.style.marginLeft = iRetraitAffichagedUneCategorie*(nNiveauDeCategorie) + 'px'; // mettre la marge en fonction du niveau de la catégorie
 		oCategorieAffichageDOM.innerHTML = sContent; 
-		document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM);
 		// if (!isVisible) {oCategorieAffichageDOM.style.display = 'none';}
+		document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM);
 	}
 }
 
@@ -234,7 +234,7 @@ function insertNewNote(idCategoriePere) {
 	//alert("Dans InsertNote, idCategoriePere = "+idCategoriePere);
 	initializeFormEnterNote();
 	document.getElementById("enregistrerNouvelleNote").addEventListener('click', ecrireNoteDsBdd, false);
-	function ecrireNoteDsBdd() { // à mettre en dehors de la function insertNewNote : hmmm..elle a besoin de idCategoriePere.. Et en fait on la réutilose pas, il vaudrait mieux une anonyme : non on n'a besoin qu'elle ait un nom pour enlever le listener plus tard 
+	function ecrireNoteDsBdd() { // à mettre en dehors de la function insertNewNote : hmmm..elle a besoin de idCategoriePere.. Et en fait on la réutilose pas, il vaudrait mieux une anonyme : non on n'a besoin qu'elle ait un nom pour enlever le listener plus tard. oui mais c'est pas une raison, on peut l'enlever indépendemment ! 
 		// griser la catégorie mère??
 		sNewNote = document.getElementById("zoneFormulaireEntrerNote").value;
 		//alert(document.getElementById("zoneFormulaireEntrerNote").value);
