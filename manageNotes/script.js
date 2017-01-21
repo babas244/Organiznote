@@ -274,7 +274,7 @@ function insertNewNote(bIsNote, idCategoriePere) {
 			
 			if (idCategoriePere) {
 				var sPathTreeItemToInsert = idCategoriePere;
-				if (bIsNote = true) {
+				if (bIsNote === true) {
 					sPathTreeItemToInsert += "b" + XX(parseInt(ToutesCategories[idCategoriePere].nbOfNotes)+1); // ParseInt nécessaire ?? 
 				}
 				else {

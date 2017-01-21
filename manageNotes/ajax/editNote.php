@@ -21,8 +21,7 @@ if (isset($_SESSION['id'])&& isset($_GET["idTopic"]) && isset($_GET["sIdCategory
 		'content' => $sNewNote,
 		'idUser' => $_SESSION['id'],
 		'idTopic' => $_GET["idTopic"], 
-		'idNote' => $_GET["sIdCategoryToEdit"],
-		'isCategory' => $isCategory));
+		'idNote' => $_GET["sIdCategoryToEdit"]));
 	$reqUpdateContent -> closeCursor();	
 }
 
