@@ -36,18 +36,19 @@ function fInstantiateRoot() {
 
 
 function displayContextMenu(path) {
-	//alert (path);
+	//alert (typeof(path));
 	openContextMenu = document.getElementById("fondMenuCategorie");
 	openContextMenu.style.display = 'block';
-	switch (path) {
-		case "01":
-			aElementsToDisplay = openContextMenu.getElementsByClassName("root"); // plutot queryselectorall pour plusieurs classes
-		break;
-		//case ... 
-		default :
-			aElementsToDisplay = openContextMenu.getElementsByClassName("folder");
+	if (path === "01") {
+		aElementsToDisplay = openContextMenu.getElementsByClassName("isRoot");
 	}
-	for (var i = 0 ; i < aElementsToDisplay.length ; i++ ) {
+	else if (path.substr(-3,1)==="b") {
+		aElementsToDisplay = openContextMenu.getElementsByClassName("isNote");			
+	}
+	else {
+		aElementsToDisplay = openContextMenu.getElementsByClassName("isFolder");		
+	}
+	for (var i = 0 ; i < aElementsToDisplay.length ; i++ ) { // plutot queryselectorall si plusieurs classes ?
 		aElementsToDisplay[i].style.display = 'block';
 	}
 }

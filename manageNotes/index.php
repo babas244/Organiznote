@@ -88,16 +88,16 @@ include '../sessionAuthentication.php';
 		</div>
 		
 		<div id="fondMenuCategorie">
-			<div id="insertNewFolder" class="root folder">Nouvelle catégorie fille</div>		
-			<div id="insertNewNote" class="root folder">Nouvelle note</div>
-			<div id="editNote" class="folder note">Editer</div>	
-			<div id="deleteNote" class="folder note">Effacer</div>
-			<div id="archiveNote" class="folder note">Archiver(maintenant/date (choisie))</div>
-			<div id="archiveToDo" class="folder note">Fait(maintenant/date (choisie))</div>
-			<div id="DisplayContentCategory" class="root folder">Afficher l'arbre contenu dedans</div>
-			<div id="changeCategoryIntoNote" class="folder">Transformer catégorie en note</div>							
-			<div id="changeNoteIntoCategory" class="note">Transformer note en catégorie</div>						
-			<div id="cancel" class="root folder note">Annuler</div>
+			<div id="insertNewFolder" class="isRoot isFolder">Nouvelle catégorie fille</div>		
+			<div id="insertNewNote" class="isRoot isFolder">Nouvelle note</div>
+			<div id="editNote" class="isFolder isNote">Editer</div>	
+			<div id="deleteNote" class="isFolder isNote">Effacer</div>
+			<div id="archiveNote" class="isFolder isNote">Archiver(maintenant/date (choisie))</div>
+			<div id="archiveToDo" class="isFolder isNote">Fait(maintenant/date (choisie))</div>
+			<div id="DisplayContentCategory" class="isRoot isFolder">Afficher l'arbre contenu dedans</div>
+			<div id="changeCategoryIntoNote" class="isFolder">Transformer catégorie en note</div>							
+			<div id="changeNoteIntoCategory" class="isNote">Transformer note en catégorie</div>						
+			<div id="cancel" class="isRoot isFolder isNote">Annuler</div>
 		</div>
 		
 		<input id="chargerfichierXML" type="file" />
