@@ -25,7 +25,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sOriginPat
 		'idTopic' => $_GET["idTopic"]));
 
 	while ($donnees = $reqRetrieveTree->fetch()) {
-			$classOfTreeItem = (substr($donnees['idNote'],-3,1)==="a" ? 'folder' : 'note');
+			$classOfTreeItem = (substr($donnees['idNote'],-3,1)==="b" ? 'note' : 'folder');
 			$levelInTree = (strlen($donnees['idNote'])+1)/3-1;
 			echo ('<div class="level'.$levelInTree.' '.$classOfTreeItem.'">'.$donnees['content'].'</div>');
 		}

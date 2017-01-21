@@ -31,11 +31,11 @@ div#frameOfTree
 	word-wrap: break-word;
 }
 
-.folder div:active {background-color: #ff0000;}
-.folder div:hover {background-color: #ffff00;}
+div.folder:active {background-color: #ff0000;}
+div.folder:hover {background-color: #ffaa00;}
 
-.note div:active {background-color: #ff3300;}
-.note div:hover {background-color: #ffaa00;}
+div.note:active {background-color: #ff3300;}
+div.note:hover {background-color: #ffaa00;}
 /*div#frameOfTree div {white-space: pre;} : pb ceci entraine que les textes sortent des div*/
 
 
