@@ -19,13 +19,15 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sOriginPat
 
 	include '../../log_in_bdd.php';
 	
-	$reqRetrieveTree = $bdd -> prepare('SELECT content, levelInTree FROM notes WHERE idUser=:idUser AND idTopic=:idTopic ORDER BY IdNote');
+	$reqRetrieveTree = $bdd -> prepare('SELECT idNote, content FROM notes WHERE idUser=:idUser AND idTopic=:idTopic ORDER BY IdNote');
 		$reqRetrieveTree -> execute(array(
 		'idUser' => $_SESSION['id'],
 		'idTopic' => $_GET["idTopic"]));
 
 	while ($donnees = $reqRetrieveTree->fetch()) {
-			echo ('<div class="level'.$donnees['levelInTree'].'">'.$donnees['content'].'</div>');
+			$classOfTreeItem = (substr($donnees['idNote'],-3,1)==="a" ? 'folder' : 'note');
+			$levelInTree = (strlen($donnees['idNote'])+1)/3-1;
+			echo ('<div class="level'.$levelInTree.' '.$classOfTreeItem.'">'.$donnees['content'].'</div>');
 		}
 	$reqRetrieveTree->closeCursor();		
 	
