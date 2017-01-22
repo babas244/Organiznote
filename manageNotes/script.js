@@ -17,7 +17,8 @@ function fInstantiateRoot() {
 			//alert (response.nNbDeComposants);
 			arborescenceNotes = new ArborescenceReduiteAffichee("01");					
 			requeteXhrRecupererArborescence(instancierArborescenceRecuperee, "01");
-
+			document.getElementById("01").style.border = '2px black solid';
+			
 			document.getElementById("01").addEventListener('click', function(e) {
 				arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id);
 			}, false);					
@@ -90,6 +91,9 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 		if (idCategorieaDeplier !== this.derniereCategorieDepliee) { // on enlève le cas ou rien de nouveau n'est demandé
 
 			if (idCategorieaDeplier.length < this.derniereCategorieDepliee.length) { // si aDeplier est une categorie ancetre de derniereCategorieDepliee
+
+				document.getElementById(this.derniereCategorieDepliee).style.border = '1px black solid';
+
 				for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbOfNotes; i++) { // d'abord replier les Notes filles de derniereCategorieDepliee
 					//alert(this.derniereCategorieDepliee+'b'+XX(i+1));
 					document.getElementById(this.derniereCategorieDepliee+'b'+XX(i+1)).style.display = 'none';					
@@ -105,9 +109,10 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 					document.getElementById(categorieAeffacer).style.display = 'none';
 						categorieAeffacer = categorieAeffacer.slice(0,-3);
 				}
+				
+				document.getElementById(idCategorieaDeplier).style.border = '2px black solid';
 					
 				var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01') || document.getElementById(idCategorieaDeplier+'b01'); // puis déplier le nouveau derniereCategorieDepliee
-				//alert ("idCategorieaDeplier ="+idCategorieaDeplier+" et alreadyLoadedInDOM = "+alreadyLoadedInDOM);
 				//console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a01'+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);
 				if (alreadyLoadedInDOM === null) { // s'ils ne sont pas dans le DOM, i faut aller les chercher en ajax
 					requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
@@ -124,6 +129,8 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 				}			
 			}						
 			else { // on vient donc de cliquer sur une catégorie descendante de derniereCategorieDepliee
+				document.getElementById(this.derniereCategorieDepliee).style.border = '1px black solid';
+
 				for (var m = 0 ; m < ToutesCategories[this.derniereCategorieDepliee].nbOfNotes; m++) { // d'abord replier les Notes filles de derniereCategorieDepliee
 					//alert (this.derniereCategorieDepliee+'b'+XX(m+1));
 					document.getElementById(this.derniereCategorieDepliee+'b'+XX(m+1)).style.display = 'none';					
@@ -133,6 +140,8 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 						document.getElementById(this.derniereCategorieDepliee+'a'+XX(i+1)).style.display = 'none';
 					}				  
 				}
+
+				document.getElementById(idCategorieaDeplier).style.border = '2px black solid';
 
 				var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01') || document.getElementById(idCategorieaDeplier+'b01'); // puis déplier les filles de aDeplier
 				if (alreadyLoadedInDOM === null) {

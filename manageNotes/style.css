@@ -35,7 +35,7 @@ div.folder:active {background-color: #ff0000;}
 div.folder:hover {background-color: #ffaa00;}
 
 div.note:active {background-color: #ff3300;}
-div.note:hover {background-color: #ffaa00;}
+div.note:hover {background-color: #aaffaa;}
 /*div#frameOfTree div {white-space: pre;} : pb ceci entraine que les textes sortent des div*/
 
 
