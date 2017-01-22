@@ -217,8 +217,13 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 		// if (!isVisible) {oCategorieAffichageDOM.style.display = 'none';}
 		document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM); // si on insere un folder, ET qu'il y a au déjà moins une note, on l'insertBefore
 	}
+	//alert(nbOfNotesInPathParent);
+	//alert("sCategoriePere ="+sCategoriePere);
+	//alert("av.ToutesCategories[sCategoriePere].nbOfNotes =" + ToutesCategories[sCategoriePere].nbOfNotes);
 	ToutesCategories[sCategoriePere].nbOfFolders += nbOfFoldersInPathParent ;	
 	ToutesCategories[sCategoriePere].nbOfNotes += nbOfNotesInPathParent;		
+	//alert("AP.ToutesCategories[sCategoriePere].nbOfNotes =" + ToutesCategories[sCategoriePere].nbOfNotes);
+	//alert(typeof(ToutesCategories[sCategoriePere].nbOfNotes) +" et " + typeof(nbOfNotesInPathParent));	
 }
 
 document.getElementById("insertNewFolder").addEventListener('click', function() {
@@ -292,6 +297,7 @@ function insertNewNote(bIsNote, idCategoriePere) {
 				else {
 					sPathTreeItemToInsert += "a" + XX(parseInt(ToutesCategories[idCategoriePere].nbOfFolders)+1);
 				}
+				//alert(sPathTreeItemToInsert);
 				requeteXhrInsertNewNote(sNewNote, sPathTreeItemToInsert);
 				//alert('coucou dans ecrireNoteDsBdd');
 			}
@@ -335,8 +341,9 @@ function requeteXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
 			var sInstanciationCategorieInseree = sPathTreeItemToInsert+"|"+sNewNote+"|"+((sPathTreeItemToInsert.length+1)/3-1)+"|0|0";
-			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , sPathTreeItemToInsert )
-			arborescenceNotes.seDeplacerDanslArborescenceReduite(sPathTreeItemToInsert.slice(0,-3));
+			var pathParent = sPathTreeItemToInsert.slice(0,-3);
+			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , pathParent )
+			arborescenceNotes.seDeplacerDanslArborescenceReduite(pathParent);
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
 				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
