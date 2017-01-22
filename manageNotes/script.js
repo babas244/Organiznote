@@ -38,6 +38,17 @@ function fInstantiateRoot() {
 
 function displayContextMenu(path) {
 	//alert (typeof(path));
+/* 	var sColorOfDivTreeItemFocused;
+	if (pathFocused === "01" || pathFocused.substr(-3,1)==="a") {
+		sColorOfDivTreeItemFocused = '#bbbbbb';
+	}
+	else {
+		sColorOfDivTreeItemFocused = '#eeeeee';		
+	}
+	document.getElementById(pathFocused).style.backgroundColor = sColorOfDivTreeItemFocused;
+ */
+	document.getElementById(pathFocused).style.backgroundColor = '#cccccc';
+
 	openContextMenu = document.getElementById("fondMenuCategorie");
 	openContextMenu.style.display = 'block';
 	if (path === "01") {
@@ -58,10 +69,18 @@ function hideContextMenu() {
 	openContextMenu = document.getElementById("fondMenuCategorie");
 	openContextMenu.style.display = 'none';
 	aElementsToHide = openContextMenu.children;
-	for (var i = 0 ; i < aElementsToHide.length ; i++ ) {
+	for (var i = 0 ; i < aElementsToHide.length ; i++ ) { // plutot mettre chaque groupes d'item d'un menu selon sa classe cmme enfants dans une div?
 		//alert (aElementsToHide[i]);
 		aElementsToHide[i].style.display = 'none';
 	}
+	var sOriginalColorOfDivTreeItem;
+	if (pathFocused === "01" || pathFocused.substr(-3,1)==="a") {
+		sOriginalColorOfDivTreeItem = '#ffff00';
+	}
+	else {
+		sOriginalColorOfDivTreeItem = '#ffffff';		
+	}
+	document.getElementById(pathFocused).style.backgroundColor = sOriginalColorOfDivTreeItem;
 }
 	
 function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
