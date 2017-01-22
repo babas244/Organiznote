@@ -201,8 +201,8 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 	var CategorieParsee = sCategoriesRecuperees.split('|'); // interdiction d'utiliser ce caractère dans une note (on pourrait mettre une interdiction au moment d'enregistrer une note et au moment de l'importation) 
 	var nbdItemsDansCategorieParsee = CategorieParsee.length; 
 	
-	var nbOfFoldersInPathParent = 0;
-	var nbOfNotesInPathParent = 0;
+	var nbOfFoldersAddedInPathParent = 0;
+	var nbOfNotesAddedInPathParent = 0;
 	
 	for (i = 0 ; i < nbdItemsDansCategorieParsee-3; i = i + 4) { // vérifier le -3
 		var sIdCategorie = CategorieParsee[i];
@@ -213,18 +213,6 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 		var oCategorieAffichageDOM = document.createElement("div"); // plutôt un button en fait ??
 		oCategorieAffichageDOM.id = sIdCategorie;
 
-		if (sIdCategorie.substr(-3,1)==="a") {// si path contient un "a" à 3 rangs de la fin c'est un folder et pas une note
-			nbOfFoldersInPathParent += 1;
-			oCategorieAffichageDOM.className = "folder";
-			oCategorieAffichageDOM.addEventListener('click', function(e) {
-				arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id)
-			}, false);					
-		}
-		else { // sinon c'est une note
-			nbOfNotesInPathParent += 1;
-			oCategorieAffichageDOM.className = "note";			
-		}
-		
 		oCategorieAffichageDOM.addEventListener('contextmenu', function(e) {
 			e.preventDefault();
 			pathFocused = e.target.id;
@@ -233,16 +221,35 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 		
 		oCategorieAffichageDOM.style.marginLeft = iRetraitAffichagedUneCategorie*(nNiveauDeCategorie) + 'px'; // mettre la marge en fonction du niveau de la catégorie
 		oCategorieAffichageDOM.innerHTML = sContent; 
+
+		if (sIdCategorie.substr(-3,1)==="a") {// si path contient un "a" à 3 rangs de la fin c'est un folder et pas une note
+			nbOfFoldersAddedInPathParent += 1;
+			oCategorieAffichageDOM.className = "folder";
+			oCategorieAffichageDOM.addEventListener('click', function(e) {
+				arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id)
+			}, false);
+			var noteAlreadyLoadedInDOM = document.getElementById(sCategoriePere+'b01');
+			if (noteAlreadyLoadedInDOM === null) {// si il n'y pas une seule note
+				document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM);
+			} else { // si il y a au déjà moins une note
+				document.getElementById("frameOfTree").insertBefore(oCategorieAffichageDOM , noteAlreadyLoadedInDOM );				
+			}
+		}	
+		else { // sinon c'est une note
+			nbOfNotesAddedInPathParent += 1;
+			oCategorieAffichageDOM.className = "note";			
+			document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM);
+		}
+		
 		// if (!isVisible) {oCategorieAffichageDOM.style.display = 'none';}
-		document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM); // si on insere un folder, ET qu'il y a au déjà moins une note, on l'insertBefore
 	}
-	//alert(nbOfNotesInPathParent);
+	//alert(nbOfNotesAddedInPathParent);
 	//alert("sCategoriePere ="+sCategoriePere);
 	//alert("av.ToutesCategories[sCategoriePere].nbOfNotes =" + ToutesCategories[sCategoriePere].nbOfNotes);
-	ToutesCategories[sCategoriePere].nbOfFolders += nbOfFoldersInPathParent ;	
-	ToutesCategories[sCategoriePere].nbOfNotes += nbOfNotesInPathParent;		
+	ToutesCategories[sCategoriePere].nbOfFolders += nbOfFoldersAddedInPathParent ;	
+	ToutesCategories[sCategoriePere].nbOfNotes += nbOfNotesAddedInPathParent;		
 	//alert("AP.ToutesCategories[sCategoriePere].nbOfNotes =" + ToutesCategories[sCategoriePere].nbOfNotes);
-	//alert(typeof(ToutesCategories[sCategoriePere].nbOfNotes) +" et " + typeof(nbOfNotesInPathParent));	
+	//alert(typeof(ToutesCategories[sCategoriePere].nbOfNotes) +" et " + typeof(nbOfNotesAddedInPathParent));	
 }
 
 document.getElementById("insertNewFolder").addEventListener('click', function() {
