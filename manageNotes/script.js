@@ -417,7 +417,7 @@ function queryXhrDeleteFolder(sCategoryToDelete) {
 	// ici on doit griser l'ensemble de l'arborescence 
 
 	var xhr = new XMLHttpRequest();
-	xhr.open ('GET', 'ajax/deleteFolder.php?idTopic=' + idTopic + '&sCategoryToDelete=' + sCategoryToDelete +'&sCategoryOfDad=' + sCategoryOfDad);
+	xhr.open ('GET', 'ajax/deleteFolder.php?idTopic=' + idTopic + '&sCategoryToDelete=' + sCategoryToDelete);
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {

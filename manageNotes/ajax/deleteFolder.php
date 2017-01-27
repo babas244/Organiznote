@@ -9,11 +9,13 @@ session_start();
 
 //echo "dans deleteNote !!";
 
-if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryToDelete"]) && isset($_GET["sCategoryOfDad"])) {
+if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryToDelete"])) {
 
 	//echo "Le numéro de catégoryTodelete  est ".$_GET["sCategoryToDelete"];
 
 	include '../../log_in_bdd.php';
+	
+	$sCategoryOfDad = substr($_GET["sCategoryToDelete"],0,-3);
 	
 	// on efface sCategoryToDelete et ses descendants
 	$reqDeleteChildren = $bdd -> prepare('DELETE FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote lIKE :idNoteToDelete');
@@ -27,7 +29,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryT
 
 										
 	// on update tous les items affectés par le décalage
-	$sPathParent = $_GET["sCategoryOfDad"];
+	$sPathParent = $sCategoryOfDad;
 	$sRankDeleted = $_GET["sCategoryToDelete"];
 	$nRankDeleted = intval(substr($sRankDeleted,-2));
 	$lengthPathParent = strlen($sPathParent);
@@ -48,7 +50,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryT
 		$reqUpdateDad -> execute(array(
 		'idUser' => $_SESSION['id'],
 		'idTopic' => $_GET["idTopic"], 
-		'sCategoryOfDad' => $_GET["sCategoryOfDad"], 
+		'sCategoryOfDad' => $sCategoryOfDad, 
 		'isCategory' => $isCategory));
 	$reqUpdateDad -> closeCursor();	
 										
