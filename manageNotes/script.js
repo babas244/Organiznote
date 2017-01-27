@@ -179,19 +179,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 		arborescenceNotes.derniereCategorieDepliee = idCategorieaDeplier;  
 		//alert("en fin de function, arborescenceNotes.derniereCategorieDepliee = " + arborescenceNotes.derniereCategorieDepliee);
 		}	
-	}
-	
-	this.reDisplayDerniereCategorieDepliee = function () { // affiche les enfants de derniereCategorieDepliee qui doivent avoir préalablement avoir été effacés
-		var alreadyLoadedInDOM = document.getElementById(this.derniereCategorieDepliee+'a01'); 
-		if (alreadyLoadedInDOM === null) {
-			requeteXhrRecupererArborescence(instancierArborescenceRecuperee, this.derniereCategorieDepliee);
-		}
-		else {
-			for (var j = 0 ; j < ToutesCategories[this.derniereCategorieDepliee].nbOfFolders; j++) { 
-				document.getElementById(this.derniereCategorieDepliee+'a'+XX(j+1)).style.display = 'block';
-			}
-		}		
-	}
+	}		
 }
 
 
@@ -246,8 +234,11 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 	//alert(nbOfNotesAddedInPathParent);
 	//alert("sCategoriePere ="+sCategoriePere);
 	//alert("av.ToutesCategories[sCategoriePere].nbOfNotes =" + ToutesCategories[sCategoriePere].nbOfNotes);
+	//alert("avant ToutesCategories[sCategoriePere].nbOfFolders = "+ ToutesCategories[sCategoriePere].nbOfFolders) ;	
 	ToutesCategories[sCategoriePere].nbOfFolders += nbOfFoldersAddedInPathParent ;	
 	ToutesCategories[sCategoriePere].nbOfNotes += nbOfNotesAddedInPathParent;		
+	//alert("après ToutesCategories[sCategoriePere].nbOfFolders = "+ ToutesCategories[sCategoriePere].nbOfFolders) ;	
+	
 	//alert("AP.ToutesCategories[sCategoriePere].nbOfNotes =" + ToutesCategories[sCategoriePere].nbOfNotes);
 	//alert(typeof(ToutesCategories[sCategoriePere].nbOfNotes) +" et " + typeof(nbOfNotesAddedInPathParent));	
 }
@@ -264,9 +255,9 @@ document.getElementById("insertNewNote").addEventListener('click', function() {
 	// ajouter que pathFocused = null à nouveau ??
 }, false);
 
-document.getElementById("deleteNote").addEventListener('click', function() {
+document.getElementById("deleteFolder").addEventListener('click', function() {
 	hideContextMenu();
-	queryXhrDeleteNote(pathFocused);
+	queryXhrDeleteFolder(pathFocused);
 }, false);
 
 document.getElementById("editNote").addEventListener('click', function() {
@@ -408,7 +399,7 @@ function requeteXhrRecupererArborescence(fCallback, sCategoriePere) {
 	}
 }
 
-function queryXhrDeleteNote(sCategoryToDelete) {
+function queryXhrDeleteFolder(sCategoryToDelete) {
 	sCategoryOfDad = sCategoryToDelete.slice(0,-3);// on détermine la catégorie père
 	//alert("Etes vous sûr de vouloir effacer " + sCategoryToDelete +"?\n\navec CategoryOfDad = " + sCategoryOfDad);
 
@@ -416,14 +407,17 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 
 	arborescenceNotes.seDeplacerDanslArborescenceReduite(sCategoryOfDad); // l'arborescente réduite s'affiche avec categorie pere est derniereCategorieDepliee
 
-	for (var k = 0 ; k < ToutesCategories[sCategoryOfDad].nNbDeComposants ; k++ ) {	// on efface les enfants du père
+	for (var k = 0 ; k < ToutesCategories[sCategoryOfDad].nbOfFolders ; k++ ) {	// on efface les folders enfants du père
 		document.getElementById(sCategoryOfDad+'a'+XX(k+1)).style.display = 'none';		
 	}
+	for (var i = 0 ; i < ToutesCategories[sCategoryOfDad].nbOfNotes ; i++ ) {	// on efface les Notes enfants du père
+		document.getElementById(sCategoryOfDad+'b'+XX(i+1)).style.display = 'none';		
+	}	
 	
 	// ici on doit griser l'ensemble de l'arborescence 
 
 	var xhr = new XMLHttpRequest();
-	xhr.open ('GET', 'ajax/deleteNote.php?idTopic=' + idTopic + '&sCategoryToDelete=' + sCategoryToDelete +'&sCategoryOfDad=' + sCategoryOfDad);
+	xhr.open ('GET', 'ajax/deleteFolder.php?idTopic=' + idTopic + '&sCategoryToDelete=' + sCategoryToDelete +'&sCategoryOfDad=' + sCategoryOfDad);
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
@@ -431,12 +425,19 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 			for (var i=0 ; i < ePathsToDelete.length ; i++ ) {
 				document.getElementById("frameOfTree").removeChild(ePathsToDelete[i]);
 			}
-			ToutesCategories[sCategoryOfDad].nbOfFolders -=1;
-			arborescenceNotes.reDisplayDerniereCategorieDepliee();
-		// ici on doit dégriser l'ensemble de l'arborescence
+			ToutesCategories[sCategoryOfDad].nbOfFolders =0;
+			
+			ePathsToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+sCategoryOfDad+'b'+'"]'); 
+			for (var j=0 ; j < ePathsToDelete.length ; j++ ) {
+				document.getElementById("frameOfTree").removeChild(ePathsToDelete[j]);
+			}			
+			ToutesCategories[sCategoryOfDad].nbOfNotes =0;
+			
+			requeteXhrRecupererArborescence(instancierArborescenceRecuperee, sCategoryOfDad);
+			// ici on doit dégriser l'ensemble de l'arborescence
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
+				alert('Une erreur est survenue dans queryXhrDeleteFolder !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
 		}
 	}
 }

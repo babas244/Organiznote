@@ -91,7 +91,8 @@ include '../sessionAuthentication.php';
 			<div id="insertNewFolder" class="isRoot isFolder">Nouvelle catégorie fille</div>		
 			<div id="insertNewNote" class="isRoot isFolder">Nouvelle note</div>
 			<div id="editNote" class="isFolder isNote">Editer</div>	
-			<div id="deleteNote" class="isFolder isNote">Effacer</div>
+			<div id="deleteFolder" class="isFolder">Effacer catégorie</div>
+			<div id="deleteNote" class="isNote">Effacer note</div>
 			<div id="archiveNote" class="isFolder isNote">Archiver(maintenant/date (choisie))</div>
 			<div id="archiveToDo" class="isFolder isNote">Fait(maintenant/date (choisie))</div>
 			<div id="DisplayContentCategory" class="isRoot isFolder">Afficher l'arbre contenu dedans</div>

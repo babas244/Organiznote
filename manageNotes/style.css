@@ -53,7 +53,7 @@ div#fondMenuCategorie
 	display: none; 
 }
 
-#insertNewNote, #deleteNote, #insertNewFolder, #editNote, #archiveNote, #archiveToDo, #DisplayContentCategory, #changeCategoryIntoNote, #changeNoteIntoCategory, #cancel
+#insertNewNote, #deleteNote, #deleteFolder, #insertNewFolder, #editNote, #archiveNote, #archiveToDo, #DisplayContentCategory, #changeCategoryIntoNote, #changeNoteIntoCategory, #cancel
 {
 	position: absolute;
 	left: 20%;
@@ -66,13 +66,14 @@ div#fondMenuCategorie
 	display: none;
 }
 
-#insertNewNote:hover, #deleteNote:hover, #insertNewFolder:hover, #editNote:hover, #archiveNote:hover, #archiveToDo:hover, #DisplayContentCategory:hover, #changeCategoryIntoNote:hover, #changeNoteIntoCategory:hover, #cancel:hover
+#insertNewNote:hover, #deleteNote:hover, #deleteFolder:hover, #insertNewFolder:hover, #editNote:hover, #archiveNote:hover, #archiveToDo:hover, #DisplayContentCategory:hover, #changeCategoryIntoNote:hover, #changeNoteIntoCategory:hover, #cancel:hover
 {
 	background-color: #ff66ff; 	
 }
 
 #insertNewNote {top: 10%;}
 #deleteNote {top: 15%;}
+#deleteFolder {top: 15%;}
 #insertNewFolder{top: 20%;}
 #editNote{top: 25%;}
 #archiveNote{top: 30%;}

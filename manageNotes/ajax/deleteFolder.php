@@ -9,8 +9,6 @@ session_start();
 
 //echo "dans deleteNote !!";
 
-$isCategory = "1";
-
 if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryToDelete"]) && isset($_GET["sCategoryOfDad"])) {
 
 	//echo "Le numéro de catégoryTodelete  est ".$_GET["sCategoryToDelete"];
@@ -18,12 +16,11 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryT
 	include '../../log_in_bdd.php';
 	
 	// on efface sCategoryToDelete et ses descendants
-	$reqDeleteChildren = $bdd -> prepare('DELETE FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote lIKE :idNoteToDelete AND isCategory=:isCategory');
+	$reqDeleteChildren = $bdd -> prepare('DELETE FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote lIKE :idNoteToDelete');
 		$reqDeleteChildren -> execute(array(
 		'idUser' => $_SESSION['id'],
 		'idTopic' => $_GET["idTopic"], 
-		'idNoteToDelete' => $_GET["sCategoryToDelete"]."%",
-		'isCategory' => $isCategory));
+		'idNoteToDelete' => $_GET["sCategoryToDelete"]."%"));
 	$reqDeleteChildren->closeCursor();	// att ! 01% efface aussi 01, ce qui sera interdit si 01 devient la racine. pour éviter ça on effacer 01a%, mais cela  n'inclut que les folders, mais de risque car il n'y a pas d'appel de deleteNote pour la racine
 
 	// il faudrait faire aussi le cas où on efface qu'une seule catégorie ?
