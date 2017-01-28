@@ -194,7 +194,7 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 	
 	for (i = 0 ; i < nbdItemsDansCategorieParsee-3; i = i + 4) { // vérifier le -3
 		var sIdCategorie = CategorieParsee[i];
-		var sContent = CategorieParsee[i+1];
+		var sContent = CategorieParsee[i+1].replace(/&lt;br&gt;/gi, "\n");
 		var nNiveauDeCategorie = ((sIdCategorie.length+1)/3)-1; // ou ToutesCategories[sCategoriePere].niveauDeCategorie + 1 ? 
 		var nNbDeComposants = CategorieParsee[i+3]; // a enlever
 		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, nNiveauDeCategorie, 0,0);		
@@ -357,6 +357,7 @@ function editNote(sIdCategoryToEdit) {
 }
 
 function requeteXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
+	sNewNote = sNewNote.replace(/\r\n|\r|\n/g,'<br>');
 	var xhr = new XMLHttpRequest(); 
 	xhr.open ('GET', 'ajax/insertNewNote.php?idTopic=' + idTopic + '&newNote=' + sNewNote + '&sPathTreeItemToInsert=' + sPathTreeItemToInsert);
 	xhr.send(null);
@@ -374,8 +375,9 @@ function requeteXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
 }
 
 function queryXhrEditNote(sNewNote, sIdCategoryToEdit) {
+	sNewNoteToSendToDbb = sNewNote.replace(/\r\n|\r|\n/g,'<br>');
 	var xhr = new XMLHttpRequest(); 
-	xhr.open ('GET', 'ajax/editNote.php?idTopic=' + idTopic + '&sIdCategoryToEdit=' + sIdCategoryToEdit + '&sNewNote=' + sNewNote);
+	xhr.open ('GET', 'ajax/editNote.php?idTopic=' + idTopic + '&sIdCategoryToEdit=' + sIdCategoryToEdit + '&sNewNote=' + sNewNoteToSendToDbb);
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {	
@@ -403,8 +405,6 @@ function requeteXhrRecupererArborescence(fCallback, sCategoriePere) {
 		}
 	}
 }
-
-
 
 function queryXhrDeleteNote(sCategoryToDelete) {
 	var sCategoryOfDad = sCategoryToDelete.slice(0,-3);// on détermine la catégorie père
@@ -439,9 +439,6 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 		}
 	} 
 }
-
-
-
 
 function queryXhrDeleteFolder(sCategoryToDelete) {
 	var sCategoryOfDad = sCategoryToDelete.slice(0,-3);// on détermine la catégorie père

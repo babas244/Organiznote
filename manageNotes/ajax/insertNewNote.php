@@ -14,13 +14,15 @@ if (isset($_SESSION['id']) && isset($_GET["newNote"]) && isset($_GET["idTopic"])
 	
 	include '../../log_in_bdd.php';
 
+	$newNote = htmlspecialchars($_GET["newNote"]);
+	
 	// inserer la note
 	$reqInsertNote = $bdd -> prepare('INSERT INTO notes(idUser,idTopic,idNote,content,dateCreation) VALUES (:idUser,:idTopic,:idNote,:newNote,NOW())');
 		$reqInsertNote -> execute(array(
 		'idUser' => $_SESSION['id'],
 		'idTopic' => $_GET["idTopic"], 
 		'idNote' => $_GET["sPathTreeItemToInsert"],
-		'newNote' => $_GET["newNote"])) or die(print_r($reqInsertNote->errorInfo()));
+		'newNote' => $newNote)) or die(print_r($reqInsertNote->errorInfo()));
 	//echo ('<br>'.$reqInsertNote->rowCount().' rangs affectés');
 	$reqInsertNote -> closeCursor();	
 }

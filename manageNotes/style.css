@@ -20,6 +20,7 @@ div#frameOfTree
 	border: 1px black solid;
 	border-radius: 5px;
 	word-wrap: break-word;
+	white-space: pre-wrap;
 }
 
 .note
@@ -29,6 +30,7 @@ div#frameOfTree
 	border: 1px black solid;
 	border-radius: 5px;
 	word-wrap: break-word;
+	white-space: pre-wrap;
 }
 
 div.folder:active {background-color: #ff0000;}
