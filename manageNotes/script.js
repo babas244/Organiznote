@@ -260,6 +260,11 @@ document.getElementById("deleteFolder").addEventListener('click', function() {
 	queryXhrDeleteFolder(pathFocused);
 }, false);
 
+document.getElementById("deleteNote").addEventListener('click', function() {
+	hideContextMenu();
+	queryXhrDeleteNote(pathFocused);
+}, false);
+
 document.getElementById("editNote").addEventListener('click', function() {
 	hideContextMenu();
 	editNote(pathFocused);
@@ -399,8 +404,49 @@ function requeteXhrRecupererArborescence(fCallback, sCategoriePere) {
 	}
 }
 
+
+
+function queryXhrDeleteNote(sCategoryToDelete) {
+	var sCategoryOfDad = sCategoryToDelete.slice(0,-3);// on détermine la catégorie père
+	
+	var nRankDeleted = parseInt(sCategoryToDelete.substr(-2,2)); // on extrait le numéro de la note
+	
+	eDOMNoteToDelete = document.getElementById(sCategoryToDelete);
+	
+	eDOMNoteToDelete.style.backgroundColor = '#cccccc'; // on grise la Note a effacer
+	
+	// ici on doit griser l'ensemble de l'arborescence 
+
+	var xhr = new XMLHttpRequest();
+	xhr.open ('GET', 'ajax/deleteNote.php?idTopic=' + idTopic + '&sCategoryToDelete=' + sCategoryToDelete);
+	xhr.send(null);
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4 && xhr.status == 200) {
+			document.getElementById("frameOfTree").removeChild(eDOMNoteToDelete); // on supprime  la note		
+			
+			ePathsNotes = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+sCategoryOfDad+'b'+'"]'); // on soustrait 1 au rang des notes supérieures
+			var nRankOfNote;	
+			for (var i = 0; i < ePathsNotes.length ; i++ ) {
+				nRankOfNote = parseInt(ePathsNotes[i].id.substr(-2,2));
+				alert ("nRankOfNote =  " +nRankOfNote);
+				if (nRankOfNote > nRankDeleted) {
+					ePathsNotes[i].id = sCategoryOfDad + 'b' + XX(nRankOfNote - 1);
+					alert ("ePathsNotes[i].id = " + ePathsNotes[i].id);
+				}
+			}
+		ToutesCategories[sCategoryOfDad].nbOfNotes -= 1 ;
+		}
+		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
+			alert('Une erreur est survenue dans queryXhrDeleteFolder !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
+		}
+	} 
+}
+
+
+
+
 function queryXhrDeleteFolder(sCategoryToDelete) {
-	sCategoryOfDad = sCategoryToDelete.slice(0,-3);// on détermine la catégorie père
+	var sCategoryOfDad = sCategoryToDelete.slice(0,-3);// on détermine la catégorie père
 	//alert("Etes vous sûr de vouloir effacer " + sCategoryToDelete +"?\n\navec CategoryOfDad = " + sCategoryOfDad);
 
 	document.getElementById(sCategoryToDelete).style.backgroundColor = '#cccccc'; // on grise la categorie a effacer
