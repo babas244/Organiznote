@@ -428,10 +428,8 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 			var nRankOfNote;	
 			for (var i = 0; i < ePathsNotes.length ; i++ ) {
 				nRankOfNote = parseInt(ePathsNotes[i].id.substr(-2,2));
-				alert ("nRankOfNote =  " +nRankOfNote);
 				if (nRankOfNote > nRankDeleted) {
 					ePathsNotes[i].id = sCategoryOfDad + 'b' + XX(nRankOfNote - 1);
-					alert ("ePathsNotes[i].id = " + ePathsNotes[i].id);
 				}
 			}
 		ToutesCategories[sCategoryOfDad].nbOfNotes -= 1 ;
