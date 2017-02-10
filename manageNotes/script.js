@@ -192,11 +192,10 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 	var nbOfFoldersAddedInPathParent = 0;
 	var nbOfNotesAddedInPathParent = 0;
 	
-	for (i = 0 ; i < nbdItemsDansCategorieParsee-3; i = i + 4) { // vérifier le -3
+	for (i = 0 ; i < nbdItemsDansCategorieParsee-1; i = i + 2) {
 		var sIdCategorie = CategorieParsee[i];
 		var sContent = CategorieParsee[i+1].replace(/&lt;br&gt;/gi, "\n");
 		var nNiveauDeCategorie = ((sIdCategorie.length+1)/3)-1; // ou ToutesCategories[sCategoriePere].niveauDeCategorie + 1 ? 
-		var nNbDeComposants = CategorieParsee[i+3]; // a enlever
 		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, nNiveauDeCategorie, 0,0);		
 		var oCategorieAffichageDOM = document.createElement("div"); // plutôt un button en fait ??
 		oCategorieAffichageDOM.id = sIdCategorie;

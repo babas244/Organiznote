@@ -13,7 +13,7 @@ if (isset($_SESSION['id']) && isset($_GET["sCategoriePere"]) && (preg_match("#^[
 
 	include '../../log_in_bdd.php';
 		
-	$req = $bdd -> prepare('SELECT idNote, content, levelInTree, NbOfItems FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote REGEXP :aTrouver AND idNote NOT LIKE :categoriepere ORDER BY idNote');
+	$req = $bdd -> prepare('SELECT idNote, content FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote REGEXP :aTrouver AND idNote NOT LIKE :categoriepere ORDER BY idNote');
 	$req -> execute(array(
 	'idUser' => $_SESSION['id'],
 	'idTopic' => $_GET["idTopic"], 
@@ -23,7 +23,7 @@ if (isset($_SESSION['id']) && isset($_GET["sCategoriePere"]) && (preg_match("#^[
 	$sCategoriesRecuperees = "";
 
 	while ($donnees = $req->fetch()) {
-		$sCategoriesRecuperees .= $donnees['idNote'] . "|" . $donnees['content'] . "|" . $donnees['levelInTree'] . "|" . $donnees['NbOfItems'] . "|";
+		$sCategoriesRecuperees .= $donnees['idNote'] . "|" . $donnees['content'] . "|";
 	}
 
 	echo substr($sCategoriesRecuperees, 0, -1); //il faut enlever le dernier |
