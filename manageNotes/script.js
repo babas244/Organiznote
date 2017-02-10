@@ -362,7 +362,7 @@ function requeteXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			var sInstanciationCategorieInseree = sPathTreeItemToInsert+"|"+sNewNote+"|"+((sPathTreeItemToInsert.length+1)/3-1)+"|0|0";
+			var sInstanciationCategorieInseree = sPathTreeItemToInsert+"|"+sNewNote;
 			var pathParent = sPathTreeItemToInsert.slice(0,-3);
 			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , pathParent )
 			arborescenceNotes.seDeplacerDanslArborescenceReduite(pathParent);
