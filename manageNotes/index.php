@@ -22,6 +22,11 @@ include '../sessionAuthentication.php';
 			echo "L'utilisateur <strong>".$_SESSION['user']."</strong>, d'identifiant ".$_SESSION['id']." est connecté sur ".$_GET['idTopic'];
 		?>
 		<a href="../logout.php">(se déconnecter)</a>;
+		<div id="frameOfToDo">
+			<div id="noscroll">
+			a faire
+			</div>
+		</div>
 		<div id="frameOfTree">
 			<div id="01" class="folder">   <!--div "racine"--> 
 			</div>
@@ -110,6 +115,7 @@ include '../sessionAuthentication.php';
 			?>
 		</script>
 
-		<script src="script.js"></script>	
+		<script src="toDo.js"></script>
+		<script src="Tree.js"></script>	
 	</body>
 </html> 

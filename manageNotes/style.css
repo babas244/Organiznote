@@ -1,3 +1,19 @@
+div#frameOfToDo
+{
+	background-color: blue;
+	overflow: scroll;
+	width: 100%;
+	position: fixed;
+	height: 80%;
+	font-size: 5em
+}
+
+div#noscroll
+{
+	background-color: yellow;
+	width: 80%;
+}
+
 div#frameOfTree
 {
 	background-color: #f2f2aa;
