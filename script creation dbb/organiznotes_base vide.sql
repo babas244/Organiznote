@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Sam 07 Janvier 2017 à 19:27
+-- Généré le :  Ven 10 Février 2017 à 05:19
 -- Version du serveur :  5.7.11
 -- Version de PHP :  5.6.19
 
@@ -32,13 +32,9 @@ CREATE TABLE `notes` (
   `idTopic` int(11) NOT NULL,
   `idNote` varchar(255) NOT NULL,
   `content` text NOT NULL,
-  `NbOfItems` int(11) NOT NULL,
   `dateCreation` datetime NOT NULL,
   `dateExpired` date DEFAULT NULL,
-  `dateArchive` date DEFAULT NULL,
-  `isCategory` tinyint(1) NOT NULL,
-  `levelInTree` int(16) NOT NULL,
-  `rowOfNoteInCategory` int(11) NOT NULL
+  `dateArchive` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -99,17 +95,17 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `notes`
 --
 ALTER TABLE `notes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=546;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=753;
 --
 -- AUTO_INCREMENT pour la table `topics`
 --
 ALTER TABLE `topics`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 --
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
