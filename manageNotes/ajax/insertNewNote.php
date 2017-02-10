@@ -4,13 +4,7 @@ header("Content-Type: text/plain");
 
 session_start();
 
-//echo '$_SESSION["id"] = '.$_SESSION['id'];
-
-if (isset($_SESSION['id']) && isset($_GET["newNote"]) && isset($_GET["idTopic"]) && isset($_GET["sPathTreeItemToInsert"])) {
-	
-	//echo "coucou dans insertNewNote ! ";
-	
-	//echo '$_GET["idTopic"]= '.$_GET["idTopic"];
+if (isset($_SESSION['id']) && isset($_GET["newNote"]) && isset($_GET["idTopic"]) && isset($_GET["sPathTreeItemToInsert"]) && (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sPathTreeItemToInsert"]))) {
 	
 	include '../../log_in_bdd.php';
 

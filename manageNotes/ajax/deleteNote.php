@@ -7,11 +7,7 @@ header("Content-Type: text/plain");
 
 session_start();
 
-//echo "dans deleteNote !!";
-
-if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryToDelete"])) {
-
-	//echo "Le numéro de catégoryTodelete  est ".$_GET["sCategoryToDelete"];
+if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryToDelete"]) && (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sCategoryToDelete"]))) {
 
 	include '../../log_in_bdd.php';
 	

@@ -7,11 +7,7 @@ header("Content-Type: text/plain");
 
 session_start();
 
-//echo "dans deleteNote !!";
-
-if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryToDelete"])) {
-
-	//echo "Le numéro de catégoryTodelete  est ".$_GET["sCategoryToDelete"];
+if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryToDelete"]) && (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sCategoryToDelete"]))) {
 
 	include '../../log_in_bdd.php';
 	
@@ -24,9 +20,6 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryT
 		'idTopic' => $_GET["idTopic"], 
 		'idNoteToDelete' => $_GET["sCategoryToDelete"]."%"));
 	$reqDeleteChildren->closeCursor();	// att ! 01% efface aussi 01, ce qui sera interdit si 01 devient la racine. pour éviter ça on effacer 01a%, mais cela  n'inclut que les folders, mais de risque car il n'y a pas d'appel de deleteNote pour la racine
-
-	// il faudrait faire aussi le cas où on efface qu'une seule catégorie ?
-
 										
 	// on update tous les items affectés par le décalage
 	$sPathParent = $sCategoryOfDad;
@@ -44,17 +37,6 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryT
 		'startWithPathParent' => $sPathParent.'a%',
 		'nRankDeleted' => $nRankDeleted));		
 	$reqUpdateSiblingsAndChildren->closeCursor();  // attention la requete concerne les folders ET les notes 
-
-	//il faut aussi décrémenter NbOfItems de la catégorie Pere :
-	$reqUpdateDad = $bdd -> prepare('UPDATE notes SET nbOfItems=nbOfItems-1 WHERE idUser=:idUser AND idTopic=:idTopic AND idNote=:sCategoryOfDad AND isCategory=:isCategory');
-		$reqUpdateDad -> execute(array(
-		'idUser' => $_SESSION['id'],
-		'idTopic' => $_GET["idTopic"], 
-		'sCategoryOfDad' => $sCategoryOfDad, 
-		'isCategory' => $isCategory));
-	$reqUpdateDad -> closeCursor();	
-										
-	
 }
 
 else {

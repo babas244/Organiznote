@@ -284,8 +284,8 @@ document.getElementById("annulerEntrerNote").addEventListener('click', AnnulerEn
 function AnnulerEntrerNote() {
 	document.getElementById("fondPageEntrerTexte").style.display = 'none';
 	document.getElementById("formulaireEntrerNote").reset();
-	// faut-il ici remove handler ? : document.getElementById("enregistrerNouvelleNote").removeEventListener('click', ecrireNoteDsBdd, false); 
-	// a priori oui car dès que le form est ouvert, le handler est lancé
+	document.getElementById("enregistrerNouvelleNote").removeEventListener('click', ecrireNoteDsBdd, false); 
+	document.getElementById("enregistrerNouvelleNote").removeEventListener('click', editNoteInDbb, false);
 }
 
 function initializeFormEnterNote() {

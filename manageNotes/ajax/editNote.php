@@ -6,11 +6,7 @@ session_start();
 
 //echo '$_SESSION["id"] = '.$_SESSION['id'];
 
-if (isset($_SESSION['id'])&& isset($_GET["idTopic"]) && isset($_GET["sIdCategoryToEdit"]) && isset($_GET["sNewNote"])) {
-	
-	//echo "coucou dans editNote ! ";
-	
-	//echo '$_GET["idTopic"]= '.$_GET["idTopic"];
+if (isset($_SESSION['id'])&& isset($_GET["idTopic"]) && isset($_GET["sIdCategoryToEdit"]) && (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sIdCategoryToEdit"])) && isset($_GET["sNewNote"])) {
 	
 	include '../../log_in_bdd.php';
 

@@ -7,33 +7,11 @@ header("Content-Type: text/plain");
 
 session_start();
 
-//echo "dans GetTree !!";
-
-if (isset($_SESSION['id']) && isset($_GET["sCategoriePere"]) && isset($_GET["idTopic"])) {
-	
-	// faut-il faire des htmlchar ici ?? et vérifier que tout est de la bonne forme ?? A priorio oui, ça vient de l'utilisateur..
-	
-	//echo '$_GET["sCategoriePere"] est ' . $_GET["sCategoriePere"] . " ! ";
+if (isset($_SESSION['id']) && isset($_GET["sCategoriePere"]) && (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sCategoriePere"])) && isset($_GET["idTopic"])) {
 	
 	$sCategoriePere = $_GET["sCategoriePere"]; //utile ou pas ?
-	// faire une regex pour voir si sCategoriePere est de la forme correcte
-
-	//echo "Le numéro de catégorie père est " . $sCategoriePere . " ! ";
 
 	include '../../log_in_bdd.php';
-							
-	/* il faudra vérifier que cet idUser possède cet idTopic à chaque fois...Alors que si on avait une table par topic, il suffirait de vérifier 1 fois ?? Mmm.pas sûr
-	$req = $bdd -> prepare ('SELECT topic FROM topics WHERE idUser=:idUser AND idTopic=:idTopic);	
-	$req -> execute(array(
-	'idUser' => $_SESSION['id'],
-	'idTopic' => $_SESSION['' ]);
-	
-	$resultat = $req -> fetch();
-	if ($resultat) {
-		...code
-	}
-	Non inutile car $_SESSION['id'] n'est pas manipulable (c'est bien sûr ça ??). Et que si on met un idTopic qui n'appartient pas à cet user aucun résultat ne va revenir.
-	*/
 		
 	$req = $bdd -> prepare('SELECT idNote, content, levelInTree, NbOfItems FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote REGEXP :aTrouver AND idNote NOT LIKE :categoriepere ORDER BY idNote');
 	$req -> execute(array(
