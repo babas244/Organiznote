@@ -5,7 +5,21 @@ div#frameOfToDo
 	width: 100%;
 	/* pour le tel il faudra probablement mettre a position : fixed;*/
 	height: 80%;
-	font-size: 5em
+	font-size: 3em
+}
+
+button#addToDo
+{
+	background-color:  green;
+	
+}
+
+.toDo
+{
+	background-color: #eeaaee;
+	border: 1px black solid;
+	border-radius: 2px;
+	word-wrap: break-word;	
 }
 
 div#noscroll

@@ -24,7 +24,22 @@ include '../sessionAuthentication.php';
 		<a href="../logout.php">(se déconnecter)</a>;
 		<div id="frameOfToDo">
 			<div id="noscroll">
-			a faire
+			<button id="addToDo">+</button>
+			<?php
+				// afficher la todolist
+				$reqDisplayToDoList = $bdd -> prepare('SELECT content, dateCreation, dateExpired FROM todolists WHERE idUser=:idUser AND idTopic=:idTopic ORDER BY dateCreation DESC');
+					$reqDisplayToDoList -> execute(array(
+					'idUser' => $_SESSION['id'],
+					'idTopic' => $_GET["idTopic"])) or die(print_r($reqDisplayToDoList->errorInfo()));
+					//echo ('<br>'.$reqDisplayToDoList->rowCount().' rangs affectés');
+					
+					$rankToDoNote= 0;
+					while ($donnees = $reqDisplayToDoList->fetch()) {
+						echo "<div class='toDo' id='toDo".$rankToDoNote."'>".$donnees['content']."</div>";
+						$rankToDoNote +=1;
+					}
+				$reqDisplayToDoList -> closeCursor();	
+			?>
 			</div>
 		</div>
 		<div id="frameOfTree">
