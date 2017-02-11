@@ -32,15 +32,13 @@ if (isset($_SESSION['id']) && isset($_POST['newTopic']) && isset($_POST['colorBa
 		$reqGetIdOfTopic -> closeCursor();
 		//echo "\nId = ".$idTopic;
 		
-		// insérer Root comme première catégorie de la table Notes
+		// insérer "01" comme catégorie root de la table Notes
 		$reqInsertRootIntoNotesTable = $bdd->prepare('INSERT INTO Notes(idUser,idTopic,idNote,content,dateCreation) VALUES (:idUser,:idTopic,"01",:newNote,NOW())');
-
 		$reqInsertRootIntoNotesTable -> execute(array(
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $idTopic, 
 			'newNote' => $newTopic));
 		$reqInsertRootIntoNotesTable -> closeCursor();	
-
 	}
 	
 	header ('Location: manageTopics.php');

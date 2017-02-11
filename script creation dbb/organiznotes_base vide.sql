@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Ven 10 Février 2017 à 05:19
+-- Généré le :  Sam 11 Février 2017 à 08:15
 -- Version du serveur :  5.7.11
 -- Version de PHP :  5.6.19
 
@@ -36,6 +36,23 @@ CREATE TABLE `notes` (
   `dateExpired` date DEFAULT NULL,
   `dateArchive` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `todolists`
+--
+
+CREATE TABLE `todolists` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `idUser` int(11) NOT NULL,
+  `idTopic` int(11) NOT NULL,
+  `idNote` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `dateCreation` datetime NOT NULL,
+  `dateExpired` date DEFAULT NULL,
+  `dateArchive` date DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 

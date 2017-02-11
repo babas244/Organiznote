@@ -115,7 +115,7 @@ include '../sessionAuthentication.php';
 			?>
 		</script>
 
-		<script src="toDo.js"></script>
-		<script src="Tree.js"></script>	
+		<script src="toDoList.js"></script>
+		<script src="dataTree.js"></script>	
 	</body>
 </html> 
