@@ -3,7 +3,7 @@ div#frameOfToDo
 	background-color: blue;
 	overflow: scroll;
 	width: 100%;
-	position: fixed;
+	/* pour le tel il faudra probablement mettre a position : fixed;*/
 	height: 80%;
 	font-size: 5em
 }
