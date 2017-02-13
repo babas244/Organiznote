@@ -1,6 +1,7 @@
 var iRetraitAffichagedUneCategorie= 10;
 ToutesCategories = {};
 var pathFocused = null; 
+var ongoingAction = null;
 
 fInstantiateRoot();
 
@@ -242,16 +243,17 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 	//alert(typeof(ToutesCategories[sCategoriePere].nbOfNotes) +" et " + typeof(nbOfNotesAddedInPathParent));	
 }
 
-document.getElementById("insertNewFolder").addEventListener('click', function() {
-	hideContextMenu();
-	insertNewNote(false,pathFocused);
-	// ajouter que pathFocused = null à nouveau ??
-}, false);
-
 document.getElementById("insertNewNote").addEventListener('click', function() {
 	hideContextMenu();
-	insertNewNote(true,pathFocused);
-	// ajouter que pathFocused = null à nouveau ??
+	ongoingAction = 'insertNewNote';
+	initializeFormEnterNote();
+}, false);
+
+
+document.getElementById("insertNewFolder").addEventListener('click', function() {
+	hideContextMenu();
+	ongoingAction = 'insertNewFolder';
+	initializeFormEnterNote();
 }, false);
 
 document.getElementById("deleteFolder").addEventListener('click', function() {
@@ -279,12 +281,16 @@ document.getElementById("reinitialiserFormulaireEntrerNote").addEventListener('c
 	document.getElementById("zoneFormulaireEntrerNote").focus();
 }, false);
 
-document.getElementById("annulerEntrerNote").addEventListener('click', AnnulerEntrerNote, false);
-function AnnulerEntrerNote() {
-	document.getElementById("fondPageEntrerTexte").style.display = 'none';
-	document.getElementById("formulaireEntrerNote").reset();
-	document.getElementById("enregistrerNouvelleNote").removeEventListener('click', ecrireNoteDsBdd, false); 
-	document.getElementById("enregistrerNouvelleNote").removeEventListener('click', editNoteInDbb, false);
+document.getElementById("annulerEntrerNote").addEventListener('click', function() {
+	actionWithForm("");
+}, false);
+
+document.getElementById("enregistrerNouvelleNote").addEventListener('click', function() {
+	actionWithForm(returnFormContent());
+}, false);
+
+function returnFormContent(){
+	return document.getElementById("zoneFormulaireEntrerNote").value; 
 }
 
 function initializeFormEnterNote() {
@@ -298,41 +304,30 @@ function initializeFormEnterNote() {
 	}, false);
   */
 }
-			
-function insertNewNote(bIsNote, idCategoriePere) {
-	//alert("Dans InsertNote, idCategoriePere = "+idCategoriePere);
-	initializeFormEnterNote();
-	document.getElementById("enregistrerNouvelleNote").addEventListener('click', ecrireNoteDsBdd, false);
-	function ecrireNoteDsBdd() { // à mettre en dehors de la function insertNewNote : hmmm..elle a besoin de idCategoriePere.. Et en fait on la réutilose pas, il vaudrait mieux une anonyme : non on n'a besoin qu'elle ait un nom pour enlever le listener plus tard. oui mais c'est pas une raison, on peut l'enlever indépendemment ! 
-		// griser la catégorie mère??
-		sNewNote = document.getElementById("zoneFormulaireEntrerNote").value;
-		//alert(document.getElementById("zoneFormulaireEntrerNote").value);
-		if (sNewNote !== "") {
-			document.getElementById("enregistrerNouvelleNote").removeEventListener('click', ecrireNoteDsBdd, false);
-			
-			if (idCategoriePere) {
-				var sPathTreeItemToInsert = idCategoriePere;
-				if (bIsNote === true) {
-					sPathTreeItemToInsert += "b" + XX(parseInt(ToutesCategories[idCategoriePere].nbOfNotes)+1); // ParseInt nécessaire ?? 
-				}
-				else {
-					sPathTreeItemToInsert += "a" + XX(parseInt(ToutesCategories[idCategoriePere].nbOfFolders)+1);
-				}
-				//alert(sPathTreeItemToInsert);
-				requeteXhrInsertNewNote(sNewNote, sPathTreeItemToInsert);
-				//alert('coucou dans ecrireNoteDsBdd');
-			}
-			else { // marche pas.. // if (typeof v !== 'undefined' && v !== null) 
-				alert("note pas encore placée");
-			}
-			document.getElementById("fondPageEntrerTexte").style.display = 'none';
-			//dégriser la catégorie mère		
+
+function actionWithForm(inputUserInForm) {
+	if (ongoingAction === 'insertNewNote') {
+		//alert (typeof(inputUserInForm));
+		if (inputUserInForm !=="") {
+			requeteXhrInsertNewNote(inputUserInForm, pathFocused + "b" + XX(parseInt(ToutesCategories[pathFocused].nbOfNotes)+1));				
 		}
 		else {
-			alert("La note est vide, recommencez.") // pourquoi ça met à jour le contenu de la div avec une chaine vide quand même ??
+			document.getElementById("fondPageEntrerTexte").style.display = 'none';
 		}
-	}
+	pathFocused = null;
+	} 
+	if (ongoingAction === 'insertNewFolder') {
+		if (inputUserInForm !=="") {
+			requeteXhrInsertNewNote(inputUserInForm, pathFocused + "a" + XX(parseInt(ToutesCategories[pathFocused].nbOfFolders)+1));					
+		}
+		else {
+			document.getElementById("fondPageEntrerTexte").style.display = 'none';
+		}
+	pathFocused = null;
+	} 
+ongoingAction = null;
 }
+
 
 function editNote(sIdCategoryToEdit) {
 	//alert("Dans editNote, sIdCategoryToEdit = "+sIdCategoryToEdit);
@@ -356,6 +351,7 @@ function editNote(sIdCategoryToEdit) {
 }
 
 function requeteXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
+	//alert (typeof(sNewNote));
 	sNewNote = sNewNote.replace(/\r\n|\r|\n/g,'<br>');
 	var xhr = new XMLHttpRequest(); 
 	xhr.open ('GET', 'ajax/insertNewNote.php?idTopic=' + idTopic + '&newNote=' + sNewNote + '&sPathTreeItemToInsert=' + sPathTreeItemToInsert);
@@ -366,6 +362,7 @@ function requeteXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
 			var pathParent = sPathTreeItemToInsert.slice(0,-3);
 			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , pathParent )
 			arborescenceNotes.seDeplacerDanslArborescenceReduite(pathParent);
+			document.getElementById("fondPageEntrerTexte").style.display = 'none';
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
 				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
