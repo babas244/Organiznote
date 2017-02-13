@@ -268,7 +268,9 @@ document.getElementById("deleteNote").addEventListener('click', function() {
 
 document.getElementById("editNote").addEventListener('click', function() {
 	hideContextMenu();
-	editNote(pathFocused);
+	ongoingAction = 'editNote';
+	initializeFormEnterNote();
+	document.getElementById("zoneFormulaireEntrerNote").value = ToutesCategories[pathFocused].sContent;
 }, false);
 
 document.getElementById("cancel").addEventListener('click', function () {
@@ -307,7 +309,6 @@ function initializeFormEnterNote() {
 
 function actionWithForm(inputUserInForm) {
 	if (ongoingAction === 'insertNewNote') {
-		//alert (typeof(inputUserInForm));
 		if (inputUserInForm !=="") {
 			requeteXhrInsertNewNote(inputUserInForm, pathFocused + "b" + XX(parseInt(ToutesCategories[pathFocused].nbOfNotes)+1));				
 		}
@@ -325,29 +326,15 @@ function actionWithForm(inputUserInForm) {
 		}
 	pathFocused = null;
 	} 
-ongoingAction = null;
-}
-
-
-function editNote(sIdCategoryToEdit) {
-	//alert("Dans editNote, sIdCategoryToEdit = "+sIdCategoryToEdit);
-	initializeFormEnterNote();
-	document.getElementById("zoneFormulaireEntrerNote").value = ToutesCategories[sIdCategoryToEdit].sContent;
-	document.getElementById("enregistrerNouvelleNote").addEventListener('click', editNoteInDbb, false);
-	
-	
-	function editNoteInDbb() {
-		sNewNote = document.getElementById("zoneFormulaireEntrerNote").value;
-		if (sNewNote !== "") {
-			document.getElementById("enregistrerNouvelleNote").removeEventListener('click', editNoteInDbb, false);
-			document.getElementById("fondPageEntrerTexte").style.display = 'none'; // à inclure dans queryEditNote ??
-			queryXhrEditNote(sNewNote, sIdCategoryToEdit);
-			//dégriser la catégorie mère		
+	if (ongoingAction === 'editNote') {
+		if (inputUserInForm !=="") {
+			queryXhrEditNote(inputUserInForm, pathFocused);
 		}
 		else {
-			alert("La note est vide, recommencez.")
+			document.getElementById("fondPageEntrerTexte").style.display = 'none';
 		}
 	}
+ongoingAction = null;
 }
 
 function requeteXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
@@ -380,6 +367,7 @@ function queryXhrEditNote(sNewNote, sIdCategoryToEdit) {
 		//alert("Dans queryXhrEditNote, sIdCategoryToEdit = "+sIdCategoryToEdit);
 		ToutesCategories[sIdCategoryToEdit].sContent = sNewNote;
 		document.getElementById(sIdCategoryToEdit).innerHTML = sNewNote;
+		document.getElementById("fondPageEntrerTexte").style.display = 'none';
 		//document.getElementById(sIdCategoryToEdit).style.backgroundColor = "#ffff00"; // ça sert à quoi, à dégriser ?? Mais pb ça semble écraser le comportement du hover
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
