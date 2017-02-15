@@ -378,6 +378,7 @@ function queryXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
+			sNewNote = sNewNote.replace(/"/g, '\\"');
 			var sInstanciationCategorieInseree = '["'+sPathTreeItemToInsert+'","'+sNewNote+'"]';
 			var pathParent = sPathTreeItemToInsert.slice(0,-3);
 			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , pathParent )
