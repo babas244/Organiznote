@@ -90,12 +90,12 @@ div#fondMenuCategorie
 .contextMenu
 {
 	position: absolute;
-	left: 20%;
+	left: 30%;
 	/*z-index: 1; */
 	background-color: #ff11ff; 
 	color: black;
 	height: 5%;
-	width: 20%;
+	width: 40%;
 	border: 2px black solid; 
 	display: none;
 }
@@ -152,7 +152,7 @@ div#fondMenuCategorie
 	z-index: 2;
 	background-color: #11ff11;
 	height: 22px;
-	width: 100px;
+	width: 80px;
 	border: 1px black solid;
 	text-align: center; 
 	opacity: 1;
@@ -171,7 +171,7 @@ div#fondMenuCategorie
 	z-index: 2;
 	background-color: blue;
 	height: 22px;
-	width: 100px;
+	width: 80px;
 	border: 1px black solid;
 	text-align: center; 
 	opacity: 1;
@@ -191,7 +191,7 @@ div#fondMenuCategorie
 	z-index: 2;
 	background-color: red;
 	height: 22px;
-	width: 100px;
+	width: 80px;
 	border: 1px black solid;
 	text-align: center; 
 	opacity: 1;
@@ -233,7 +233,7 @@ textarea#zoneFormulaireEntrerNote
 	width: 100%;
 	/* pour le tel il faudra probablement mettre a position : fixed;*/
 	height: 80%;
-	font-size: 3em
+	font-size: 1.5em;
 }
 
 #addToDo

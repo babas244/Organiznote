@@ -13,7 +13,7 @@ include '../sessionAuthentication.php';
 <html>
     <head>
         <title>Organiznote</title>
-        <meta charset="utf-8" />
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
 		<link rel="stylesheet" href="style.css" />
     </head>
     <body>

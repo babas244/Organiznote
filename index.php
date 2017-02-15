@@ -9,7 +9,7 @@ if (isset($_COOKIE['user'])) {
 <html>
     <head>
         <title>Index</title>
-        <meta charset="utf-8"/>
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
 		<link rel="stylesheet" href="index.css" />
     </head>
     <body>

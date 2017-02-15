@@ -53,7 +53,7 @@ if (!isset($_SESSION['id'])) {
 <html>
     <head>
         <title>manageTopics</title>
-        <meta charset="utf-8"/>
+        <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
 		<link rel="stylesheet" href="manageTopics.css" />
     </head>
     <body>
