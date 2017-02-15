@@ -17,7 +17,7 @@ function fInstantiateRoot() {
 			ToutesCategories["01"] = new CategorieAbstraite("01", null, 0, 0, 0);
 			//alert (response.nNbDeComposants);
 			arborescenceNotes = new ArborescenceReduiteAffichee("01");					
-			requeteXhrRecupererArborescence(instancierArborescenceRecuperee, "01");
+			queryXhrGetChildren(instancierArborescenceRecuperee, "01");
 			document.getElementById("01").style.border = '2px black solid';
 			
 			document.getElementById("01").addEventListener('click', function(e) {
@@ -31,7 +31,7 @@ function fInstantiateRoot() {
 			}, false);
 		} 	
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-			alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
+			alert('Une erreur est survenue dans fInstantiateRoot !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
 		}
 	}
 }	
@@ -127,7 +127,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 				var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01') || document.getElementById(idCategorieaDeplier+'b01'); // puis déplier le nouveau derniereCategorieDepliee
 				//console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a01'+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);
 				if (alreadyLoadedInDOM === null) { // s'ils ne sont pas dans le DOM, i faut aller les chercher en ajax
-					requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
+					queryXhrGetChildren(instancierArborescenceRecuperee, idCategorieaDeplier);;
 				}
 				else { // sinon on a juste à les afficher
 					for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbOfFolders; j++) { // afficher les folders
@@ -157,7 +157,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 
 				var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01') || document.getElementById(idCategorieaDeplier+'b01'); // puis déplier les filles de aDeplier
 				if (alreadyLoadedInDOM === null) {
-					requeteXhrRecupererArborescence(instancierArborescenceRecuperee, idCategorieaDeplier);;
+					queryXhrGetChildren(instancierArborescenceRecuperee, idCategorieaDeplier);;
 				}
 				else {
 					for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbOfFolders; j++) {  // afficher les folders 
@@ -318,17 +318,17 @@ function initializeFormEnterNote() {
 function actionWithForm(inputUserInForm) {
 	if (ongoingAction === 'insertNewNote') {
 		if (inputUserInForm !=="") {
-			requeteXhrInsertNewNote(inputUserInForm, pathFocused + "b" + XX(parseInt(ToutesCategories[pathFocused].nbOfNotes)+1));				
+			queryXhrInsertNewNote(inputUserInForm, pathFocused + "b" + XX(parseInt(ToutesCategories[pathFocused].nbOfNotes)+1));				
 		}
 	} 
 	if (ongoingAction === 'insertNewFolder') {
 		if (inputUserInForm !=="") {
-			requeteXhrInsertNewNote(inputUserInForm, pathFocused + "a" + XX(parseInt(ToutesCategories[pathFocused].nbOfFolders)+1));					
+			queryXhrInsertNewNote(inputUserInForm, pathFocused + "a" + XX(parseInt(ToutesCategories[pathFocused].nbOfFolders)+1));					
 		}
 	} 
 	if (ongoingAction === 'editNote') {
 		if (inputUserInForm !=="") {
-			queryXhrEditNote(inputUserInForm, pathFocused);
+			queryXhrEditTreeItem(inputUserInForm, pathFocused);
 		}
 	}
 	
@@ -349,7 +349,7 @@ function resetColorTreeItem() {
 	document.getElementById(pathFocused).style.backgroundColor = sOriginalColorOfDivTreeItem;
 }
 
-function requeteXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
+function queryXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
 	//alert (typeof(sNewNote));
 	sNewNote = sNewNote.replace(/\r\n|\r|\n/g,'<br>');
 	var xhr = new XMLHttpRequest(); 
@@ -364,31 +364,31 @@ function requeteXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
 			document.getElementById("fondPageEntrerTexte").style.display = 'none';
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
+				alert('Une erreur est survenue dans queryXhrInsertNewNote !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
 		}
 	}
 }
 
-function queryXhrEditNote(sNewNote, sIdCategoryToEdit) {
+function queryXhrEditTreeItem(sNewNote, sIdCategoryToEdit) {
 	sNewNoteToSendToDbb = sNewNote.replace(/\r\n|\r|\n/g,'<br>');
 	var xhr = new XMLHttpRequest(); 
 	xhr.open ('GET', 'ajax/editNote.php?idTopic=' + idTopic + '&sIdCategoryToEdit=' + sIdCategoryToEdit + '&sNewNote=' + sNewNoteToSendToDbb);
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {	
-		//alert("Dans queryXhrEditNote, sIdCategoryToEdit = "+sIdCategoryToEdit);
+		//alert("Dans queryXhrEditTreeItem, sIdCategoryToEdit = "+sIdCategoryToEdit);
 		ToutesCategories[sIdCategoryToEdit].sContent = sNewNote;
 		document.getElementById(sIdCategoryToEdit).innerHTML = sNewNote;
 		document.getElementById("fondPageEntrerTexte").style.display = 'none';
 		//document.getElementById(sIdCategoryToEdit).style.backgroundColor = "#ffff00"; // ça sert à quoi, à dégriser ?? Mais pb ça semble écraser le comportement du hover
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
+				alert('Une erreur est survenue dans queryXhrEditTreeItem !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
 		}
 	}
 }
 
-function requeteXhrRecupererArborescence(fCallback, sCategoriePere) {
+function queryXhrGetChildren(fCallback, sCategoriePere) {
 	var xhr = new XMLHttpRequest(); 
 	xhr.open ('GET', 'ajax/getCategoryChild.php?idTopic=' + idTopic + '&sCategoriePere=' + sCategoriePere );
 	xhr.send(null);
@@ -397,7 +397,7 @@ function requeteXhrRecupererArborescence(fCallback, sCategoriePere) {
 			fCallback(xhr.responseText, sCategoriePere);
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-				alert('Une erreur est survenue dans requeteXhrRecupererArborescence !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
+				alert('Une erreur est survenue dans queryXhrGetChildren !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
 		}
 	}
 }
@@ -431,7 +431,7 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 		ToutesCategories[sCategoryOfDad].nbOfNotes -= 1 ;
 		}
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-			alert('Une erreur est survenue dans queryXhrDeleteFolder !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
+			alert('Une erreur est survenue dans queryXhrDeleteNote !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
 		}
 	} 
 }
@@ -470,7 +470,7 @@ function queryXhrDeleteFolder(sCategoryToDelete) {
 			}			
 			ToutesCategories[sCategoryOfDad].nbOfNotes =0;
 			
-			requeteXhrRecupererArborescence(instancierArborescenceRecuperee, sCategoryOfDad);
+			queryXhrGetChildren(instancierArborescenceRecuperee, sCategoryOfDad);
 			// ici on doit dégriser l'ensemble de l'arborescence
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
