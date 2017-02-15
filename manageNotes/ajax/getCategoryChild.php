@@ -1,9 +1,7 @@
 <?php
 //header("Access-Control-Allow-Origin: *"); ??? C'est quoi ???
 
-header("Content-Type: text/plain");
-
-//header("Content-Type: application/json; charset=UTF-8");
+header("Content-Type: application/json; charset=UTF-8");
 
 session_start();
 
@@ -20,13 +18,13 @@ if (isset($_SESSION['id']) && isset($_GET["sCategoriePere"]) && (preg_match("#^[
 	'aTrouver' => '^'.$sCategoriePere.'([a-b][0-9]{2}$)',
 	'categoriepere' => $sCategoriePere));
 
-	$sCategoriesRecuperees = "";
+	$sCategoriesRecuperees = "[";
 
 	while ($donnees = $req->fetch()) {
-		$sCategoriesRecuperees .= $donnees['idNote'] . "|" . $donnees['content'] . "|";
+		$sCategoriesRecuperees .= '"'.$donnees['idNote'] .'","'. $donnees['content'] . '",';
 	}
 
-	echo substr($sCategoriesRecuperees, 0, -1); //il faut enlever le dernier |
+	echo $sCategoriesRecuperees == "" ? "" : substr($sCategoriesRecuperees, 0, -1)."]"; //il faut enlever le dernier ","
 
 	$req->closeCursor();	
 }

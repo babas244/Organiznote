@@ -179,15 +179,15 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePere ) { // rajouter un booleen isVisible
 	//alert ("sCategoriePere = " + sCategoriePere);
 	//alert ("sCategoriesRecuperees =" + sCategoriesRecuperees);
-	var CategorieParsee = sCategoriesRecuperees.split('|'); // interdiction d'utiliser ce caractère dans une note (on pourrait mettre une interdiction au moment d'enregistrer une note et au moment de l'importation) 
-	var nbdItemsDansCategorieParsee = CategorieParsee.length; 
+	var aCategorieParsee = JSON.parse(sCategoriesRecuperees); 
+	var nbdItemsDansCategorieParsee = aCategorieParsee.length; 
 	
 	var nbOfFoldersAddedInPathParent = 0;
 	var nbOfNotesAddedInPathParent = 0;
 	
 	for (i = 0 ; i < nbdItemsDansCategorieParsee-1; i = i + 2) {
-		var sIdCategorie = CategorieParsee[i];
-		var sContent = CategorieParsee[i+1].replace(/&lt;br&gt;/gi, "\n");
+		var sIdCategorie = aCategorieParsee[i];
+		var sContent = aCategorieParsee[i+1].replace(/&lt;br&gt;/gi, "\n");
 		var nNiveauDeCategorie = ((sIdCategorie.length+1)/3)-1; // ou ToutesCategories[sCategoriePere].niveauDeCategorie + 1 ? 
 		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, nNiveauDeCategorie, 0,0);		
 		var oCategorieAffichageDOM = document.createElement("div"); // plutôt un button en fait ??
@@ -378,7 +378,7 @@ function queryXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			var sInstanciationCategorieInseree = sPathTreeItemToInsert+"|"+sNewNote;
+			var sInstanciationCategorieInseree = '["'+sPathTreeItemToInsert+'","'+sNewNote+'"]';
 			var pathParent = sPathTreeItemToInsert.slice(0,-3);
 			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , pathParent )
 			arborescenceNotes.seDeplacerDanslArborescenceReduite(pathParent);
