@@ -1,12 +1,23 @@
 <?php
 header("Content-Type: text/html");
 session_start();
+include '../../log_in_bdd.php';
  ?>
 
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Titre</title>
+        <title>
+			<?php
+				$reqGetTopic = $bdd -> prepare('SELECT topic FROM topics WHERE idUser=:idUser AND id=:idTopic');
+					$reqGetTopic -> execute(array(
+					'idUser' => $_SESSION['id'],
+					'idTopic' => $_GET['idTopic']));
+					$resultat = $reqGetTopic -> fetch();
+				echo $resultat['topic'];
+				$reqGetTopic -> closeCursor();	
+			?>
+		</title>
         <meta charset="utf-8" />
 		<link rel="stylesheet" href="style_displayTreeInNewWindow.css" />
     </head>
@@ -18,8 +29,6 @@ session_start();
 if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sOriginPathTreeToDisplay"])) {
 	
 	$sOriginPathTreeToDisplay = htmlspecialchars($_GET["sOriginPathTreeToDisplay"]);
-
-	include '../../log_in_bdd.php';
 	
 	$reqRetrieveTree = $bdd -> prepare('SELECT idNote, content FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote LIKE :startWithPathParent ORDER BY IdNote');
 		$reqRetrieveTree -> execute(array(

@@ -27,9 +27,9 @@ include '../sessionAuthentication.php';
 			$topic = $resultat['topic'];
 		$reqGetTopic -> closeCursor();
 
-			echo "Bonjour <strong>".$_SESSION['user']."</strong>, vous êtes connecté sur le topic : ".$topic.".";
+			echo "Bonjour <strong>".$_SESSION['user']."</strong>, vous êtes connecté sur le topic : ".$topic;
 		?>
-		<a href="../logout.php">(se déconnecter)</a>;
+		<a href="../logout.php">(se déconnecter)</a>.
 		<div id="frameOfToDo">
 			<div id="noscroll">
 			<button id="addToDo">+</button>
