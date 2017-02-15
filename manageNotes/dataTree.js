@@ -237,15 +237,30 @@ function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePer
 
 document.getElementById("insertNewNote").addEventListener('click', function() {
 	hideContextMenu();
-	ongoingAction = 'insertNewNote';
-	initializeFormEnterNote();
+	if ((ToutesCategories[pathFocused].nbOfNotes) <= 98) {
+		ongoingAction = 'insertNewNote';
+		initializeFormEnterNote();		
+	}
+	else {
+		alert("Pas possible d'insérer une nouvelle note dans cette catégorie.\n\nVous avez atteint la limite prévue des 99 notes !\n\nIl serait utile de mieux réorganiser les catégories.")
+		resetColorTreeItem();
+		pathFocused = null;
+	}
+	
 }, false);
 
 
 document.getElementById("insertNewFolder").addEventListener('click', function() {
 	hideContextMenu();
-	ongoingAction = 'insertNewFolder';
-	initializeFormEnterNote();
+	if ((ToutesCategories[pathFocused].nbOfFolders) <= 98) {
+		ongoingAction = 'insertNewFolder';
+		initializeFormEnterNote();		
+	}
+	else {
+		alert("Pas possible d'insérer une nouvelle catégorie.\n\nVous avez atteint la limite prévue des 99 sous-catégories !\n\nIl serait utile de mieux réorganiser les catégories.")
+		resetColorTreeItem();
+		pathFocused = null;
+	}
 }, false);
 
 document.getElementById("deleteFolder").addEventListener('click', function() {
