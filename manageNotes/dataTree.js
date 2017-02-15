@@ -290,7 +290,7 @@ document.getElementById("editNote").addEventListener('click', function() {
 	hideContextMenu();
 	ongoingAction = 'editNote';
 	initializeFormEnterNote();
-	document.getElementById("zoneFormulaireEntrerNote").value = ToutesCategories[pathFocused].sContent;
+	document.getElementById("zoneFormulaireEntrerNote").value = ToutesCategories[pathFocused].sContent.replace(/<br>/g,'\\n');
 }, false);
 
 document.getElementById("DisplayContentFolder").addEventListener('click', function() {
