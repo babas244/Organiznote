@@ -63,11 +63,11 @@ div#frameOfTree
 	white-space: pre-wrap;
 }
 
-div.folder:active {background-color: #ff0000;}
-div.folder:hover {background-color: #ffaa00;}
+div.folder:active {background-color: #ff0000 !important;}
+div.folder:hover {background-color: #ffaa00 !important;}
 
-div.note:active {background-color: #ff3300;}
-div.note:hover {background-color: #aaffaa;}
+div.note:active {background-color: #ff3300 !important;}
+div.note:hover {background-color: #aaffaa !important;}
 /*div#frameOfTree div {white-space: pre;} : pb ceci entraine que les textes sortent des div*/
 
 

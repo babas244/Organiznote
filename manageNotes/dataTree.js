@@ -74,14 +74,6 @@ function hideContextMenu() {
 		//alert (aElementsToHide[i]);
 		aElementsToHide[i].style.display = 'none';
 	}
-	var sOriginalColorOfDivTreeItem;
-	if (pathFocused === "01" || pathFocused.substr(-3,1)==="a") {
-		sOriginalColorOfDivTreeItem = '#ffff00';
-	}
-	else {
-		sOriginalColorOfDivTreeItem = '#ffffff';		
-	}
-	document.getElementById(pathFocused).style.backgroundColor = sOriginalColorOfDivTreeItem;
 }
 	
 function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
@@ -275,6 +267,7 @@ document.getElementById("editNote").addEventListener('click', function() {
 
 document.getElementById("cancel").addEventListener('click', function () {
 	hideContextMenu();
+	resetColorTreeItem();
 	pathFocused = null;
 }, false);
 		
@@ -312,29 +305,33 @@ function actionWithForm(inputUserInForm) {
 		if (inputUserInForm !=="") {
 			requeteXhrInsertNewNote(inputUserInForm, pathFocused + "b" + XX(parseInt(ToutesCategories[pathFocused].nbOfNotes)+1));				
 		}
-		else {
-			document.getElementById("fondPageEntrerTexte").style.display = 'none';
-		}
-	pathFocused = null;
 	} 
 	if (ongoingAction === 'insertNewFolder') {
 		if (inputUserInForm !=="") {
 			requeteXhrInsertNewNote(inputUserInForm, pathFocused + "a" + XX(parseInt(ToutesCategories[pathFocused].nbOfFolders)+1));					
 		}
-		else {
-			document.getElementById("fondPageEntrerTexte").style.display = 'none';
-		}
-	pathFocused = null;
 	} 
 	if (ongoingAction === 'editNote') {
 		if (inputUserInForm !=="") {
 			queryXhrEditNote(inputUserInForm, pathFocused);
 		}
-		else {
-			document.getElementById("fondPageEntrerTexte").style.display = 'none';
-		}
 	}
-ongoingAction = null;
+	
+	document.getElementById("fondPageEntrerTexte").style.display = 'none';
+	resetColorTreeItem();
+	pathFocused = null;
+	ongoingAction = null;
+}
+
+function resetColorTreeItem() {
+	var sOriginalColorOfDivTreeItem;
+	if (pathFocused === "01" || pathFocused.substr(-3,1)==="a") {
+		sOriginalColorOfDivTreeItem = '#ffff00';
+	}
+	else {
+		sOriginalColorOfDivTreeItem = '#ffffff';
+	}
+	document.getElementById(pathFocused).style.backgroundColor = sOriginalColorOfDivTreeItem;
 }
 
 function requeteXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
