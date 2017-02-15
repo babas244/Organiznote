@@ -24,7 +24,7 @@ if (isset($_SESSION['id']) && isset($_GET["sCategoriePere"]) && (preg_match("#^[
 		$sCategoriesRecuperees .= '"'.$donnees['idNote'] .'","'. $donnees['content'] . '",';
 	}
 
-	echo $sCategoriesRecuperees == "" ? "" : substr($sCategoriesRecuperees, 0, -1)."]"; //il faut enlever le dernier ","
+	echo $sCategoriesRecuperees == "[" ? "" : substr($sCategoriesRecuperees, 0, -1)."]"; //il faut enlever le dernier ","
 
 	$req->closeCursor();	
 }

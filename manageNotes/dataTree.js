@@ -179,7 +179,7 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePere ) { // rajouter un booleen isVisible
 	//alert ("sCategoriePere = " + sCategoriePere);
 	//alert ("sCategoriesRecuperees =" + sCategoriesRecuperees);
-	var aCategorieParsee = JSON.parse(sCategoriesRecuperees); 
+	var aCategorieParsee = sCategoriesRecuperees == "" ? "" : JSON.parse(sCategoriesRecuperees); 
 	var nbdItemsDansCategorieParsee = aCategorieParsee.length; 
 	
 	var nbOfFoldersAddedInPathParent = 0;
