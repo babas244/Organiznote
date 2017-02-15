@@ -265,12 +265,25 @@ document.getElementById("insertNewFolder").addEventListener('click', function() 
 
 document.getElementById("deleteFolder").addEventListener('click', function() {
 	hideContextMenu();
-	queryXhrDeleteFolder(pathFocused);
+	if (confirm("Êtes-vous sûr de bien vouloir effacer cette catégorie ?") == true) {
+		queryXhrDeleteFolder(pathFocused);		
+	}
+	else {
+		resetColorTreeItem();
+		pathFocused = null;
+	}
 }, false);
 
 document.getElementById("deleteNote").addEventListener('click', function() {
 	hideContextMenu();
-	queryXhrDeleteNote(pathFocused);
+	if (confirm("Êtes-vous sûr de bien vouloir effacer cette note ?") == true) {
+		queryXhrDeleteNote(pathFocused);	
+	}
+	else {
+		resetColorTreeItem();
+		pathFocused = null;
+	}
+	
 }, false);
 
 document.getElementById("editNote").addEventListener('click', function() {
