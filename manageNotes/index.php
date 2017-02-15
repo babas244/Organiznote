@@ -18,8 +18,16 @@ include '../sessionAuthentication.php';
     </head>
     <body>
 		<!-- -->
-		<?php 
-			echo "L'utilisateur <strong>".$_SESSION['user']."</strong>, d'identifiant ".$_SESSION['id']." est connecté sur ".$_GET['idTopic'];
+		<?php
+			$reqGetTopic = $bdd -> prepare('SELECT topic FROM topics WHERE idUser=:idUser AND id=:idTopic');
+				$reqGetTopic -> execute(array(
+				'idUser' => $_SESSION['id'],
+				'idTopic' => $_GET['idTopic']));
+				$resultat = $reqGetTopic -> fetch();
+			$topic = $resultat['topic'];
+		$reqGetTopic -> closeCursor();
+
+			echo "Bonjour <strong>".$_SESSION['user']."</strong>, vous êtes connecté sur le topic : ".$topic.".";
 		?>
 		<a href="../logout.php">(se déconnecter)</a>;
 		<div id="frameOfToDo">
