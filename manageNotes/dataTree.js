@@ -280,6 +280,14 @@ document.getElementById("editNote").addEventListener('click', function() {
 	document.getElementById("zoneFormulaireEntrerNote").value = ToutesCategories[pathFocused].sContent;
 }, false);
 
+document.getElementById("DisplayContentFolder").addEventListener('click', function() {
+	hideContextMenu();
+	displayTreeInNewWindow(pathFocused);
+	alert("Fait !\n\nL'arbre a été exporté dans un autre onglet ou une fenêtre (cela dépend de votre navigateur).");
+	resetColorTreeItem();
+	pathFocused = null;
+}, false);
+
 document.getElementById("cancel").addEventListener('click', function () {
 	hideContextMenu();
 	resetColorTreeItem();
@@ -494,7 +502,7 @@ document.getElementById("displayAllTree").addEventListener('click', function () 
 }, false);
 
 function displayTreeInNewWindow(sOriginPathTreeToDisplay) {
-	window.open('displayTreeInNewWindow/displayTreeInNewWindow?idTopic='+idTopic+'&sOriginPathTreeToDisplay='+sOriginPathTreeToDisplay+'.php');
+	window.open('displayTreeInNewWindow/displayTreeInNewWindow?idTopic='+idTopic+'&sOriginPathTreeToDisplay='+sOriginPathTreeToDisplay);
 }
 
 

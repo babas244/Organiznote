@@ -115,7 +115,7 @@ include '../sessionAuthentication.php';
 			<div id="deleteNote" class="isNote">Effacer note</div>
 			<div id="archiveNote" class="isFolder isNote">Archiver(maintenant/date (choisie))</div>
 			<div id="archiveToDo" class="isFolder isNote">Fait(maintenant/date (choisie))</div>
-			<div id="DisplayContentCategory" class="isRoot isFolder">Afficher l'arbre contenu dedans</div>
+			<div id="DisplayContentFolder" class="isRoot isFolder">Afficher l'arbre contenu dedans</div>
 			<div id="changeCategoryIntoNote" class="isFolder">Transformer catégorie en note</div>							
 			<div id="changeNoteIntoCategory" class="isNote">Transformer note en catégorie</div>						
 			<div id="cancel" class="isRoot isFolder isNote">Annuler</div>
