@@ -116,17 +116,16 @@ include '../sessionAuthentication.php';
 		</div>
 		
 		<div id="fondMenuCategorie">
-			<div id="insertNewFolder" class="isRoot isFolder">Nouvelle catégorie fille</div>		
-			<div id="insertNewNote" class="isRoot isFolder">Nouvelle note</div>
-			<div id="editNote" class="isFolder isNote">Editer</div>	
-			<div id="deleteFolder" class="isFolder">Effacer catégorie</div>
-			<div id="deleteNote" class="isNote">Effacer note</div>
-			<div id="archiveNote" class="isFolder isNote">Archiver(maintenant/date (choisie))</div>
-			<div id="archiveToDo" class="isFolder isNote">Fait(maintenant/date (choisie))</div>
-			<div id="DisplayContentFolder" class="isRoot isFolder">Afficher l'arbre contenu dedans</div>
-			<div id="changeCategoryIntoNote" class="isFolder">Transformer catégorie en note</div>							
-			<div id="changeNoteIntoCategory" class="isNote">Transformer note en catégorie</div>						
-			<div id="cancel" class="isRoot isFolder isNote">Annuler</div>
+			<div id="insertNewFolder" class="contextMenu isRoot isFolder">Nouvelle catégorie fille</div>		
+			<div id="insertNewNote" class="contextMenu isRoot isFolder">Nouvelle note</div>
+			<div id="editNote" class="contextMenu isFolder isNote">Editer</div>	
+			<div id="deleteFolder" class="contextMenu isFolder">Effacer catégorie</div>
+			<div id="deleteNote" class="contextMenu isNote">Effacer note</div>
+			<div id="archiveNote" class="contextMenu isFolder isNote">Archiver(maintenant/date (choisie))</div>
+			<div id="DisplayContentFolder" class="contextMenu isRoot isFolder">Afficher l'arbre contenu dedans</div>
+			<div id="changeCategoryIntoNote" class="contextMenu isFolder">Transformer catégorie en note</div>							
+			<div id="changeNoteIntoCategory" class="contextMenu isNote">Transformer note en catégorie</div>						
+			<div id="cancel" class="contextMenu isRoot isFolder isNote">Annuler</div>
 		</div>
 		
 		<input id="chargerfichierXML" type="file" />

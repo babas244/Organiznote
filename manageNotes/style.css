@@ -1,34 +1,36 @@
-div#frameOfToDo
+/*-------------------------Main Menu of the page--------------------*/
+div#menu
 {
-	background-color: blue;
-	overflow: scroll;
-	width: 100%;
-	/* pour le tel il faudra probablement mettre a position : fixed;*/
-	height: 80%;
-	font-size: 3em
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	font-size : 22px;
 }
 
-button#addToDo
+ul {padding: 0px;} /* il y a un padding par défaut des ul sinon !!*/
+ul ul {display: none; position: absolute; left: 0px; bottom: 0px; margin: 0px; padding: 0px;}
+li {list-style-type: none; position: relative; left: 0px; bottom: 20px; width: 100px; border: 1px black solid}
+li:hover ul.Niveau2 {display: block;}
+
+li button, li
 {
-	background-color:  green;
-	
+	background-color : #19c589;
+	display:inline-block;
+	vertical-align: top;
+	text-align: left;
+	float: left;
+	width: 100px;
+	margin-right: 1px;
 }
 
-.toDo
+li button:hover, li:hover
 {
-	background-color: #eeaaee;
-	border: 1px black solid;
-	border-radius: 2px;
-	word-wrap: break-word;	
+	background-color : #2dfbb3;	
 }
 
-div#noscroll
-{
-	background-color: yellow;
-	width: 80%;
-}
 
-div#frameOfTree
+/*-------------------------TreeItems--------------------*/
+#frameOfTree
 {
 	background-color: #f2f2aa;
 	display: block;
@@ -72,7 +74,7 @@ div.note:hover {background-color: #aaffaa !important;}
 
 
 
-
+/*----------------------------------contextMenu-------------------------------*/
 div#fondMenuCategorie
 {
 	position: absolute;
@@ -85,7 +87,7 @@ div#fondMenuCategorie
 	display: none; 
 }
 
-#insertNewNote, #deleteNote, #deleteFolder, #insertNewFolder, #editNote, #archiveNote, #archiveToDo, #DisplayContentFolder, #changeCategoryIntoNote, #changeNoteIntoCategory, #cancel
+.contextMenu
 {
 	position: absolute;
 	left: 20%;
@@ -98,7 +100,7 @@ div#fondMenuCategorie
 	display: none;
 }
 
-#insertNewNote:hover, #deleteNote:hover, #deleteFolder:hover, #insertNewFolder:hover, #editNote:hover, #archiveNote:hover, #archiveToDo:hover, #DisplayContentFolder:hover, #changeCategoryIntoNote:hover, #changeNoteIntoCategory:hover, #cancel:hover
+.contextMenu:hover
 {
 	background-color: #ff66ff; 	
 }
@@ -116,7 +118,8 @@ div#fondMenuCategorie
 #cancel{top: 55%;} /* mettre plutôt une taille de l'ordre de 22px comme les fonts ?*/
 
 
-div#fondPageEntrerTexte
+/*-------------------------Form--------------------*/
+#fondPageEntrerTexte
 {
 	position: absolute;
 	left: 0px;
@@ -128,7 +131,7 @@ div#fondPageEntrerTexte
 	display: none; 
 }
 
-div#textBox
+#textBox
 {
 	position: absolute;
 	left: 20%;
@@ -212,6 +215,7 @@ textarea#zoneFormulaireEntrerNote
 	height: 100%;
 }
 
+/*-------------------------API files--------------------*/
 #chargerfichierXML
 {
 	position: absolute;
@@ -220,34 +224,33 @@ textarea#zoneFormulaireEntrerNote
 	z-index: 2;
 	display: none; 
 }
-
-
 	
-li button, li
+/*-------------------------toDo--------------------*/
+#frameOfToDo
 {
-	background-color : #19c589;
-	display:inline-block;
-	vertical-align: top;
-	text-align: left;
-	float: left;
-	width: 100px;
-	margin-right: 1px;
+	background-color: blue;
+	overflow: scroll;
+	width: 100%;
+	/* pour le tel il faudra probablement mettre a position : fixed;*/
+	height: 80%;
+	font-size: 3em
 }
 
-li button:hover, li:hover
+#addToDo
 {
-	background-color : #2dfbb3;	
+	background-color:  green;
 }
 
-div#menu
+.toDo
 {
-	position: absolute;
-	bottom: 0px;
-	left: 0px;
-	font-size : 22px;
+	background-color: #eeaaee;
+	border: 1px black solid;
+	border-radius: 2px;
+	word-wrap: break-word;	
 }
 
-ul {padding: 0px;} /* il y a un padding par défaut des ul sinon !!*/
-ul ul {display: none; position: absolute; left: 0px; bottom: 0px; margin: 0px; padding: 0px;}
-li {list-style-type: none; position: relative; left: 0px; bottom: 20px; width: 100px; border: 1px black solid}
-li:hover ul.Niveau2 {display: block;}
+#noscroll
+{
+	background-color: yellow;
+	width: 80%;
+}
