@@ -122,10 +122,13 @@ include '../sessionAuthentication.php';
 			<div id="deleteFolder" class="contextMenu isFolder">Effacer catégorie</div>
 			<div id="deleteNote" class="contextMenu isNote">Effacer note</div>
 			<div id="archiveNote" class="contextMenu isFolder isNote">Archiver(maintenant/date (choisie))</div>
+			<div id="moveTreeItem" class="contextMenu isFolder isNote">Déplacer</div>
+			<div id="pasteHereTreeItem" class="contextMenu isPastingHere">Coller ici</div>
 			<div id="DisplayContentFolder" class="contextMenu isRoot isFolder">Afficher l'arbre contenu dedans</div>
 			<div id="changeCategoryIntoNote" class="contextMenu isFolder">Transformer catégorie en note</div>							
-			<div id="changeNoteIntoCategory" class="contextMenu isNote">Transformer note en catégorie</div>						
-			<div id="cancel" class="contextMenu isRoot isFolder isNote">Annuler</div>
+			<div id="changeNoteIntoCategory" class="contextMenu isNote">Transformer note en catégorie</div>
+			<div id="getOutFromHere" class="contextMenu isPastingHere isCancel">Sortir d'ici</div>
+			<div id="cancel" class="contextMenu isRoot isFolder isNote isPastingHere isCancel">Annuler</div>
 		</div>
 		
 		<input id="chargerfichierXML" type="file" />

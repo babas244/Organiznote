@@ -2,6 +2,7 @@ var iRetraitAffichagedUneCategorie= 10;
 ToutesCategories = {};
 var pathFocused = null; 
 var ongoingAction = null;
+var pathToPaste = null;
 
 fInstantiateRoot();
 
@@ -52,18 +53,35 @@ function displayContextMenu(path) {
 
 	openContextMenu = document.getElementById("fondMenuCategorie");
 	openContextMenu.style.display = 'block';
+	var aElementsToDisplay;
+	
 	if (path === "01") {
-		aElementsToDisplay = openContextMenu.getElementsByClassName("isRoot");
+		if (ongoingAction === 'moveTreeItem') {
+			aElementsToDisplay = openContextMenu.getElementsByClassName("isPastingHere");
+		}
+		else {
+			aElementsToDisplay = openContextMenu.getElementsByClassName("isRoot");
+		}
 	}
-	else if (path.substr(-3,1)==="b") {
-		aElementsToDisplay = openContextMenu.getElementsByClassName("isNote");			
-	}
+	else if (path.substr(-3,1)==="a") {
+		if (ongoingAction === 'moveTreeItem') {
+			aElementsToDisplay = openContextMenu.getElementsByClassName("isPastingHere");
+		}
+		else {
+			aElementsToDisplay = openContextMenu.getElementsByClassName("isFolder");					
+		}	
+	}	
 	else {
-		aElementsToDisplay = openContextMenu.getElementsByClassName("isFolder");		
-	}
+		if (ongoingAction === 'moveTreeItem') {
+			aElementsToDisplay = openContextMenu.getElementsByClassName("isCancel");
+		}	
+		else {
+			aElementsToDisplay = openContextMenu.getElementsByClassName("isNote");			
+		}
+	}	
 	for (var i = 0 ; i < aElementsToDisplay.length ; i++ ) { // plutot queryselectorall si plusieurs classes ?
 		aElementsToDisplay[i].style.display = 'block';
-	}
+	}		
 }
 
 function hideContextMenu() {
@@ -301,10 +319,42 @@ document.getElementById("DisplayContentFolder").addEventListener('click', functi
 	pathFocused = null;
 }, false);
 
+document.getElementById("moveTreeItem").addEventListener('click', function() {
+	pathToPaste = pathFocused;
+	resetColorTreeItem();
+	hideContextMenu();
+	ongoingAction = 'moveTreeItem';
+}, false); 
+
+document.getElementById("pasteHereTreeItem").addEventListener('click', function() {
+	hideContextMenu();
+	if (pathFocused === pathToPaste.slice(0,-3)) {
+		alert("Vous essayez de coller votre item à l'endroit où il se trouve déjà. Recommencez à un autre endroit.");
+		resetColorTreeItem();
+	} 
+	else if (pathFocused.indexOf(pathToPaste) == 0){
+		alert("Vous essayez de coller votre item dans un de ses descendants, ça n'est pas possible !");
+		resetColorTreeItem();
+	}
+	else {
+		if (pathFocused.substr(-3,1)==="a" || pathFocused==="01") {
+			// ajouter un test pour savoir si pas plus de 98 folders déjà
+			queryXHRMoveFolder(pathToPaste, pathFocused);			
+		}
+	}
+}, false);
+
+document.getElementById("getOutFromHere").addEventListener('click', function() {
+	hideContextMenu();
+	resetColorTreeItem();
+}, false)
+
 document.getElementById("cancel").addEventListener('click', function () {
 	hideContextMenu();
 	resetColorTreeItem();
 	pathFocused = null;
+	pathToPaste = null;
+	ongoingAction = null;
 }, false);
 		
 document.getElementById("reinitialiserFormulaireEntrerNote").addEventListener('click', function reinitialiserFormulaireEntrerNote() {
@@ -378,7 +428,7 @@ function queryXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			sNewNote = sNewNote.replace(/"/g, '\\"');
+			sNewNote = sNewNote.replace(/"/g, '\\"'); // à fusionner avec l'autre replace 5 lignes plus haut ?
 			var sInstanciationCategorieInseree = '["'+sPathTreeItemToInsert+'","'+sNewNote+'"]';
 			var pathParent = sPathTreeItemToInsert.slice(0,-3);
 			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , pathParent )
@@ -500,6 +550,49 @@ function queryXhrDeleteFolder(sCategoryToDelete) {
 		}
 	}
 }
+
+function queryXHRMoveFolder(sCutPath, sPathWhereToPaste) {
+	var rowOfPasteFolder = XX(parseInt(ToutesCategories[sPathWhereToPaste].nbOfFolders)+1); // ou trouver ce nombre et le XX du cote serveur avec une requete dbb?
+	//alert (rowOfPasteFolder);
+	var xhr = new XMLHttpRequest(); 
+	xhr.open ('GET', 'ajax/moveFolder.php?idTopic=' + idTopic + '&sCutPath=' + sCutPath + '&sPathWhereToPaste=' + sPathWhereToPaste + '&sPathWhereToPaste=' + sPathWhereToPaste + '&rowOfPasteFolder=' + rowOfPasteFolder);
+	xhr.send(null);
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4 && xhr.status == 200) {	
+		//alert("Dans queryXHRMoveFolder, sIdCategoryToEdit = "+sIdCategoryToEdit);
+		
+		// effacer toutes les div des treeItem dans le folder parent de CutPath (mais pas le folder parent lui-même)
+		sPathParentOfCutPath = sCutPath.slice(0,-3);
+		ePathsToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+sPathParentOfCutPath+'a'+'"]');
+		for (var i=0 ; i < ePathsToDelete.length ; i++ ) {
+			document.getElementById("frameOfTree").removeChild(ePathsToDelete[i]);
+		}
+		ToutesCategories[sPathParentOfCutPath].nbOfFolders =0;
+		
+		ePathsToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+sPathParentOfCutPath+'b'+'"]'); 
+		for (var j=0 ; j < ePathsToDelete.length ; j++ ) {
+			document.getElementById("frameOfTree").removeChild(ePathsToDelete[j]);
+		}			
+		ToutesCategories[sPathParentOfCutPath].nbOfNotes =0;
+		
+		// insérer le folder déplacé dans sPathWhereToPaste
+		var sInstantiateFolderMoved = '["'+pathFocused+'a'+rowOfPasteFolder+'","'+ToutesCategories[sCutPath].sContent+'"]';
+		instancierArborescenceRecuperee ( sInstantiateFolderMoved , pathFocused );
+		arborescenceNotes.seDeplacerDanslArborescenceReduite(pathFocused);
+		document.getElementById("fondPageEntrerTexte").style.display = 'none';
+		resetColorTreeItem();
+		pathFocused = null;
+		pathToPaste = null;
+		ongoingAction = null;
+		//ajouter l'affichage de ce qui a �t� coll�
+		} 
+		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
+				alert('Une erreur est survenue dans queryXHRMoveFolder !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
+		}
+	}
+}
+
+
 
 function CategorieAbstraite(id, sContent, niveauDeCategorie, nbOfFolders, nbOfNotes) {
 	this.id = id;

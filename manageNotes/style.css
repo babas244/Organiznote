@@ -108,10 +108,12 @@ div#fondMenuCategorie
 #insertNewNote {top: 10%;}
 #deleteNote {top: 15%;}
 #deleteFolder {top: 15%;}
+#pasteHereTreeItem{top: 15%;}
 #insertNewFolder{top: 20%;}
 #editNote{top: 25%;}
 #archiveNote{top: 30%;}
-#archiveToDo{top: 35%;}
+#getOutFromHere{top: 30%;}
+#moveTreeItem{top: 35%;}
 #DisplayContentFolder{top: 40%;}
 #changeCategoryIntoNote{top: 45%;}
 #changeNoteIntoCategory{top: 50%;}
