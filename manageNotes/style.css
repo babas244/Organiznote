@@ -241,6 +241,7 @@ textarea#zoneFormulaireEntrerNote
 #addToDo
 {
 	background-color:  green;
+	display : inline; /* ?? */
 }
 
 .toDo
