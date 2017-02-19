@@ -32,11 +32,19 @@ include '../sessionAuthentication.php';
 		<a href="../logout.php">(se déconnecter)</a>.
 		<div id="frameOfToDo">
 			<div id="noscroll">
-			<button id="addToDo">+</button>
+			<button id="addToDoButton">+</button>			
+				<div id="addToDoFrame">
+					<form id="addToDoForm">
+						<textarea name="toDoTextarea" id="toDoTextarea" placeholder="Ecrire ici"></textarea>
+					</form>
+				</div>
 			</div>
 		</div>
+		
+		<div id="submitToDo">submit</div>
+		
 		<div id="frameOfTree">
-			<div id="01" class="folder">   <!--div "racine"--> 
+			<div id="01" class="folder">   <!--div "racine", à mettre dans dataTree.js ?--> 
 			</div>
 		</div>
 		<div id="menu">

@@ -13,7 +13,7 @@ function ajaxCall(sPathPhp, fCallBack) {
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			fCallBack(xhr.responseText);
+			fCallBack(xhr.responseText =="" ? null : xhr.responseText);
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) {
 				alert('Une erreur est survenue !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
@@ -36,15 +36,33 @@ function displayToDoList(sToDoListRetrieved) {
 		}, false);
 		oDOMToDo.innerHTML = sContent; 
 		oDOMToDo.className = "toDo";
-		document.getElementById("frameOfToDo").appendChild(oDOMToDo);
+		document.getElementById("noscroll").appendChild(oDOMToDo);
 	}
 }
 				
 
 // insérer un nouveau toDo avant le premier déjà affiché puis le placer dans la bdd
-document.getElementById("addToDo").addEventListener('click', function () {
-	
+document.getElementById("addToDoButton").addEventListener('click', function () {
+	document.getElementById('addToDoButton').style.display = 'none';
+	document.getElementById('submitToDo').style.display = 'block';
+	document.getElementById('addToDoFrame').style.display = 'block';
 }, false);
+
+document.getElementById("submitToDo").addEventListener('click', function () {
+	submitToDo();
+	}, false); 
+
+function submitToDo(){
+	document.getElementById('addToDoButton').style.display = 'block';
+	var toDoContent = document.getElementById("toDoTextarea").value;
+	document.getElementById('submitToDo').style.display = 'none';
+	alert (toDoContent);
+	//ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent, addToDo);
+}
+
+function addToDo(){
+	document.getElementById("frameOfToDo").insertBefore(oCategorieAffichageDOM , noteAlreadyLoadedInDOM );				
+}
 
 
 // effacer un toDo : par appui long ?? puis touche corbeille. ou icones dedans mais pas beaucoup  de place ???? En plus il faut du multiple !!

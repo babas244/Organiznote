@@ -238,11 +238,30 @@ textarea#zoneFormulaireEntrerNote
 	font-size: 1.5em;
 }
 
-#addToDo
+#addToDoButton
 {
 	background-color:  green;
 	display : inline; /* ?? */
 }
+
+#addToDoFrame
+{
+	display : none;
+	background-color:  red;	
+}
+
+form#addToDoForm
+{	
+	width: 100%;
+	height: 100%;
+}
+	
+textarea#toDoTextarea
+{
+	width: 100%;
+	height: 100%;
+}
+
 
 .toDo
 {
@@ -256,4 +275,11 @@ textarea#zoneFormulaireEntrerNote
 {
 	background-color: yellow;
 	width: 80%;
+}
+
+#submitToDo
+{
+	width: 50px;
+	background-color: yellow;
+	display : none;
 }
