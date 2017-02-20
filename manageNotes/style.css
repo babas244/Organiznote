@@ -241,7 +241,7 @@ textarea#zoneFormulaireEntrerNote
 #addToDoButton
 {
 	background-color:  green;
-	display : inline; /* ?? */
+	display : inline-block; /* ?? */
 }
 
 #addToDoFrame
@@ -271,7 +271,7 @@ textarea#toDoTextarea
 	word-wrap: break-word;	
 }
 
-#noscroll
+#noScroll
 {
 	background-color: yellow;
 	width: 80%;

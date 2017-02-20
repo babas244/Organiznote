@@ -31,7 +31,7 @@ include '../sessionAuthentication.php';
 		?>
 		<a href="../logout.php">(se déconnecter)</a>.
 		<div id="frameOfToDo">
-			<div id="noscroll">
+			<div id="noScroll">
 			<button id="addToDoButton">+</button>			
 				<div id="addToDoFrame">
 					<form id="addToDoForm">

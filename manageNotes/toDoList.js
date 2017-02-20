@@ -1,6 +1,6 @@
 var toDoFocused = null;
 
-document.getElementById("noscroll").addEventListener('touchmove', function(event) {
+document.getElementById("noScroll").addEventListener('touchmove', function(event) {
 	event.preventDefault();
 }, false);
 
@@ -13,7 +13,7 @@ function ajaxCall(sPathPhp, fCallBack) {
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			fCallBack(xhr.responseText =="" ? null : xhr.responseText);
+			fCallBack(xhr.responseText =="" ? undefined : xhr.responseText);
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) {
 				alert('Une erreur est survenue !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
@@ -36,7 +36,7 @@ function displayToDoList(sToDoListRetrieved) {
 		}, false);
 		oDOMToDo.innerHTML = sContent; 
 		oDOMToDo.className = "toDo";
-		document.getElementById("noscroll").appendChild(oDOMToDo);
+		document.getElementById("noScroll").appendChild(oDOMToDo);
 	}
 }
 				
@@ -56,12 +56,12 @@ function submitToDo(){
 	document.getElementById('addToDoButton').style.display = 'block';
 	var toDoContent = document.getElementById("toDoTextarea").value;
 	document.getElementById('submitToDo').style.display = 'none';
-	alert (toDoContent);
-	//ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent, addToDo);
+	//alert (toDoContent);
+	ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent, addToDoToDOM);
 }
 
-function addToDo(){
-	document.getElementById("frameOfToDo").insertBefore(oCategorieAffichageDOM , noteAlreadyLoadedInDOM );				
+function addToDoToDOM(){
+	//document.getElementById("frameOfToDo").insertBefore(oCategorieAffichageDOM , noteAlreadyLoadedInDOM );				
 }
 
 
