@@ -7,28 +7,43 @@ document.getElementById("noScroll").addEventListener('touchmove', function(event
 
 addEventsDragAndDropToLastAndInvisible(document.getElementById("lastAndInvisible"));
 
-ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic, displayToDoList)
+ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic, insertToDoListBefore, 'lastAndInvisible')
 
-function ajaxCall(sPathPhp, fCallBack) {
+function ajaxCall(sPathPhp, fCallBack, parameter1) {
 	var xhr = new XMLHttpRequest(); 
 	xhr.open ('GET', sPathPhp);
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			fCallBack(xhr.responseText =="" ? undefined : xhr.responseText);
+			fCallBack(xhr.responseText =="" ? undefined : xhr.responseText, parameter1);
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) {
 				alert('Une erreur est survenue !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
 		}
 	}
 }
+
+function ajaxCallNoResponse(sPathPhp, fCallBack, parameter1, parameter2) {
+	var xhr = new XMLHttpRequest(); 
+	xhr.open ('GET', sPathPhp);
+	xhr.send(null);
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4 && xhr.status == 200) {
+			fCallBack(parameter1, parameter2);
+		} 
+		else if (xhr.readyState == 4 && xhr.status != 200) {
+				alert('Une erreur est survenue !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
+		}
+	}
+}
+
 				
-function displayToDoList(sToDoListRetrieved) {
-	var aToDoListJSONParsed = sToDoListRetrieved == "" ? "" : JSON.parse(sToDoListRetrieved); 
-	// if aToDoListJSONParsed =="" afficher "pas encore de notes"
-	var nbOfItemsOfToDoListJSONParsed = aToDoListJSONParsed.length; 
-	for (i = 0 ; i < nbOfItemsOfToDoListJSONParsed; i ++) {
-		var sContent = aToDoListJSONParsed[i].replace(/&lt;br&gt;/gi, "\n");
+function insertToDoListBefore(sToDoListJSON, idDOMBeforeToInsert) {
+	var oToDoListJSONParsed = sToDoListJSON == "" ? "" : JSON.parse(sToDoListJSON); 
+	// if oToDoListJSONParsed =="" afficher "pas encore de notes" : non à mettre en dehors de cette function
+	var i = 0;
+	for (x in oToDoListJSONParsed) {
+		var sContent = oToDoListJSONParsed[x][0].replace(/&lt;br&gt;/gi, "\n");
 		var oDOMToDo = document.createElement("div");
 		oDOMToDo.id = 'toDo'+(i+IdOfFirstToDo);
 		oDOMToDo.addEventListener('contextmenu', function(e) {
@@ -39,17 +54,20 @@ function displayToDoList(sToDoListRetrieved) {
 		oDOMToDo.innerHTML = sContent; 
 		oDOMToDo.className = "toDo";
 		oDOMToDo.draggable = "true";
+		oDOMToDo.dateCreation = oToDoListJSONParsed[x][1];
+		oDOMToDo.dateExpired = oToDoListJSONParsed[x][2];
 		addEventsDragAndDrop(oDOMToDo);
-		document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById('lastAndInvisible'));
+		document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById(idDOMBeforeToInsert));
+		i ++;
 	}
-}
-				
+}				
 				
 // insérer un nouveau toDo avant le premier déjà affiché puis le placer dans la bdd
 document.getElementById("addToDoButton").addEventListener('click', function () {
 	document.getElementById('addToDoButton').style.display = 'none';
 	document.getElementById('submitToDo').style.display = 'block';
 	document.getElementById('addToDoFrame').style.display = 'block';
+	document.getElementById("toDoTextarea").focus();
 }, false);
 
 document.getElementById("submitToDo").addEventListener('click', function () {
@@ -57,31 +75,18 @@ document.getElementById("submitToDo").addEventListener('click', function () {
 	}, false); 
 
 function submitToDo(){
-	document.getElementById('addToDoButton').style.display = 'block';
 	var toDoContent = document.getElementById("toDoTextarea").value;
-	document.getElementById('submitToDo').style.display = 'none';
-	//alert (toDoContent);
-	ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent, insertNewToDoInDOM);
-}
-
-function insertNewToDoInDOM() {
-	var sContent = document.getElementById("toDoTextarea").value;
-	var oDOMToDo = document.createElement("div");
-	oDOMToDo.id = 'toDo'+(IdOfFirstToDo - 1);
-	oDOMToDo.addEventListener('contextmenu', function(e) {
-		e.preventDefault();
-		toDoFocused = e.target.id;
-		displayContextMenuToDo(toDoFocused);
-	}, false);
-	oDOMToDo.innerHTML = sContent; 
-	oDOMToDo.className = "toDo";
-	oDOMToDo.draggable = "true";
-	addEventsDragAndDrop(oDOMToDo);
-	document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById('toDo'+(IdOfFirstToDo)));				
+	document.getElementById('addToDoButton').style.display = 'block';
+	hideFormEnterToDo();	
 	IdOfFirstToDo -=1;
-	// intialize form here ? 
+	ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent, insertToDoListBefore, 'toDo' + parseInt(IdOfFirstToDo + 1));
 }
 
+function hideFormEnterToDo() {
+	document.getElementById('submitToDo').style.display = 'none';
+	document.getElementById("addToDoForm").reset();
+	document.getElementById('addToDoFrame').style.display = 'none';
+} 
 
 function displayContextMenuToDo() {
 	//document.getElementById('contextMenuToDo').style.display = 'block';
@@ -115,7 +120,7 @@ function addEventsDragAndDrop(DOMElement) {
 	}, false);	
 }
 
-function addEventsDragAndDropToLastAndInvisible(DOMElement) { // nécessaire ?
+function addEventsDragAndDropToLastAndInvisible(DOMElement) {
 	DOMElement.addEventListener('dragover', function(e) {
 		e.preventDefault(); // Annule l'interdiction de drop
 		this.style.borderTop = "10px blue solid";

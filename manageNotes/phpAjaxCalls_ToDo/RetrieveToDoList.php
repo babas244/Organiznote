@@ -11,20 +11,20 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 
 		include '../../log_in_bdd.php';		
 	
-		$reqDisplayToDoList = $bdd -> prepare('SELECT content, dateCreation, dateExpired FROM todolists WHERE idUser=:idUser AND idTopic=:idTopic ORDER BY dateCreation DESC');
+		$reqDisplayToDoList = $bdd -> prepare('SELECT id, content, dateCreation, dateExpired FROM todolists WHERE idUser=:idUser AND idTopic=:idTopic ORDER BY dateCreation DESC');
 			$reqDisplayToDoList -> execute(array(
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $_GET["idTopic"])) or die(print_r($reqDisplayToDoList->errorInfo()));
 			//echo ('<br>'.$reqDisplayToDoList->rowCount().' rangs affectés');
 			
-			$toDoFetched = "[";
+			$toDoFetched = "{";
 			
 			while ($data = $reqDisplayToDoList->fetch()) {
-			$toDoFetched .= '"'.$data['content'].'",';
+			$toDoFetched .= '"'.$data['id'].'":["'.$data['content'].'","'.$data['dateCreation'].'","'.$data['dateExpired'].'"],';
 			}
 		$reqDisplayToDoList -> closeCursor();	
 			
-		echo $toDoFetched == "[" ? "" : substr($toDoFetched, 0, -1)."]"; //il faut enlever le dernier ","
+		echo $toDoFetched == "{" ? "" : substr($toDoFetched, 0, -1)."}"; //il faut enlever le dernier ","
 		
 		/*echo ('<br>'.$reqUpdateSiblingsAndChildren->rowCount()." lignes affectées dans reqUpdateSiblingsAndChildren<br>");
 		*/
