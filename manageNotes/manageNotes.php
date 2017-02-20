@@ -38,6 +38,7 @@ include '../sessionAuthentication.php';
 						<textarea name="toDoTextarea" id="toDoTextarea" placeholder="Ecrire ici"></textarea>
 					</form>
 				</div>
+			<div id="lastAndInvisible">...</div>
 			</div>
 		</div>
 		

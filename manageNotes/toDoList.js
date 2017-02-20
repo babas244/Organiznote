@@ -1,9 +1,11 @@
 var toDoFocused = null;
+var IdOfFirstToDo = 1000;
 
 document.getElementById("noScroll").addEventListener('touchmove', function(event) {
 	event.preventDefault();
 }, false);
 
+addEventsDragAndDropToLastAndInvisible(document.getElementById("lastAndInvisible"));
 
 ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic, displayToDoList)
 
@@ -28,7 +30,7 @@ function displayToDoList(sToDoListRetrieved) {
 	for (i = 0 ; i < nbOfItemsOfToDoListJSONParsed; i ++) {
 		var sContent = aToDoListJSONParsed[i].replace(/&lt;br&gt;/gi, "\n");
 		var oDOMToDo = document.createElement("div");
-		oDOMToDo.id = 'toDo'+(i+1);
+		oDOMToDo.id = 'toDo'+(i+IdOfFirstToDo);
 		oDOMToDo.addEventListener('contextmenu', function(e) {
 			e.preventDefault();
 			toDoFocused = e.target.id;
@@ -38,11 +40,11 @@ function displayToDoList(sToDoListRetrieved) {
 		oDOMToDo.className = "toDo";
 		oDOMToDo.draggable = "true";
 		addEventsDragAndDrop(oDOMToDo);
-		document.getElementById("noScroll").appendChild(oDOMToDo);
+		document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById('lastAndInvisible'));
 	}
 }
 				
-
+				
 // insérer un nouveau toDo avant le premier déjà affiché puis le placer dans la bdd
 document.getElementById("addToDoButton").addEventListener('click', function () {
 	document.getElementById('addToDoButton').style.display = 'none';
@@ -59,17 +61,33 @@ function submitToDo(){
 	var toDoContent = document.getElementById("toDoTextarea").value;
 	document.getElementById('submitToDo').style.display = 'none';
 	//alert (toDoContent);
-	ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent, addToDoToDOM);
+	ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent, insertNewToDoInDOM);
 }
 
-function addToDoToDOM(){
-	//document.getElementById("frameOfToDo").insertBefore(oCategorieAffichageDOM , noteAlreadyLoadedInDOM );				
+function insertNewToDoInDOM() {
+	var sContent = document.getElementById("toDoTextarea").value;
+	var oDOMToDo = document.createElement("div");
+	oDOMToDo.id = 'toDo'+(IdOfFirstToDo - 1);
+	oDOMToDo.addEventListener('contextmenu', function(e) {
+		e.preventDefault();
+		toDoFocused = e.target.id;
+		displayContextMenuToDo(toDoFocused);
+	}, false);
+	oDOMToDo.innerHTML = sContent; 
+	oDOMToDo.className = "toDo";
+	oDOMToDo.draggable = "true";
+	addEventsDragAndDrop(oDOMToDo);
+	document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById('toDo'+(IdOfFirstToDo)));				
+	IdOfFirstToDo -=1;
+	// intialize form here ? 
 }
+
 
 function displayContextMenuToDo() {
 	//document.getElementById('contextMenuToDo').style.display = 'block';
 	
 }
+
 
 function addEventsDragAndDrop(DOMElement) {
 	DOMElement.addEventListener('dragstart', function(e){
