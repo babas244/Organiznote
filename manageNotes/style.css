@@ -271,6 +271,11 @@ textarea#toDoTextarea
 	word-wrap: break-word;	
 }
 
+.toDo:active
+{
+	background-color: #ff0000;
+}
+
 #noScroll
 {
 	background-color: yellow;

@@ -32,10 +32,12 @@ function displayToDoList(sToDoListRetrieved) {
 		oDOMToDo.addEventListener('contextmenu', function(e) {
 			e.preventDefault();
 			toDoFocused = e.target.id;
-			displayContextMenu(toDoFocused);
+			displayContextMenuToDo(toDoFocused);
 		}, false);
 		oDOMToDo.innerHTML = sContent; 
 		oDOMToDo.className = "toDo";
+		oDOMToDo.draggable = "true";
+		addEventsDragAndDrop(oDOMToDo);
 		document.getElementById("noScroll").appendChild(oDOMToDo);
 	}
 }
@@ -63,6 +65,60 @@ function submitToDo(){
 function addToDoToDOM(){
 	//document.getElementById("frameOfToDo").insertBefore(oCategorieAffichageDOM , noteAlreadyLoadedInDOM );				
 }
+
+function displayContextMenuToDo() {
+	//document.getElementById('contextMenuToDo').style.display = 'block';
+	
+}
+
+function addEventsDragAndDrop(DOMElement) {
+	DOMElement.addEventListener('dragstart', function(e){
+		e.dataTransfer.setData("text", e.target.id);
+	}, false);
+	
+	DOMElement.addEventListener('dragover', function(e) {
+		e.preventDefault(); // Annule l'interdiction de drop
+		this.style.borderTop = "10px blue solid";
+	}, false);
+					
+	DOMElement.addEventListener('dragleave', function(e) {
+		this.style.borderTop = "1px black solid";
+	}, false);
+	
+	DOMElement.addEventListener('drop', function(e){
+		e.preventDefault();
+		this.style.borderTop = "1px black solid";
+		var idDroppedElement = e.dataTransfer.getData("text");
+		var droppedElement = document.getElementById(idDroppedElement);
+		var newElement = droppedElement.cloneNode(true);
+		addEventsDragAndDrop(newElement);
+		this.parentNode.insertBefore(newElement, this);
+		droppedElement.parentNode.removeChild(droppedElement);
+	}, false);	
+}
+
+function addEventsDragAndDropToLastAndInvisible(DOMElement) { // nécessaire ?
+	DOMElement.addEventListener('dragover', function(e) {
+		e.preventDefault(); // Annule l'interdiction de drop
+		this.style.borderTop = "10px blue solid";
+	}, false);
+
+	DOMElement.addEventListener('dragleave', function(e) {
+		this.style.borderTop = "none";
+	}, false);
+	
+	DOMElement.addEventListener('drop', function(e){
+		e.preventDefault();
+		this.style.borderTop = "none";
+		var idDroppedElement = e.dataTransfer.getData("text");
+		var droppedElement = document.getElementById(idDroppedElement);
+		var newElement = droppedElement.cloneNode(true); // faire seulement un insertbefore et plus besoin de removechild
+		addEventsDragAndDrop(newElement);
+		this.parentNode.insertBefore(newElement, this);
+		droppedElement.parentNode.removeChild(droppedElement);
+	}, false);	
+}
+
 
 
 // effacer un toDo : par appui long ?? puis touche corbeille. ou icones dedans mais pas beaucoup  de place ???? En plus il faut du multiple !!
