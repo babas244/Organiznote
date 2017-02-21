@@ -10,6 +10,7 @@ document.getElementById("addToDoButton").addEventListener('click', initializeFor
 document.getElementById("cancelAddToDo").addEventListener('click', hideFormEnterToDo, false);
 document.getElementById("resetAddToDoForm").addEventListener('click', resetFormToDo, false);
 document.getElementById("deleteToDo").addEventListener('click', deleteToDo, false);
+document.getElementById("StatedToDoDone").addEventListener('click', stateToDoDone, false);
 
 
 document.getElementById("noScroll").addEventListener('touchmove', function(event) {
@@ -82,6 +83,18 @@ function deleteToDo () {
 		toDoFocused = null;
 	}
 }
+
+function stateToDoDone () {
+	hideContextMenuToDo();
+	if (confirm("Êtes-vous sûr de bien vouloir archiver comme faite la note :\n" + document.getElementById(toDoFocused).innerHTML) == true) {
+		ajaxCallNoResponse('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic + "&idInDdb=" + document.getElementById(toDoFocused).idInDdb, deleteToDoFromDOM, toDoFocused);	
+	}
+	else {
+		toDoFocused = null;
+	}
+}
+
+
 
 function deleteToDoFromDOM (idDOMElementToDelete)  {
 	document.getElementById('noScroll').removeChild(document.getElementById(idDOMElementToDelete)); 
