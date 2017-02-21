@@ -1,6 +1,6 @@
 var toDoFocused = null;
 var IdOfFirstToDo = 1000;
-
+var IdOfFirstToDoInitial = IdOfFirstToDo;
 
 addEventsDragAndDropToLastAndInvisible(document.getElementById("lastAndInvisible"));
 
@@ -86,7 +86,8 @@ function submitToDo(){
 	hideFormEnterToDo();
 	if (toDoContent !=="") {
 		IdOfFirstToDo -=1;
-		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent, insertToDoListBefore, 'toDo' + parseInt(IdOfFirstToDo + 1));
+		var oDOMToInsertBefore = document.getElementById('toDo'+ IdOfFirstToDoInitial) === null ? 'lastAndInvisible' : 'toDo' + parseInt(IdOfFirstToDo + 1); 
+		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent, insertToDoListBefore, oDOMToInsertBefore);
 	}
 }
 
