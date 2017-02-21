@@ -51,3 +51,21 @@
 	background-color: yellow;
 	display : none;
 }
+
+#deleteToDo 
+{
+	color: red;
+	display: none;
+}
+
+#StatedToDoDone
+{
+	color: green;
+	display: none;
+}
+
+#editToDo
+{
+	color: yellow;
+	display: none;
+}

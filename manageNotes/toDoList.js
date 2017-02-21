@@ -9,6 +9,7 @@ ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic, insertToDo
 document.getElementById("addToDoButton").addEventListener('click', initializeFormToDo, false);
 document.getElementById("cancelAddToDo").addEventListener('click', hideFormEnterToDo, false);
 document.getElementById("resetAddToDoForm").addEventListener('click', resetFormToDo, false);
+document.getElementById("deleteToDo").addEventListener('click', deleteToDo, false);
 
 
 document.getElementById("noScroll").addEventListener('touchmove', function(event) {
@@ -46,7 +47,6 @@ function ajaxCallNoResponse(sPathPhp, fCallBack, parameter1, parameter2) {
 		}
 	}
 }
-
 				
 function insertToDoListBefore(sToDoListJSON, idDOMBeforeToInsert) {
 	var oToDoListJSONParsed = sToDoListJSON == "" ? "" : JSON.parse(sToDoListJSON); 
@@ -64,7 +64,7 @@ function insertToDoListBefore(sToDoListJSON, idDOMBeforeToInsert) {
 		oDOMToDo.innerHTML = sContent; 
 		oDOMToDo.className = "toDo";
 		oDOMToDo.draggable = "true";
-		oDOMToDo.idInDbb = x;
+		oDOMToDo.idInDdb = x;
 		oDOMToDo.dateCreation = oToDoListJSONParsed[x][1];
 		oDOMToDo.dateExpired = oToDoListJSONParsed[x][2];
 		addEventsDragAndDrop(oDOMToDo);
@@ -73,6 +73,19 @@ function insertToDoListBefore(sToDoListJSON, idDOMBeforeToInsert) {
 	}
 }				
 				
+function deleteToDo () {
+	hideContextMenuToDo();
+	if (confirm("Êtes-vous sûr de bien vouloir effacer la note :\n" + document.getElementById(toDoFocused).innerHTML) == true) {
+		ajaxCallNoResponse('phpAjaxCalls_ToDo/deleteToDo.php?idTopic=' + idTopic + "&idInDdb=" + document.getElementById(toDoFocused).idInDdb, deleteToDoFromDOM, toDoFocused);	
+	}
+	else {
+		toDoFocused = null;
+	}
+}
+
+function deleteToDoFromDOM (idDOMElementToDelete)  {
+	document.getElementById('noScroll').removeChild(document.getElementById(idDOMElementToDelete)); 
+}				
 
 function initializeFormToDo() {
 	document.getElementById('addToDoButton').style.display = 'none';
@@ -102,10 +115,18 @@ function resetFormToDo() {
 }
 
 function displayContextMenuToDo() {
-	//document.getElementById('contextMenuToDo').style.display = 'block';
+	document.getElementById('deleteToDo').style.display = 'inline-block';
+	document.getElementById('StatedToDoDone').style.display = 'inline-block';
+	document.getElementById('editToDo').style.display = 'inline-block';
 	
 }
 
+function hideContextMenuToDo () {
+	document.getElementById('deleteToDo').style.display = 'none';
+	document.getElementById('StatedToDoDone').style.display = 'none';
+	document.getElementById('editToDo').style.display = 'none';
+	
+}
 
 function addEventsDragAndDrop(DOMElement) {
 	DOMElement.addEventListener('dragstart', function(e){

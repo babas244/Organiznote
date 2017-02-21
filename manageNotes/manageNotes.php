@@ -45,6 +45,9 @@ include '../sessionAuthentication.php';
 				</div>
 			<div id="lastAndInvisible">...</div>
 			</div>
+		<button id="deleteToDo">X</button>
+		<button id="StatedToDoDone">7</button>
+		<button id="editToDo">Edit</button>
 		</div>
 		
 		<div id="frameOfTree">
