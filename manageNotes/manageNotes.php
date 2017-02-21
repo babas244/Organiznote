@@ -14,7 +14,8 @@ include '../sessionAuthentication.php';
     <head>
         <title>Organiznote</title>
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-		<link rel="stylesheet" href="style.css" />
+		<link rel="stylesheet" href="dataTree.css" />
+		<link rel="stylesheet" href="toDoList.css" />
     </head>
     <body>
 		<!-- -->
