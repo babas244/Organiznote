@@ -34,15 +34,17 @@ include '../sessionAuthentication.php';
 			<div id="noScroll">
 			<button id="addToDoButton">+</button>			
 				<div id="addToDoFrame">
-					<form id="addToDoForm">
-						<textarea name="toDoTextarea" id="toDoTextarea" placeholder="Ecrire ici"></textarea>
-					</form>
+					<button id="cancelAddToDo"><-</button>
+					<div id="frameTextareaToDoForm">
+						<form id="addToDoForm" onsubmit="submitToDo()">
+							<input type="textarea" name="toDoTextarea" id="toDoTextarea" placeholder="Ecrire ici">
+						</form>		
+					</div>
+					<button id="resetAddToDoForm">x</button>	
 				</div>
 			<div id="lastAndInvisible">...</div>
 			</div>
 		</div>
-		
-		<div id="submitToDo">submit</div>
 		
 		<div id="frameOfTree">
 			<div id="01" class="folder">   <!--div "racine", à mettre dans dataTree.js ?--> 

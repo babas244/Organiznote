@@ -241,7 +241,6 @@ textarea#zoneFormulaireEntrerNote
 #addToDoButton
 {
 	background-color:  green;
-	display : inline-block; /* ?? */
 }
 
 #addToDoFrame
@@ -250,16 +249,9 @@ textarea#zoneFormulaireEntrerNote
 	background-color:  red;	
 }
 
-form#addToDoForm
-{	
-	width: 100%;
-	height: 100%;
-}
-	
-textarea#toDoTextarea
+#cancelAddToDo, #frameTextareaToDoForm, #resetAddToDoForm
 {
-	width: 100%;
-	height: 100%;
+	display: inline-block;
 }
 
 

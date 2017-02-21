@@ -1,13 +1,23 @@
 var toDoFocused = null;
 var IdOfFirstToDo = 1000;
 
-document.getElementById("noScroll").addEventListener('touchmove', function(event) {
-	event.preventDefault();
-}, false);
 
 addEventsDragAndDropToLastAndInvisible(document.getElementById("lastAndInvisible"));
 
 ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic, insertToDoListBefore, 'lastAndInvisible')
+
+document.getElementById("addToDoButton").addEventListener('click', initializeFormToDo, false);
+document.getElementById("cancelAddToDo").addEventListener('click', hideFormEnterToDo, false);
+document.getElementById("resetAddToDoForm").addEventListener('click', resetFormToDo, false);
+
+
+document.getElementById("noScroll").addEventListener('touchmove', function(event) {
+	event.preventDefault();
+}, false);
+
+document.getElementById("addToDoForm").addEventListener('submit', function(e) {
+	e.preventDefault();
+}, false);
 
 function ajaxCall(sPathPhp, fCallBack, parameter1) {
 	var xhr = new XMLHttpRequest(); 
@@ -54,6 +64,7 @@ function insertToDoListBefore(sToDoListJSON, idDOMBeforeToInsert) {
 		oDOMToDo.innerHTML = sContent; 
 		oDOMToDo.className = "toDo";
 		oDOMToDo.draggable = "true";
+		oDOMToDo.idInDbb = x;
 		oDOMToDo.dateCreation = oToDoListJSONParsed[x][1];
 		oDOMToDo.dateExpired = oToDoListJSONParsed[x][2];
 		addEventsDragAndDrop(oDOMToDo);
@@ -62,31 +73,32 @@ function insertToDoListBefore(sToDoListJSON, idDOMBeforeToInsert) {
 	}
 }				
 				
-// insérer un nouveau toDo avant le premier déjà affiché puis le placer dans la bdd
-document.getElementById("addToDoButton").addEventListener('click', function () {
+
+function initializeFormToDo() {
 	document.getElementById('addToDoButton').style.display = 'none';
-	document.getElementById('submitToDo').style.display = 'block';
 	document.getElementById('addToDoFrame').style.display = 'block';
 	document.getElementById("toDoTextarea").focus();
-}, false);
+}
 
-document.getElementById("submitToDo").addEventListener('click', function () {
-	submitToDo();
-	}, false); 
 
 function submitToDo(){
 	var toDoContent = document.getElementById("toDoTextarea").value;
-	document.getElementById('addToDoButton').style.display = 'block';
-	hideFormEnterToDo();	
-	IdOfFirstToDo -=1;
-	ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent, insertToDoListBefore, 'toDo' + parseInt(IdOfFirstToDo + 1));
+	hideFormEnterToDo();
+	if (toDoContent !=="") {
+		IdOfFirstToDo -=1;
+		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent, insertToDoListBefore, 'toDo' + parseInt(IdOfFirstToDo + 1));
+	}
 }
 
 function hideFormEnterToDo() {
-	document.getElementById('submitToDo').style.display = 'none';
 	document.getElementById("addToDoForm").reset();
 	document.getElementById('addToDoFrame').style.display = 'none';
+	document.getElementById('addToDoButton').style.display = 'block';
 } 
+
+function resetFormToDo() {
+	document.getElementById("addToDoForm").reset();	
+}
 
 function displayContextMenuToDo() {
 	//document.getElementById('contextMenuToDo').style.display = 'block';
