@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Sam 11 Février 2017 à 08:15
+-- Généré le :  Mer 22 Février 2017 à 05:12
 -- Version du serveur :  5.7.11
 -- Version de PHP :  5.6.19
 
@@ -33,8 +33,8 @@ CREATE TABLE `notes` (
   `idNote` varchar(255) NOT NULL,
   `content` text NOT NULL,
   `dateCreation` datetime NOT NULL,
-  `dateExpired` date DEFAULT NULL,
-  `dateArchive` date DEFAULT NULL
+  `dateExpired` datetime DEFAULT NULL,
+  `dateArchive` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -44,14 +44,14 @@ CREATE TABLE `notes` (
 --
 
 CREATE TABLE `todolists` (
-  `id` int(11) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL,
   `idUser` int(11) NOT NULL,
   `idTopic` int(11) NOT NULL,
   `idNote` varchar(255) NOT NULL,
   `content` text NOT NULL,
-  `dateCreation` datetime NOT NULL,
-  `dateExpired` date DEFAULT NULL,
-  `dateArchive` date DEFAULT NULL
+  `dateCreation` datetime DEFAULT NULL,
+  `dateExpired` datetime DEFAULT NULL,
+  `dateArchive` datetime DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -93,6 +93,12 @@ ALTER TABLE `notes`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `todolists`
+--
+ALTER TABLE `todolists`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `topics`
 --
 ALTER TABLE `topics`
@@ -112,17 +118,22 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `notes`
 --
 ALTER TABLE `notes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=753;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=942;
+--
+-- AUTO_INCREMENT pour la table `todolists`
+--
+ALTER TABLE `todolists`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 --
 -- AUTO_INCREMENT pour la table `topics`
 --
 ALTER TABLE `topics`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 --
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
