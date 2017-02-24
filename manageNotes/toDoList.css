@@ -52,6 +52,12 @@
 	display : none;
 }
 
+#cancelContextMenu
+{
+	color: orange;
+	display: none;	
+}
+
 #deleteToDo 
 {
 	color: red;

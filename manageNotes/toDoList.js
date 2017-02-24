@@ -11,7 +11,7 @@ document.getElementById("cancelAddToDo").addEventListener('click', hideFormEnter
 document.getElementById("resetAddToDoForm").addEventListener('click', resetFormToDo, false);
 document.getElementById("deleteToDo").addEventListener('click', deleteToDo, false);
 document.getElementById("StatedToDoDone").addEventListener('click', stateToDoDone, false);
-
+document.getElementById("cancelContextMenu").addEventListener('click', hideContextMenuToDo, false);
 
 document.getElementById("noScroll").addEventListener('touchmove', function(event) {
 	event.preventDefault();
@@ -124,6 +124,7 @@ function resetFormToDo() {
 }
 
 function displayContextMenuToDo() {
+	document.getElementById('cancelContextMenu').style.display = 'inline-block';
 	document.getElementById('deleteToDo').style.display = 'inline-block';
 	document.getElementById('StatedToDoDone').style.display = 'inline-block';
 	document.getElementById('editToDo').style.display = 'inline-block';
@@ -131,6 +132,7 @@ function displayContextMenuToDo() {
 }
 
 function hideContextMenuToDo () {
+	document.getElementById('cancelContextMenu').style.display = 'none';
 	document.getElementById('deleteToDo').style.display = 'none';
 	document.getElementById('StatedToDoDone').style.display = 'none';
 	document.getElementById('editToDo').style.display = 'none';
