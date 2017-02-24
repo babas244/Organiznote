@@ -57,11 +57,7 @@ function insertToDoListBefore(sToDoListJSON, idDOMBeforeToInsert) {
 		var sContent = oToDoListJSONParsed[x][0].replace(/&lt;br&gt;/gi, "\n");
 		var oDOMToDo = document.createElement("div");
 		oDOMToDo.id = 'toDo'+(i+IdOfFirstToDo);
-		oDOMToDo.addEventListener('contextmenu', function(e) {
-			e.preventDefault();
-			toDoFocused = e.target.id;
-			displayContextMenuToDo(toDoFocused);
-		}, false);
+		addContextMenu(oDOMToDo);
 		oDOMToDo.innerHTML = sContent; 
 		oDOMToDo.className = "toDo";
 		oDOMToDo.draggable = "true";
@@ -162,6 +158,7 @@ function addEventsDragAndDrop(DOMElement) {
 		var droppedElement = document.getElementById(idDroppedElement);
 		var newElement = droppedElement.cloneNode(true);
 		addEventsDragAndDrop(newElement);
+		addContextMenu(newElement);
 		this.parentNode.insertBefore(newElement, this);
 		droppedElement.parentNode.removeChild(droppedElement);
 	}, false);	
@@ -184,12 +181,19 @@ function addEventsDragAndDropToLastAndInvisible(DOMElement) {
 		var droppedElement = document.getElementById(idDroppedElement);
 		var newElement = droppedElement.cloneNode(true); // faire seulement un insertbefore et plus besoin de removechild
 		addEventsDragAndDrop(newElement);
+		addContextMenu(newElement);
 		this.parentNode.insertBefore(newElement, this);
 		droppedElement.parentNode.removeChild(droppedElement);
 	}, false);	
 }
 
-
+function addContextMenu(oDOMToDo) {
+	oDOMToDo.addEventListener('contextmenu', function(e) {
+		e.preventDefault();
+		toDoFocused = e.target.id;
+		displayContextMenuToDo(toDoFocused);
+	}, false);
+}
 
 // effacer un toDo : par appui long ?? puis touche corbeille. ou icones dedans mais pas beaucoup  de place ???? En plus il faut du multiple !!
 
