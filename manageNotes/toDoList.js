@@ -124,6 +124,7 @@ function resetFormToDo() {
 }
 
 function displayContextMenuToDo() {
+	document.getElementById('greyLayerOnNoScroll').style.display = 'block';
 	document.getElementById('cancelContextMenu').style.display = 'inline-block';
 	document.getElementById('deleteToDo').style.display = 'inline-block';
 	document.getElementById('StatedToDoDone').style.display = 'inline-block';

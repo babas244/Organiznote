@@ -33,6 +33,7 @@ include '../sessionAuthentication.php';
 		<a href="../logout.php">(se déconnecter)</a>.
 		<div id="frameOfToDo">
 			<div id="noScroll">
+			<div id="greyLayerOnNoScroll"></div>
 			<button id="addToDoButton">+</button>			
 				<div id="addToDoFrame">
 					<button id="cancelAddToDo"><-</button>
