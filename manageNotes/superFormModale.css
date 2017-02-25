@@ -1,0 +1,69 @@
+#frameOfSuperForm
+{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	z-index: 1;
+	background-color: rgba(0,0,0,0.4); 
+	height: 100%;
+	width: 100%;
+}
+
+#activeWindow
+{
+	position: absolute;
+	width:80%;
+	left: 10%;
+	top: 10%;
+}
+
+#titleOfForm
+{
+	color: white;
+	background-color: black;
+	text-align: center;
+}
+
+.FormItemLabel
+{
+	background-color: green;
+}
+
+.FormItemLabel:hover
+{
+	background-color: orange;	
+}
+
+.FormItemLabel:active
+{
+	background-color: red;	
+}
+
+.formCommands
+{
+	height: 22px;
+	border: 1px black solid;
+	text-align: center; 
+	opacity: 1;
+}
+
+#cancelForm
+{
+	background-color: red;
+}
+
+#cancelForm:hover {background-color: #ff9999;}
+
+#initializeForm
+{
+	background-color: blue;
+}
+
+#initializeForm:hover {background-color: #aaaaff;}
+
+#submitForm
+{
+	background-color: #11ff11;
+}
+
+#submitForm:hover {background-color: #ffff11;}
