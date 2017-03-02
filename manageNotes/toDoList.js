@@ -109,7 +109,7 @@ function submitToDo(){
 	if (toDoContent !=="") {
 		IdOfFirstToDo -=1;
 		var oDOMToInsertBefore = document.getElementById('toDo'+ IdOfFirstToDoInitial) === null ? 'lastAndInvisible' : 'toDo' + parseInt(IdOfFirstToDo + 1); 
-		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent, insertToDoListBefore, oDOMToInsertBefore);
+		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent, insertToDoListBefore, oDOMToInsertBefore); // oDOMToInsertBefore est une string ici...
 	}
 }
 
@@ -133,6 +133,7 @@ function displayContextMenuToDo() {
 }
 
 function hideContextMenuToDo () {
+	document.getElementById('greyLayerOnNoScroll').style.display = 'none';
 	document.getElementById('cancelContextMenu').style.display = 'none';
 	document.getElementById('deleteToDo').style.display = 'none';
 	document.getElementById('StatedToDoDone').style.display = 'none';
