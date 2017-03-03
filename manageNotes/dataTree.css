@@ -1,4 +1,18 @@
-/*-------------------------Main Menu of the page--------------------*/
+#header
+{
+	text-align: right;
+}	
+
+#frameOfSwitchToTreeForMobile
+{
+	display: none;
+}
+
+#displayAndHideTree
+{
+	background-color: rgb(255,255,220);
+}
+
 div#menu
 {
 	position: absolute;
@@ -30,9 +44,21 @@ li button:hover, li:hover
 
 
 /*-------------------------TreeItems--------------------*/
+
+#containerOfTree
+{
+	position: absolute;
+	height: 100%;
+	width: 60%;
+	left: 40%;
+}
+
 #frameOfTree
 {
-	background-color: #f2f2aa;
+	position: relative;
+	height: 100%;
+	width: 100%;
+	background-color: rgba(255,255,220,0.8);
 	display: block;
 }
 
@@ -80,7 +106,7 @@ div#fondMenuCategorie
 	position: absolute;
 	left: 0px;
 	top: 0px;
-	z-index: 1;
+	z-index: 3;
 	background-color: rgba(0,0,0,0.4); 
 	height: 100%;
 	width: 100%;
@@ -126,7 +152,7 @@ div#fondMenuCategorie
 	position: absolute;
 	left: 0px;
 	top: 0px;
-	z-index: 1;
+	z-index: 3;
 	background-color: rgba(0,0,0,0.6); 
 	height: 100%;
 	width: 100%;
@@ -225,4 +251,20 @@ textarea#zoneFormulaireEntrerNote
 	top: 50%;
 	z-index: 2;
 	display: none; 
+}
+
+@media screen and (max-width: 480px) {
+	#containerOfTree
+	{
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		left: 0%;
+		z-index: 2;
+	}
+	
+	#frameOfSwitchToTreeForMobile
+	{
+		display: inline-block;
+	}
 }

@@ -1,11 +1,19 @@
 /*-------------------------toDo--------------------*/
+#containerOfToDo
+{
+	position: absolute;
+	width: 40%;
+	height: 100%;
+}
+
 #frameOfToDo
 {
+	position: relative;
 	background-color: blue;
 	overflow: scroll;
 	width: 100%;
 	/* pour le tel il faudra probablement mettre a position : fixed;*/
-	height: 80%;
+	max-height: 80%;
 	font-size: 1.5em;
 }
 
@@ -61,6 +69,12 @@
 	width: 50px;
 	background-color: yellow;
 	display : none;
+}
+
+#frameOfContextMenuToDo
+{
+	position: absolute;
+	top: 90%;
 }
 
 #cancelContextMenu
