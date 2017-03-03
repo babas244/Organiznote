@@ -4,6 +4,7 @@
 	position: absolute;
 	width: 40%;
 	height: 100%;
+	background-color: #ffffff;
 }
 
 #frameOfToDo
@@ -11,7 +12,6 @@
 	position: relative;
 	background-color: blue;
 	overflow: scroll;
-	width: 100%;
 	/* pour le tel il faudra probablement mettre a position : fixed;*/
 	max-height: 80%;
 	font-size: 1.5em;
@@ -99,4 +99,14 @@
 {
 	color: yellow;
 	display: none;
+}
+
+@media screen and (max-width: 480px) {
+	#containerOfToDo
+	{
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		left: 0%;
+	}
 }

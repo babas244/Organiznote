@@ -32,10 +32,10 @@ include '../sessionAuthentication.php';
 				echo "Bonjour <strong>".$_SESSION['user']."</strong>, vous êtes connecté sur le topic : ".$topic;
 			?>
 			<a href="../logout.php">(se déconnecter)</a>.
-			<button id="frameOfSwitchToTreeForMobile">
-				<div id="displayAndHideTree">V
-				</div>
-			</button>
+			<div id="frameOfSwitchToTreeForMobile">
+				<button id="displayAndHideTree">V
+				</button>
+			</div>
 		</div>
 		
 		<div id="containerOfToDo">

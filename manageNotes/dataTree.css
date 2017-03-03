@@ -51,6 +51,7 @@ li button:hover, li:hover
 	height: 100%;
 	width: 60%;
 	left: 40%;
+	z-index: -1;
 }
 
 #frameOfTree
@@ -260,7 +261,6 @@ textarea#zoneFormulaireEntrerNote
 		height: 100%;
 		width: 100%;
 		left: 0%;
-		z-index: 2;
 	}
 	
 	#frameOfSwitchToTreeForMobile

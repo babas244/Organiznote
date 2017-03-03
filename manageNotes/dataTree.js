@@ -3,6 +3,12 @@ ToutesCategories = {};
 var pathFocused = null; 
 var ongoingAction = null;
 var pathToPaste = null;
+var TreezIndex = -1;
+
+document.getElementById("displayAndHideTree").addEventListener('click', function () {
+	TreezIndex = TreezIndex === -1 ? 1 : -1; 
+	document.getElementById("containerOfTree").style.zIndex = TreezIndex;
+}, false);
 
 fInstantiateRoot();
 
