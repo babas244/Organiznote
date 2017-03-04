@@ -1,3 +1,8 @@
+body {
+  margin: 0px;
+  padding: 0px;
+}
+
 #header
 {
 	text-align: right;
@@ -48,7 +53,8 @@ li button:hover, li:hover
 #containerOfTree
 {
 	position: absolute;
-	height: 100%;
+	top: 5%;
+	height: 95%;
 	width: 60%;
 	left: 40%;
 	z-index: -1;
@@ -58,7 +64,8 @@ li button:hover, li:hover
 {
 	position: relative;
 	height: 100%;
-	width: 100%;
+	width: 98%;
+	left: 2%;
 	background-color: rgba(255,255,220,0.8);
 	display: block;
 }
