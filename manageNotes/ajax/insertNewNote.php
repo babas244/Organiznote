@@ -8,6 +8,8 @@ if (isset($_SESSION['id']) && isset($_GET["newNote"]) && isset($_GET["idTopic"])
 	
 	include '../../log_in_bdd.php';
 
+	include '../../isIdTopicSafeAndMatchUser.php';
+	
 	$newNote = htmlspecialchars($_GET["newNote"]);
 	
 	// inserer la note

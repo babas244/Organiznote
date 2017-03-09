@@ -8,6 +8,8 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["idInDdb"])
 	
 	include '../../log_in_bdd.php';
 
+	include '../../isIdTopicSafeAndMatchUser.php';
+	
 	$idInDdb = htmlspecialchars($_GET["idInDdb"]);
 	
 	// mettre dateArchive de la toDo égale à NOW()

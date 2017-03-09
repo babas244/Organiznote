@@ -10,6 +10,8 @@ if (isset($_SESSION['id'])&& isset($_GET["idTopic"]) && isset($_GET["sIdCategory
 	
 	include '../../log_in_bdd.php';
 
+	include '../../isIdTopicSafeAndMatchUser.php';
+	
 	$sNewNote = htmlspecialchars($_GET["sNewNote"]);
 	
 	$reqUpdateContent = $bdd -> prepare('UPDATE notes SET content=:content WHERE idUser=:idUser AND idTopic=:idTopic AND idNote=:idNote'); // changer la date aussi ??

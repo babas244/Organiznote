@@ -9,6 +9,8 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 
 	include '../../log_in_bdd.php';
 
+	include '../../isIdTopicSafeAndMatchUser.php';
+	
 	$reqGetTopic = $bdd -> prepare('SELECT topic FROM topics WHERE idUser=:idUser AND id=:idTopic');
 		$reqGetTopic -> execute(array(
 		'idUser' => $_SESSION['id'],

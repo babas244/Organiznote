@@ -8,6 +8,8 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 	
 	include '../../log_in_bdd.php';
 
+	include '../../isIdTopicSafeAndMatchUser.php';
+	
 	$toDoContent = htmlspecialchars($_GET["toDoContent"]);
 	
 	// inserer la toDo

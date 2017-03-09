@@ -27,6 +27,9 @@ include '../sessionAuthentication.php';
 					'idTopic' => $_GET['idTopic']));
 					$resultat = $reqGetTopic -> fetch();
 				$topic = $resultat['topic'];
+				if ($reqGetTopic->rowCount() == 0) {
+					header("Location: ../logout.php");
+				}
 			$reqGetTopic -> closeCursor();
 
 				echo "Bonjour <strong>".$_SESSION['user']."</strong>, vous êtes connecté sur le topic : ".$topic;

@@ -10,6 +10,8 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
 
 		include '../../log_in_bdd.php';		
+		
+		include '../../isIdTopicSafeAndMatchUser.php';
 	
 		$reqDisplayToDoList = $bdd -> prepare('SELECT id, content, dateCreation, dateExpired FROM todolists WHERE idUser=:idUser AND idTopic=:idTopic AND dateArchive IS NULL ORDER BY dateCreation DESC');
 			$reqDisplayToDoList -> execute(array(

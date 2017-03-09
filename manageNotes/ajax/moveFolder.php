@@ -14,6 +14,8 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCutPath"]
 		
 		include '../../log_in_bdd.php';		
 		
+		include '../../isIdTopicSafeAndMatchUser.php';
+		
 		// on update les noms de tous les paths descendants de sCutPath et aussi sCutPath
 		$lengthCutPath = strlen($sCutPath); // on pourrait mettre le +1 ici au lieu de le recalculer dans la requete à chaque fois
 		//echo $lengthCutPath;
