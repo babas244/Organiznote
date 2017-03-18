@@ -6,6 +6,8 @@ addEventsDragAndDropToLastAndInvisible(document.getElementById("lastAndInvisible
 
 ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic, insertToDoListBefore, 'lastAndInvisible')
 
+ajaxCall('phpAjaxCalls_ToDo/retrieveLabels.php?idTopic=' + idTopic, displayLabelsCheckboxes); 
+
 document.getElementById("addToDoButton").addEventListener('click', initializeFormToDo, false);
 document.getElementById("cancelAddToDo").addEventListener('click', hideFormEnterToDo, false);
 document.getElementById("resetAddToDoForm").addEventListener('click', resetFormToDo, false);
@@ -46,6 +48,29 @@ function ajaxCallNoResponse(sPathPhp, fCallBack, parameter1, parameter2) {
 		else if (xhr.readyState == 4 && xhr.status != 200) {
 				alert('Une erreur est survenue !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
 		}
+	}
+}
+
+function displayLabelsCheckboxes(sLabelsJSON) {
+	var oLabels = JSON.parse(sLabelsJSON);
+	var rankOfTitleLabel = 1;
+	var rankOfLabel;
+	for (titleLabel in oLabels) {
+		for (var rankOfLabel=1 ; rankOfLabel < oLabels[titleLabel].length + 1 ; rankOfLabel++) {
+			var oDOMLabelCheckbox = document.createElement("input");
+			oDOMLabelCheckbox.type = "checkbox";
+			oDOMLabelCheckbox.id = "checkboxLabel"+rankOfTitleLabel+"a"+rankOfLabel;
+			oDOMLabelCheckbox.rankOfTitleLabel = rankOfTitleLabel;
+			oDOMLabelCheckbox.rankOfLabel = rankOfLabel;
+			document.getElementById("containerOfToDo").appendChild(oDOMLabelCheckbox);
+			var oDOMDivLabel = document.createElement("span");
+			oDOMDivLabel.innerHTML = oLabels[titleLabel][rankOfLabel-1];
+			document.getElementById("containerOfToDo").appendChild(oDOMDivLabel);				
+		}	
+		oDOMElementBr = document.createElement("Br");
+		document.getElementById("containerOfToDo").appendChild(oDOMElementBr);
+
+		rankOfTitleLabel +=1;
 	}
 }
 				
