@@ -4,7 +4,7 @@ var IdOfFirstToDoInitial = IdOfFirstToDo;
 
 addEventsDragAndDropToLastAndInvisible(document.getElementById("lastAndInvisible"));
 
-ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic, insertToDoListBefore, 'lastAndInvisible')
+ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + "&labelTitleRank=1&labelRank=1", insertToDoListBefore, 'lastAndInvisible')
 
 ajaxCall('phpAjaxCalls_ToDo/retrieveLabels.php?idTopic=' + idTopic, displayLabelsCheckboxes); 
 
@@ -158,7 +158,7 @@ function submitToDo(){
 	if (toDoContent !=="") {
 		IdOfFirstToDo -=1;
 		var oDOMToInsertBefore = document.getElementById('toDo'+ IdOfFirstToDoInitial) === null ? 'lastAndInvisible' : 'toDo' + parseInt(IdOfFirstToDo + 1); 
-		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent, insertToDoListBefore, oDOMToInsertBefore); // oDOMToInsertBefore est une string ici...
+		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent + "&labels=11", insertToDoListBefore, oDOMToInsertBefore); // oDOMToInsertBefore est une string ici...
 	}
 }
 
