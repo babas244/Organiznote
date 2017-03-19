@@ -13,12 +13,12 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		
 		include '../../isIdTopicSafeAndMatchUser.php';
 	
-		$reqRetrieveLabels = $bdd -> prepare('SELECT userstodolabelstitles.content AS labelTitleContent, userstodolabelstitles.rankLabelTitle AS rankLabelTitle, userstodolabels.content AS labelContent
-											FROM userstodolabels 
-											INNER JOIN userstodolabelstitles
-											ON userstodolabelstitles.id = userstodolabels.idLabelTitle
+		$reqRetrieveLabels = $bdd -> prepare('SELECT todo_userlabelstitles.content AS labelTitleContent, todo_userlabelstitles.rankLabelTitle AS rankLabelTitle, todo_userlabels.content AS labelContent
+											FROM todo_userlabels 
+											INNER JOIN todo_userlabelstitles
+											ON todo_userlabelstitles.id = todo_userlabels.idLabelTitle
 											WHERE idUser=:idUser AND idTopic=:idTopic 
-											ORDER BY userstodolabelstitles.rankLabelTitle, userstodolabels.rankLabel');
+											ORDER BY todo_userlabelstitles.rankLabelTitle, todo_userlabels.rankLabel');
 			$reqRetrieveLabels -> execute(array(
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $_GET["idTopic"])) or die(print_r($reqRetrieveLabels->errorInfo()));

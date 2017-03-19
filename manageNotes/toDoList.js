@@ -62,6 +62,9 @@ function displayLabelsCheckboxes(sLabelsJSON) {
 			oDOMLabelCheckbox.id = "checkboxLabel"+rankOfTitleLabel+"a"+rankOfLabel;
 			oDOMLabelCheckbox.rankOfTitleLabel = rankOfTitleLabel;
 			oDOMLabelCheckbox.rankOfLabel = rankOfLabel;
+			oDOMLabelCheckbox.addEventListener('input', function (e){
+				displayToDoList(e.target.rankOfTitleLabel, e.target.rankOfLabel, e.target.checked);
+			}, false);
 			document.getElementById("containerOfToDo").appendChild(oDOMLabelCheckbox);
 			var oDOMDivLabel = document.createElement("span");
 			oDOMDivLabel.innerHTML = oLabels[titleLabel][rankOfLabel-1];
@@ -73,7 +76,28 @@ function displayLabelsCheckboxes(sLabelsJSON) {
 		rankOfTitleLabel +=1;
 	}
 }
-				
+			
+function displayToDoList (rankOfTitleLabel, rankOfLabel, isChecked) {
+	var aDOMHasClassOfToDo = document.querySelectorAll('div[class="toDo'+rankOfTitleLabel+'a'+rankOfLabel+'"]');
+	var numberOfToDo = aDOMHasClassOfToDo.length;
+	if (isChecked) {
+		// tester d'abord s'il y a déjà un toDo de cette class déjà instancié. vaudrait-il mieux avoir une variable globale qui dit si déjà chargé ou pas ? 
+		if (numberOfToDo === 0) {
+			ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic, insertToDoListBefore, 'lastAndInvisible')		
+		}
+		else {
+			for (var i = 0; i < numberOfToDo ; i++) {
+				aDOMHasClassOfToDo[i].style.display = 'block';
+			}
+		}
+	}
+	else {
+		for (var j = 0; j < numberOfToDo ; j++) {
+			aDOMHasClassOfToDo[i].style.display = 'none';
+		}
+	}
+}
+			
 function insertToDoListBefore(sToDoListJSON, idDOMBeforeToInsert) {
 	var oToDoListJSONParsed = sToDoListJSON == "" ? "" : JSON.parse(sToDoListJSON); 
 	// if oToDoListJSONParsed =="" afficher "pas encore de notes" : non à mettre en dehors de cette function
