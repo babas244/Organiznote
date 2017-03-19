@@ -1,4 +1,4 @@
-function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, fCallbackCheckForm) {
+function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType, fCallbackCheckForm) {
 	
 	displayForm();
 	buildForm();
@@ -30,12 +30,28 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, fCallbackChe
 		var rankInForm = 0;
 		for (nameInput in oForm) {
 			var FormHTMLType = oForm[nameInput].HTMLType ? oForm[nameInput].HTMLType : "input"
-			var oDOMForm = document.createElement(FormHTMLType);
+			
+			if (FormHTMLType === "radio") {
+				alert ("Formulaires radios pas encore pris en charge");
+			}
+			else {
+				var oDOMForm = document.createElement(FormHTMLType);				
+			}
 			oDOMForm.name = nameInput;
 			for (attribute in oForm[nameInput].attributes) {
 				oDOMForm[attribute] = oForm[nameInput].attributes[attribute];
+			}				
+
+			if (FormHTMLType === "select") {
+				for (var k = 0; k < oForm[nameInput].options.length; k++) {
+					var eDOMOption = document.createElement("option");
+					eDOMOption.text = oForm[nameInput].options[k];
+					oDOMForm.options.add(eDOMOption);
+				}
 			}
+			
 			oDOMForm.style.display = 'block';
+			
 			var oDOMFormItemLabel = document.createElement("div");
 			oDOMFormItemLabel.id = 'formItem'+ rankInForm; 
 			oDOMFormItemLabel.className = "FormItemLabel";
@@ -52,7 +68,7 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, fCallbackChe
 			if (rankInForm === 0) {
 				oDOMForm.focus();
 			}
-			rankInForm += 1;
+		rankInForm += 1;
 		}
 	// build commandbuttons of Form
 	oDOMFormCommand = document.createElement("button");
@@ -84,18 +100,21 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, fCallbackChe
 		
 	function submitForm() {	
 		var oDOMsuperForm = document.getElementById("superForm");
-		var sResponseForm = "";
+		var sResponseFormPhpAdress = "";
+		var aResponseFormArray = [];
 		for (var i = 0 ; i <  oDOMsuperForm.elements.length ; i++) {
 			var oDOMFormElementI = oDOMsuperForm.elements[i];
-			oForm[oDOMFormElementI.name].value = oDOMFormElementI.value; // le sript appellant peut tester les value de l'objet de son côté
-			sResponseForm += oDOMFormElementI.name + "=" + oDOMFormElementI.value + "&"
+			//alert (i + "   " + oDOMFormElementI.selectedIndex);
+			oForm[oDOMFormElementI.name].value = oDOMFormElementI.selectedIndex!==undefined ? oDOMFormElementI.selectedIndex + 1 : oDOMFormElementI.value; // le sript appellant peut tester les value de l'objet de son côté
+			sResponseFormPhpAdress += oDOMFormElementI.name + "=" + oForm[oDOMFormElementI.name].value + "&"
+			aResponseFormArray[i] = oForm[oDOMFormElementI.name].value
 		}
-		sResponseForm = sResponseForm.slice(0,-1);
+		sResponseFormPhpAdress = sResponseFormPhpAdress.slice(0,-1);
 		if (fCallbackCheckForm) {
 			var sResponseCheck = fCallbackCheckForm();
 			if ( sResponseCheck === "ok"){ // la function fCallbackCheckForm située hors de superFormModale doit return "ok" si tout va bien et le name de du oForm si il y a un probl�me
 				hideSuperFormModale();
-				fCallbackExecute(sResponseForm);
+				fCallbackExecute(sOutputType === "array" ? aResponseFormArray : sResponseFormPhpAdress);
 			}
 			else {
 				var k = -1; 
@@ -109,7 +128,7 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, fCallbackChe
 		}	
 		else {
 			hideSuperFormModale();
-			fCallbackExecute(sResponseForm);			
+			fCallbackExecute(sOutputType === "array" ? aResponseFormArray : sResponseFormPhpAdress);			
 		}
 	}
 
