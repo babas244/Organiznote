@@ -13,6 +13,7 @@ document.getElementById("cancelAddToDo").addEventListener('click', hideFormEnter
 document.getElementById("resetAddToDoForm").addEventListener('click', resetFormToDo, false);
 document.getElementById("deleteToDo").addEventListener('click', deleteToDo, false);
 document.getElementById("StatedToDoDone").addEventListener('click', stateToDoDone, false);
+document.getElementById("editToDo").addEventListener('click', editToDo, false);
 document.getElementById("cancelContextMenu").addEventListener('click', hideContextMenuToDo, false);
 
 document.getElementById("noScroll").addEventListener('touchmove', function(event) {
@@ -143,7 +144,15 @@ function stateToDoDone () {
 	}
 }
 
+function editToDo() {
+	var sForm = '{ ';
+	sForm += '"content" : { "HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "10", "value" : "' + document.getElementById(toDoFocused).innerHTML + '" }, "label" : "note"}, "TitleLabel1" : { "HTMLType" : "select" , "attributes" : {}, "options" :  ["à la une", "jsnp", "bientôt"] , "label" : "Pour quand ?"}}';
+	superFormModale(sForm, "Etiquettes", coucou, "array");
+}
 
+function coucou(ResponseForm) {
+	alert (ResponseForm);
+}
 
 function deleteToDoFromDOM (idDOMElementToDelete)  {
 	document.getElementById('noScroll').removeChild(document.getElementById(idDOMElementToDelete)); 

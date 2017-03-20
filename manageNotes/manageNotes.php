@@ -16,6 +16,7 @@ include '../sessionAuthentication.php';
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
 		<link rel="stylesheet" href="dataTree.css" />
 		<link rel="stylesheet" href="toDoList.css" />
+		<link rel="stylesheet" href="superFormModale.css" />
     </head>
     <body>
 		<!-- -->
@@ -158,7 +159,8 @@ include '../sessionAuthentication.php';
 			echo "var idTopic = ". $_GET['idTopic'].";";
 			?>
 		</script>
-
+		
+		<script src="superFormModale.js"></script>
 		<script src="toDoList.js"></script>
 		<script src="dataTree.js"></script>	
 	</body>
