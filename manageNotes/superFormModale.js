@@ -105,7 +105,7 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 		for (var i = 0 ; i <  oDOMsuperForm.elements.length ; i++) {
 			var oDOMFormElementI = oDOMsuperForm.elements[i];
 			//alert (i + "   " + oDOMFormElementI.selectedIndex);
-			oForm[oDOMFormElementI.name].value = oDOMFormElementI.selectedIndex!==undefined ? oDOMFormElementI.selectedIndex + 1 : oDOMFormElementI.value; // le sript appellant peut tester les value de l'objet de son côté
+			oForm[oDOMFormElementI.name].value = oDOMFormElementI.selectedIndex!==undefined ? oDOMFormElementI.selectedIndex : oDOMFormElementI.value; // le sript appellant peut tester les value de l'objet de son côté
 			sResponseFormPhpAdress += oDOMFormElementI.name + "=" + oForm[oDOMFormElementI.name].value + "&"
 			aResponseFormArray[i] = oForm[oDOMFormElementI.name].value
 		}

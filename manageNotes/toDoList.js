@@ -53,10 +53,9 @@ function ajaxCallNoResponse(sPathPhp, fCallBack, parameter1, parameter2) {
 }
 
 function displayLabelsCheckboxes(sLabelsJSON) {
-	var oLabels = JSON.parse(sLabelsJSON);
+	oLabels = JSON.parse(sLabelsJSON);
 	
 	for (var labelTitleRank = 0; labelTitleRank < oLabels.title.length; labelTitleRank ++) {
-		//alert (labelTitleRank);
 		for (var labelRank = 0 ; labelRank < oLabels.content[labelTitleRank].length; labelRank++) {
 			var oDOMLabelCheckbox = document.createElement("input");
 			oDOMLabelCheckbox.type = "checkbox";
@@ -143,13 +142,19 @@ function stateToDoDone () {
 }
 
 function editToDo() {
-	/* var sForm = '{ ';
-	sForm += '"content" : { "HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "10", "value" : "' + document.getElementById(toDoFocused).innerHTML + '" }, "label" : "note"}, '
-	for (var i = 0 ;
-	
-	sForm += "TitleLabel1" : { "HTMLType" : "select" , "attributes" : {}, "options" :  ["à la une", "jsnp", "bientôt"] , "label" : "Pour quand ?"}}';
+	var sForm = '{ ';
+	sForm += '"content" : { "HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "10", "value" : "' + document.getElementById(toDoFocused).innerHTML + '" }, "label" : "note"}, ';
+	for (var labelTitleRank = 0; labelTitleRank < oLabels.title.length; labelTitleRank ++) {
+		sForm += '"'+labelTitleRank+'" : { "HTMLType" : "select" , "attributes" : {}, "options" :['; 
+		for (var labelRank = 0 ; labelRank < oLabels.content[labelTitleRank].length; labelRank++) {
+			sForm += '"'+oLabels.content[labelTitleRank][labelRank]+'",';
+		}
+		sForm = sForm.slice(0,-1)+ '], "label" : "'+oLabels.title[labelTitleRank]+'"},';
+	}
+	sForm = sForm.slice(0,-1)+'}';
+	alert (sForm);
 	superFormModale(sForm, "Etiquettes", coucou, "array");
- */}
+}
 
 function coucou(ResponseForm) {
 	alert (ResponseForm);
