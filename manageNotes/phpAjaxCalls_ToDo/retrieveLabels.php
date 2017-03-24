@@ -17,7 +17,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 											FROM todo_userlabels 
 											INNER JOIN todo_userlabelstitles
 											ON todo_userlabelstitles.id = todo_userlabels.idLabelTitle
-											WHERE idUser=:idUser AND idTopic=:idTopic 
+											WHERE todo_userlabels.idUser=:idUser AND todo_userlabels.idTopic=:idTopic 
 											ORDER BY todo_userlabelstitles.rankLabelTitle, todo_userlabels.rankLabel');
 			$reqRetrieveLabels -> execute(array(
 			'idUser' => $_SESSION['id'],

@@ -152,7 +152,6 @@ function editToDo() {
 		sForm = sForm.slice(0,-1)+ '], "label" : "'+oLabels.title[labelTitleRank]+'"},';
 	}
 	sForm = sForm.slice(0,-1)+'}';
-	alert (sForm);
 	superFormModale(sForm, "Etiquettes", coucou, "array");
 }
 

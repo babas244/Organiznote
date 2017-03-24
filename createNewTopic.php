@@ -65,6 +65,35 @@ if (isset($_SESSION['id']) && isset($_POST['newTopic']) && isset($_POST['colorBa
 				'idTopic' => $idTopic, 
 				'newNote' => $newTopic));
 			$reqInsertRootIntoNotesTable -> closeCursor();	
+			
+			// Créer des labelTitles dans la base de données, par défaut pour que l'user en ait de toutes façons
+			$reqCreateDefaultLabelTitleOfToDoList = $bdd->prepare('INSERT INTO todo_userlabelstitles(idUser,idTopic,rankLabelTitle,content) 
+															VALUES 	(:idUser,:idTopic,"0","Pour quand?"),
+																	(:idUser,:idTopic,"1","Faire ou?"),
+																	(:idUser,:idTopic,"2","Duree")');
+			$reqCreateDefaultLabelTitleOfToDoList -> execute(array(
+				'idUser' => $_SESSION['id'],
+				'idTopic' => $idTopic));
+			$reqCreateDefaultLabelTitleOfToDoList -> closeCursor();	
+			
+			// Créer les labels dans la base de données, par défaut pour que l'user en ait de toutes façons
+			$reqCreateDefaultLabelOfToDoList = $bdd->prepare('INSERT INTO todo_userlabels(idUser,idTopic,idLabelTitle, rankLabel,content) 
+				VALUES 	(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="0"),"0","a la une"),
+						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="0"),"1","je ne sais pas"),
+						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="0"),"2","bientot"),
+						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="0"),"3","souvent"),
+						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="0"),"4","un jour"),
+						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="1"),"0","je ne sais pas"),
+						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="1"),"1","lieu 1"),
+						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="1"),"2","lieu 2"),
+						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="2"),"0","je ne sais pas"),
+						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="2"),"1","rapide"),
+						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="2"),"2","long")');
+			$reqCreateDefaultLabelOfToDoList -> execute(array(
+				'idUser' => $_SESSION['id'],
+				'idTopic' => $idTopic));
+			$reqCreateDefaultLabelOfToDoList -> closeCursor();	
+			
 			header ('Location: manageTopics.php');
 		}
 	}
