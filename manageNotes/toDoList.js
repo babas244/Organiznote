@@ -54,10 +54,10 @@ function ajaxCallNoResponse(sPathPhp, fCallBack, parameter1, parameter2) {
 
 function displayLabelsCheckboxes(sLabelsJSON) {
 	var oLabels = JSON.parse(sLabelsJSON);
-	var labelTitleRank = 1;
-	var labelRank;
-	for (titleLabel in oLabels) {
-		for (var labelRank=1 ; labelRank < oLabels[titleLabel].length + 1 ; labelRank++) {
+	
+	for (var labelTitleRank = 0; labelTitleRank < oLabels.title.length; labelTitleRank ++) {
+		//alert (labelTitleRank);
+		for (var labelRank = 0 ; labelRank < oLabels.content[labelTitleRank].length; labelRank++) {
 			var oDOMLabelCheckbox = document.createElement("input");
 			oDOMLabelCheckbox.type = "checkbox";
 			oDOMLabelCheckbox.id = "checkboxLabel"+labelTitleRank+"a"+labelRank;
@@ -68,15 +68,13 @@ function displayLabelsCheckboxes(sLabelsJSON) {
 			}, false);
 			document.getElementById("containerOfToDo").appendChild(oDOMLabelCheckbox);
 			var oDOMDivLabel = document.createElement("span");
-			oDOMDivLabel.innerHTML = oLabels[titleLabel][labelRank-1];
+			oDOMDivLabel.innerHTML = oLabels.content[labelTitleRank][labelRank];
 			document.getElementById("containerOfToDo").appendChild(oDOMDivLabel);				
 		}	
 		oDOMElementBr = document.createElement("Br");
 		document.getElementById("containerOfToDo").appendChild(oDOMElementBr);
-
-		labelTitleRank +=1;
 	}
-	document.getElementById("checkboxLabel1a1").checked = true;
+	document.getElementById("checkboxLabel0a0").checked = true;
 }
 			
 function displayToDoList (labelTitleRank, labelRank, isChecked) {
@@ -145,10 +143,13 @@ function stateToDoDone () {
 }
 
 function editToDo() {
-	var sForm = '{ ';
-	sForm += '"content" : { "HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "10", "value" : "' + document.getElementById(toDoFocused).innerHTML + '" }, "label" : "note"}, "TitleLabel1" : { "HTMLType" : "select" , "attributes" : {}, "options" :  ["à la une", "jsnp", "bientôt"] , "label" : "Pour quand ?"}}';
+	/* var sForm = '{ ';
+	sForm += '"content" : { "HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "10", "value" : "' + document.getElementById(toDoFocused).innerHTML + '" }, "label" : "note"}, '
+	for (var i = 0 ;
+	
+	sForm += "TitleLabel1" : { "HTMLType" : "select" , "attributes" : {}, "options" :  ["à la une", "jsnp", "bientôt"] , "label" : "Pour quand ?"}}';
 	superFormModale(sForm, "Etiquettes", coucou, "array");
-}
+ */}
 
 function coucou(ResponseForm) {
 	alert (ResponseForm);

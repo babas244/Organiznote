@@ -137,6 +137,6 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 	}
 	
 	function hideSuperFormModale() {
-		document.getElementById("frameOfSuperForm").style.display = 'none';
+		document.body.removeChild(document.getElementById("frameOfSuperForm"));
 	}	
 }

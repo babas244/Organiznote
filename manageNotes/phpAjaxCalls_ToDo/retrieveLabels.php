@@ -24,20 +24,22 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 			'idTopic' => $_GET["idTopic"])) or die(print_r($reqRetrieveLabels->errorInfo()));
 			//echo ('<br>'.$reqRetrieveLabels->rowCount().' rangs affectés');
 			
-			$labelsFetched = '{';
+			$labelsFetched = '';
 			
-			$rankLabelTitleTest = 1;
-			$rankLabelTest = 1;
+			$labelTitlesFetched = '';
+			
+			$rankLabelTitleTest = 0;
+			$rankLabelTest = 0;
 			
 			while ($data = $reqRetrieveLabels->fetch()) {
-				if ($rankLabelTitleTest <= $data['rankLabelTitle'] && $rankLabelTitleTest!=1) {
-					$rankLabelTest = 1;
-					$labelsFetched = substr($labelsFetched, 0, -1);
-					$labelsFetched .= '],';
+				if ($rankLabelTitleTest <= $data['rankLabelTitle'] && $rankLabelTitleTest!=0) { // on attaque donc un nouveau Title
+					$rankLabelTest = 0;
+					$labelsFetched = substr($labelsFetched, 0, -1).'],'; // remplacer la virgule en fin de chaîne par le crochet final 
 				}
 				
-				if ($rankLabelTest ==1) {
-					$labelsFetched .= '"'.$data['labelTitleContent'].'":["'.$data['labelContent'].'",';
+				if ($rankLabelTest ==0) { // 	
+					$labelTitlesFetched .= '"'.$data['labelTitleContent'].'",';
+					$labelsFetched .= '["'.$data['labelContent'].'",';
 					$rankLabelTitleTest +=1;
 				}
 				else {
@@ -46,11 +48,14 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 				$rankLabelTest +=1;			
 			}
 		$reqRetrieveLabels -> closeCursor();	
-			
-		echo $labelsFetched == "{" ? "" : substr($labelsFetched, 0, -1)."]}"; //il faut enlever le dernier ","		
+		
+		$labelTitlesFetched = substr($labelTitlesFetched, 0, -1)."]"; // remplacer la virgule en fin de chaîne par un crochet 
+		
+		$labelsFetched = substr($labelsFetched, 0, -1)."]]"; // remplacer la virgule à la fin
+		
+		echo '{"title":['.$labelTitlesFetched.',"content":['.$labelsFetched.'}'; 		
 	}
 }
-
 else {
 	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
 }
