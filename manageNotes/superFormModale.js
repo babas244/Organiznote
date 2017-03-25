@@ -1,6 +1,7 @@
 function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType, fCallbackCheckForm) {
 	
 	displayForm();
+	// il faut un test ici pour vérifier que tous les "name" reçus sont uniques
 	buildForm();
 	
 	function displayForm() {
@@ -27,9 +28,9 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 	
 	function buildForm() {
 		oForm = JSON.parse(sFormJSON);
-		var rankInForm = 0;
-		for (nameInput in oForm) {
-			var FormHTMLType = oForm[nameInput].HTMLType ? oForm[nameInput].HTMLType : "input"
+		
+		for (var rankInForm = 0 ; rankInForm < oForm.length ; rankInForm++) {
+			var FormHTMLType = oForm[rankInForm].HTMLType ? oForm[rankInForm].HTMLType : "input"
 			
 			if (FormHTMLType === "radio") {
 				alert ("Formulaires radios pas encore pris en charge");
@@ -37,15 +38,15 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 			else {
 				var oDOMForm = document.createElement(FormHTMLType);				
 			}
-			oDOMForm.name = nameInput;
-			for (attribute in oForm[nameInput].attributes) {
-				oDOMForm[attribute] = oForm[nameInput].attributes[attribute];
+			oDOMForm.name = oForm[rankInForm].name;
+			for (attribute in oForm[rankInForm].attributes) {
+				oDOMForm[attribute] = oForm[rankInForm].attributes[attribute];
 			}				
 
 			if (FormHTMLType === "select") {
-				for (var k = 0; k < oForm[nameInput].options.length; k++) {
+				for (var k = 0; k < oForm[rankInForm].options.length; k++) {
 					var eDOMOption = document.createElement("option");
-					eDOMOption.text = oForm[nameInput].options[k];
+					eDOMOption.text = oForm[rankInForm].options[k];
 					oDOMForm.options.add(eDOMOption);
 				}
 			}
@@ -55,7 +56,7 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 			var oDOMFormItemLabel = document.createElement("div");
 			oDOMFormItemLabel.id = 'formItem'+ rankInForm; 
 			oDOMFormItemLabel.className = "FormItemLabel";
-			oDOMFormItemLabel.innerHTML = oForm[nameInput].label; 
+			oDOMFormItemLabel.innerHTML = oForm[rankInForm].label; 
 			oDOMFormItemLabel.addEventListener('click', function (e) { // à mettre en dehors de la boucle ?
 				var displayStyle = e.target.nextSibling.style.display;
 				e.target.nextSibling.style.display = displayStyle === "block" ? "none" : "block";
@@ -68,7 +69,6 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 			if (rankInForm === 0) {
 				oDOMForm.focus();
 			}
-		rankInForm += 1;
 		}
 	// build commandbuttons of Form
 	oDOMFormCommand = document.createElement("button");
@@ -102,19 +102,43 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 		var oDOMsuperForm = document.getElementById("superForm");
 		var sResponseFormPhpAdress = "";
 		var aResponseFormArray = [];
+		var sResponseFormJson = '{';
+		var rankInForm;
+		var responseSuperFormModale;
 		for (var i = 0 ; i <  oDOMsuperForm.elements.length ; i++) {
 			var oDOMFormElementI = oDOMsuperForm.elements[i];
 			//alert (i + "   " + oDOMFormElementI.selectedIndex);
-			oForm[oDOMFormElementI.name].value = oDOMFormElementI.selectedIndex!==undefined ? oDOMFormElementI.selectedIndex : oDOMFormElementI.value; // le sript appellant peut tester les value de l'objet de son côté
-			sResponseFormPhpAdress += oDOMFormElementI.name + "=" + oForm[oDOMFormElementI.name].value + "&"
-			aResponseFormArray[i] = oForm[oDOMFormElementI.name].value
+			//alert (oDOMFormElementI.name); 
+			/* déterminer ici le rankInForm de name parce qu'il pourrait être différent de i ???
+			rankInForm = 0;
+			isRank = false;
+			while (!isRank) {
+			} */
+			
+			oForm[i].value = oDOMFormElementI.selectedIndex!==undefined ? oDOMFormElementI.selectedIndex : oDOMFormElementI.value; // le sript appellant peut tester les value de l'objet de son côté
+			sResponseFormPhpAdress += oDOMFormElementI.name + "=" + oForm[i].value + "&";
+			aResponseFormArray[i] = oForm[i].value;
+			sResponseFormJson += '"'+ oDOMFormElementI.name + '":"' + oForm[i].value +'",';
 		}
 		sResponseFormPhpAdress = sResponseFormPhpAdress.slice(0,-1);
+		sResponseFormJson = sResponseFormJson.slice(0,-1)+'}';	
+		switch (sOutputType) {
+			case "array":
+				responseSuperFormModale = aResponseFormArray;
+			break;
+			case "php":
+				responseSuperFormModale = sResponseFormPhpAdress;
+			break;
+			case "json":
+				responseSuperFormModale = sResponseFormJson;
+			break;				
+		}	
+		
 		if (fCallbackCheckForm) {
 			var sResponseCheck = fCallbackCheckForm();
 			if ( sResponseCheck === "ok"){ // la function fCallbackCheckForm située hors de superFormModale doit return "ok" si tout va bien et le name de du oForm si il y a un probl�me
 				hideSuperFormModale();
-				fCallbackExecute(sOutputType === "array" ? aResponseFormArray : sResponseFormPhpAdress);
+				fCallbackExecute(responseSuperFormModale);
 			}
 			else {
 				var k = -1; 
@@ -128,10 +152,10 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 		}	
 		else {
 			hideSuperFormModale();
-			fCallbackExecute(sOutputType === "array" ? aResponseFormArray : sResponseFormPhpAdress);			
+			fCallbackExecute(responseSuperFormModale);			
 		}
 	}
-
+	
 	function resetForm (){
 		document.getElementById("superForm").reset();		
 	}

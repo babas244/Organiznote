@@ -142,17 +142,27 @@ function stateToDoDone () {
 }
 
 function editToDo() {
-	var sForm = '{ ';
-	sForm += '"content" : { "HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "10", "value" : "' + document.getElementById(toDoFocused).innerHTML + '" }, "label" : "note"}, ';
+	var sForm = '[';
+	sForm += '{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "10", "value" : "' + document.getElementById(toDoFocused).innerHTML + '" }, "label" : "note"},{';
 	for (var labelTitleRank = 0; labelTitleRank < oLabels.title.length; labelTitleRank ++) {
-		sForm += '"'+labelTitleRank+'" : { "HTMLType" : "select" , "attributes" : {}, "options" :['; 
+		sForm += '"name":"'+labelTitleRank+'","HTMLType":"select","attributes":{},"options":['; 
 		for (var labelRank = 0 ; labelRank < oLabels.content[labelTitleRank].length; labelRank++) {
 			sForm += '"'+oLabels.content[labelTitleRank][labelRank]+'",';
 		}
-		sForm = sForm.slice(0,-1)+ '], "label" : "'+oLabels.title[labelTitleRank]+'"},';
+	sForm = sForm.slice(0,-1)+ '], "label" : "'+oLabels.title[labelTitleRank]+'"},{';
 	}
-	sForm = sForm.slice(0,-1)+'}';
-	superFormModale(sForm, "Etiquettes", coucou, "array");
+	sForm = sForm.slice(0,-2)+']';
+	superFormModale(sForm, "Etiquettes", coucou, "json", fCheckFormToDo);
+}
+
+function fCheckFormToDo(){
+	if (oForm[0].value ==="") {
+		alert('La note est vide, il faut la remplir.')
+		return 'content';
+	}
+	else {
+		return "ok";
+	}
 }
 
 function coucou(ResponseForm) {
