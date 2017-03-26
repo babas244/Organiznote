@@ -117,7 +117,7 @@ function displayToDoList (labelTitleRank, labelRank, isChecked) {
 				}
 			}
 			addressPhpLabels += 'label'+labelTitleRank+'='+labelRank;
-			alert (addressPhpLabels);
+			//alert (addressPhpLabels);
 			ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + addressPhpLabels, insertToDoListBefore)		
 		}
 	else { // unchecked
@@ -149,6 +149,7 @@ function insertToDoListBefore(sToDoListJSON) {
 			oDOMToDo.draggable = "true";
 			oDOMToDo.dateCreation = oToDoListJSONParsed[sLabels][i][1];
 			oDOMToDo.dateExpired = oToDoListJSONParsed[sLabels][i][2];
+			oDOMToDo.content = sContent;
 			oDOMToDo.innerHTML = sContent + '<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
 			addEventsDragAndDrop(oDOMToDo);
 			document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById("separatorLabels"+sLabels));
@@ -178,7 +179,7 @@ function stateToDoDone () {
 
 function editToDo() {
 	var sForm = '[';
-	sForm += '{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "10", "value" : "' + document.getElementById(toDoFocused).innerHTML + '" }, "label" : "note"},{';
+	sForm += '{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "10", "value" : "' + document.getElementById(toDoFocused).content + '" }, "label" : "note"},{';
 	for (var labelTitleRank = 0; labelTitleRank < oLabels.title.length; labelTitleRank ++) {
 		sForm += '"name":"'+labelTitleRank+'","HTMLType":"select","attributes":{},"options":['; 
 		for (var labelRank = 0 ; labelRank < oLabels.content[labelTitleRank].length; labelRank++) {
