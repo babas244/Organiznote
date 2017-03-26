@@ -48,6 +48,14 @@
 	background-color: #ff0000;
 }
 
+.dateExpired
+{
+	background-color: blue;
+	border-radius: 3px;
+	font-size: 15px;
+	display: none;
+}
+
 #noScroll
 {
 	position : relative;

@@ -1,10 +1,26 @@
 var toDoFocused = null;
-var IdOfFirstToDo = 1000;
-var IdOfFirstToDoInitial = IdOfFirstToDo;
+var aNbOfLabels = [5,3,3,3] // à charger depuis la bdd
+var isDisplayDateExpired = false;
 
 addEventsDragAndDropToLastAndInvisible(document.getElementById("lastAndInvisible"));
 
-ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + "&labelTitleRank=1&labelRank=1", insertToDoListBefore, 'lastAndInvisible', "1", "1")
+counterInsertDivSeparatorLabels();
+
+function counterInsertDivSeparatorLabels() {
+	for (var label0=0 ; label0<aNbOfLabels[0] ; label0++) {
+		for (var label1=0 ; label1<aNbOfLabels[1] ; label1++) {
+			for (var label2=0 ; label2<aNbOfLabels[2] ; label2++) {
+				for (var label3=0 ; label3<aNbOfLabels[3] ; label3++) {
+					var counterDivSeparatorLabels = document.createElement("div");
+					counterDivSeparatorLabels.id = "separatorLabels"+label0+label1+label2+label3;
+					document.getElementById("noScroll").insertBefore(counterDivSeparatorLabels , document.getElementById('lastAndInvisible'));
+				}	
+			} 			
+		} 
+	} 
+}
+
+ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + "&sLabels=0___", insertToDoListBefore);
 
 ajaxCall('phpAjaxCalls_ToDo/retrieveLabels.php?idTopic=' + idTopic, displayLabelsCheckboxes); 
 
@@ -100,24 +116,26 @@ function displayToDoList (labelTitleRank, labelRank, isChecked) {
 	}
 }
 			
-function insertToDoListBefore(sToDoListJSON, idDOMBeforeToInsert, labelTitleRank, labelRank) {
-	var oToDoListJSONParsed = sToDoListJSON == "" ? "" : JSON.parse(sToDoListJSON); 
+function insertToDoListBefore(sToDoListJSON) {
+	//alert (sToDoListJSON);
+	var oToDoListJSONParsed = sToDoListJSON == "" ? "" : JSON.parse(sToDoListJSON);
 	// if oToDoListJSONParsed =="" afficher "pas encore de notes" : non à mettre en dehors de cette function
-	var i = 0;
-	for (x in oToDoListJSONParsed) {
-		var sContent = oToDoListJSONParsed[x][0].replace(/&lt;br&gt;/gi, "\n");
-		var oDOMToDo = document.createElement("div");
-		oDOMToDo.id = 'toDo'+(i+IdOfFirstToDo);
-		addContextMenu(oDOMToDo);
-		oDOMToDo.innerHTML = sContent; 
-		oDOMToDo.className = 'toDo toDo'+labelTitleRank+'a'+labelRank;
-		oDOMToDo.draggable = "true";
-		oDOMToDo.idInDdb = x;
-		oDOMToDo.dateCreation = oToDoListJSONParsed[x][1];
-		oDOMToDo.dateExpired = oToDoListJSONParsed[x][2];
-		addEventsDragAndDrop(oDOMToDo);
-		document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById(idDOMBeforeToInsert));
-		i ++;
+	var sContent;
+	for (sLabels in oToDoListJSONParsed) {
+		for (var i = 0 ; i < oToDoListJSONParsed[sLabels].length ; i++ ) {
+			sContent = oToDoListJSONParsed[sLabels][i][0].replace(/&lt;br&gt;/gi, "\n");
+			var oDOMToDo = document.createElement("div");
+			oDOMToDo.id = 'toDo'+sLabels+i;
+			addContextMenu(oDOMToDo);
+			oDOMToDo.className = 'toDo';
+			oDOMToDo.draggable = "true";
+			oDOMToDo.dateCreation = oToDoListJSONParsed[sLabels][i][1];
+			oDOMToDo.dateExpired = oToDoListJSONParsed[sLabels][i][2];
+			alert (oToDoListJSONParsed[sLabels][i][3]);
+			oDOMToDo.innerHTML = sContent + '<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
+			addEventsDragAndDrop(oDOMToDo);
+			document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById("separatorLabels"+sLabels));
+		}
 	}
 }				
 				
@@ -167,6 +185,7 @@ function fCheckFormToDo(){
 
 function coucou(ResponseForm) {
 	alert (ResponseForm);
+	ajaxCall
 }
 
 function deleteToDoFromDOM (idDOMElementToDelete)  {
@@ -186,7 +205,7 @@ function submitToDo(){
 	if (toDoContent !=="") {
 		IdOfFirstToDo -=1;
 		var oDOMToInsertBefore = document.getElementById('toDo'+ IdOfFirstToDoInitial) === null ? 'lastAndInvisible' : 'toDo' + parseInt(IdOfFirstToDo + 1); 
-		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent + "&labels=11", insertToDoListBefore, oDOMToInsertBefore, "1", "1"); // oDOMToInsertBefore est une string ici...
+		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent + "&labels=000", insertToDoListBefore, oDOMToInsertBefore, "000"); // oDOMToInsertBefore est une string ici...
 	}
 }
 

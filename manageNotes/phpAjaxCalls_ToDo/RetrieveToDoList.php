@@ -3,39 +3,51 @@ header("Content-Type: application/json; charset=UTF-8");
 
 session_start();
 
-if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["labelTitleRank"]) && isset($_GET["labelRank"])) {
+if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sLabels"])) {
 
-	if (preg_match("#^[0-9]{1}$#", $_GET["labelTitleRank"]) && preg_match("#^[0-9]{1}$#", $_GET["labelRank"])) {		
+	if (preg_match("#^[_0-9]{4}$#", $_GET["sLabels"])) {		
 		
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
-		$labelTitleRank = htmlspecialchars($_GET["labelTitleRank"]); // utile ??
-		$labelRank = htmlspecialchars($_GET["labelRank"]); // utile ??
+		$sLabels = htmlspecialchars($_GET["sLabels"]); // utile ??
+		
+		$aLabels = str_split($sLabels,1);
 		
 		include '../../log_in_bdd.php';		
 		
 		include '../../isIdTopicSafeAndMatchUser.php';
 	
-		$reqDisplayToDoList = $bdd -> prepare('SELECT todolists.id, todolists.content, todolists.dateCreation, todolists.dateExpired 
+		$reqDisplayToDoList = $bdd -> prepare('SELECT content, dateCreation, dateExpired, label0, label1, label2, label3 
 												FROM todolists 
-												INNER JOIN todoandlabels
-												ON todolists.id = todoandlabels.idOfToDo
-	WHERE todolists.idUser=:idUser AND todolists.idTopic=:idTopic AND todoandlabels.labelTitleRank=:labelTitleRank AND todoandlabels.labelRank=:labelRank AND todolists.dateArchive IS NULL ORDER BY dateCreation DESC');
+	WHERE idUser=:idUser AND idTopic=:idTopic AND label0 LIKE :label0 AND label1 LIKE :label1 AND label2 LIKE :label2 AND label3 LIKE :label3 AND dateArchive IS NULL
+	ORDER BY dateCreation DESC');
 			$reqDisplayToDoList -> execute(array(
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $_GET["idTopic"],
-			'labelTitleRank' => $labelTitleRank,
-			'labelRank' => $labelRank,
+			'label0' => $aLabels[0],
+			'label1' => $aLabels[1],
+			'label2' => $aLabels[2],
+			'label3' => $aLabels[3],
 			)) or die(print_r($reqDisplayToDoList->errorInfo()));
 			//echo ('<br>'.$reqDisplayToDoList->rowCount().' rangs affectés');
 			
-			$toDoFetched = "{";
+			$toDoFetched = "";
+			$i=0;
+			$sLabelsFetched = "";
 			
 			while ($data = $reqDisplayToDoList->fetch()) {
-			$toDoFetched .= '"'.$data['id'].'":["'.$data['content'].'","'.$data['dateCreation'].'","'.$data['dateExpired'].'"],';
+				$sLabelsFetchedNew = $data['label0'].$data['label1'].$data['label2'].$data['label3'];
+				if ($sLabelsFetchedNew !== $sLabelsFetched OR $i===0) {
+					$toDoFetched = substr($toDoFetched, 0, -1).'],"'.$sLabelsFetchedNew.'":[["'.$data['content'].'","'.$data['dateCreation'].'","'.$data['dateExpired'].'"],';
+					$sLabelsFetched = $sLabelsFetchedNew;
+				}
+				else {
+					$toDoFetched .= '["'.$data['content'].'","'.$data['dateCreation'].'","'.$data['dateExpired'].'"],';
+				}
+				$i+=1;
 			}
 		$reqDisplayToDoList -> closeCursor();	
 			
-		echo $toDoFetched == "{" ? "" : substr($toDoFetched, 0, -1)."}"; //il faut enlever le dernier ","
+		echo $toDoFetched == "" ? "" : '{'.substr(substr($toDoFetched, 0, -1),2)."]}"; //il faut enlever le dernier ","
 		
 	}
 }
