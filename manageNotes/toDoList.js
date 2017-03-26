@@ -1,6 +1,7 @@
 var toDoFocused = null;
-var aNbOfLabels = [5,3,3,3] // à charger depuis la bdd
+var aNbOfLabels = [5,3,3,3]; // à charger depuis la bdd
 var isDisplayDateExpired = false;
+var aLabelsChecked =[[1,0,0,0,0],[1,1,1],[1,1,1],[1,1,1]]; // à fabriquer par une boucle après chargement de aNbOfLabels
 
 addEventsDragAndDropToLastAndInvisible(document.getElementById("lastAndInvisible"));
 
@@ -20,7 +21,7 @@ function counterInsertDivSeparatorLabels() {
 	} 
 }
 
-ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + "&sLabels=0___", insertToDoListBefore);
+ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + "&label0=0&label1=012&label2=012&label3=012", insertToDoListBefore);
 
 ajaxCall('phpAjaxCalls_ToDo/retrieveLabels.php?idTopic=' + idTopic, displayLabelsCheckboxes); 
 
@@ -89,28 +90,44 @@ function displayLabelsCheckboxes(sLabelsJSON) {
 		oDOMElementBr = document.createElement("Br");
 		document.getElementById("containerOfToDo").appendChild(oDOMElementBr);
 	}
-	document.getElementById("checkboxLabel0a0").checked = true;
+	updateCheckboxes();
 }
 			
+function updateCheckboxes() {
+	for (var labelTitleRank = 0 ; labelTitleRank < 4 ; labelTitleRank++) {
+		for (var labelRank = 0 ; labelRank < aNbOfLabels[labelTitleRank] ; labelRank++) {
+			document.getElementById("checkboxLabel"+labelTitleRank+"a"+labelRank).checked = aLabelsChecked[labelTitleRank][labelRank];
+		}
+	}	
+}
+
 function displayToDoList (labelTitleRank, labelRank, isChecked) {
-	var aDOMHasClassOfToDo = document.querySelectorAll('.toDo'+labelTitleRank+'a'+labelRank);  //('div[classname="toDo'+labelTitleRank+'a'+labelRank+'"]'); marche pas ??
-	var numberOfToDo = aDOMHasClassOfToDo.length;
-	//alert (numberOfToDo);
 	if (isChecked) {
-		// tester d'abord s'il y a déjà un toDo de cette class déjà instancié. vaudrait-il mieux avoir une variable globale qui dit si déjà chargé ou pas ? 
-		if (numberOfToDo === 0) {
-			ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic +'&labelTitleRank='+ labelTitleRank + '&labelRank=' + labelRank, insertToDoListBefore, 'lastAndInvisible', labelTitleRank, labelRank)		
-		}
-		else {
-			for (var i = 0; i < numberOfToDo ; i++) {
-				aDOMHasClassOfToDo[i].style.display = 'block';
+			aLabelsChecked[labelTitleRank][labelRank] = 1;
+			var addressPhpLabels ="&";
+			for (var i = 0 ; i < 4 ; i++) {
+				if (i!==labelTitleRank) {
+					addressPhpLabels += 'label'+i+'=';
+					for (var j = 0 ; j < aNbOfLabels[i] ; j++) {
+						if (aLabelsChecked[i][j]) {							
+							addressPhpLabels += j;
+						}
+					}
+				addressPhpLabels += '&';
+				}
 			}
+			addressPhpLabels += 'label'+labelTitleRank+'='+labelRank;
+			alert (addressPhpLabels);
+			ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + addressPhpLabels, insertToDoListBefore)		
 		}
-	}
 	else { // unchecked
-		if (numberOfToDo !== 0) { // ça peut arriver ?	
-			for (var j = 0; j < numberOfToDo ; j++) {
-				aDOMHasClassOfToDo[j].style.display = 'none';
+		aLabelsChecked[labelTitleRank][labelRank] = 0;
+		var aDOMHasClassOfToDo = document.querySelectorAll('.toDo'+labelTitleRank+'a'+labelRank);  //('div[classname="toDo'+labelTitleRank+'a'+labelRank+'"]'); marche pas ??
+		var numberOfToDo = aDOMHasClassOfToDo.length;
+		//alert (numberOfToDo);	
+		if (numberOfToDo !== 0) {
+			for (var k = 0; k < numberOfToDo ; k++) {
+				aDOMHasClassOfToDo[k].style.display = 'none';
 			}
 		}
 	}
@@ -122,16 +139,16 @@ function insertToDoListBefore(sToDoListJSON) {
 	// if oToDoListJSONParsed =="" afficher "pas encore de notes" : non à mettre en dehors de cette function
 	var sContent;
 	for (sLabels in oToDoListJSONParsed) {
+		aLabels = sLabels.split("");
 		for (var i = 0 ; i < oToDoListJSONParsed[sLabels].length ; i++ ) {
 			sContent = oToDoListJSONParsed[sLabels][i][0].replace(/&lt;br&gt;/gi, "\n");
 			var oDOMToDo = document.createElement("div");
 			oDOMToDo.id = 'toDo'+sLabels+i;
 			addContextMenu(oDOMToDo);
-			oDOMToDo.className = 'toDo';
+			oDOMToDo.className = 'toDo toDo0a'+aLabels[0]+' toDo1a'+aLabels[1]+' toDo2a'+aLabels[2]+' toDo3a'+aLabels[3];
 			oDOMToDo.draggable = "true";
 			oDOMToDo.dateCreation = oToDoListJSONParsed[sLabels][i][1];
 			oDOMToDo.dateExpired = oToDoListJSONParsed[sLabels][i][2];
-			alert (oToDoListJSONParsed[sLabels][i][3]);
 			oDOMToDo.innerHTML = sContent + '<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
 			addEventsDragAndDrop(oDOMToDo);
 			document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById("separatorLabels"+sLabels));

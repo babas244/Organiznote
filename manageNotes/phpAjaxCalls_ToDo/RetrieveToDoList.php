@@ -3,31 +3,39 @@ header("Content-Type: application/json; charset=UTF-8");
 
 session_start();
 
-if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sLabels"])) {
+if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["label0"]) && isset($_GET["label1"]) && isset($_GET["label2"]) && isset($_GET["label3"])) {
 
-	if (preg_match("#^[_0-9]{4}$#", $_GET["sLabels"])) {		
+	if (preg_match("#^[0-9]{1,4}$#", $_GET["label0"]) && preg_match("#^[0-9]{1,4}$#", $_GET["label1"]) && preg_match("#^[0-9]{1,4}$#", $_GET["label3"]) && preg_match("#^[0-9]{1,4}$#", $_GET["label3"])) {		
 		
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
-		$sLabels = htmlspecialchars($_GET["sLabels"]); // utile ??
+		$aLabels = array();
+		$aLabels[0] = htmlspecialchars($_GET["label0"]); // utile ??
+		$aLabels[1] = htmlspecialchars($_GET["label1"]);
+		$aLabels[2] = htmlspecialchars($_GET["label2"]);
+		$aLabels[3] = htmlspecialchars($_GET["label3"]);
 		
-		$aLabels = str_split($sLabels,1);
+		$aExecuteReq = array();
+		array_push($aExecuteReq,$_SESSION['id'],$idTopic);	
+		$aQuestionsMarks = array();
 		
+		for ($i = 0 ; $i < count($aLabels) ; $i++) {
+			$aExecuteReq = array_merge($aExecuteReq,str_split($aLabels[$i]));
+			$questionMarks[$i] = '(';
+			for ($j = 0 ; $j < strlen($aLabels[$i]) ; $j++) {
+				$questionMarks[$i] .= '?,';
+			}
+			$questionMarks[$i] = substr($questionMarks[$i], 0, -1).')';
+		}
+	
 		include '../../log_in_bdd.php';		
 		
 		include '../../isIdTopicSafeAndMatchUser.php';
 	
-		$reqDisplayToDoList = $bdd -> prepare('SELECT content, dateCreation, dateExpired, label0, label1, label2, label3 
+		$reqDisplayToDoList = $bdd -> prepare("SELECT content, dateCreation, dateExpired, label0, label1, label2, label3 
 												FROM todolists 
-	WHERE idUser=:idUser AND idTopic=:idTopic AND label0 LIKE :label0 AND label1 LIKE :label1 AND label2 LIKE :label2 AND label3 LIKE :label3 AND dateArchive IS NULL
-	ORDER BY dateCreation DESC');
-			$reqDisplayToDoList -> execute(array(
-			'idUser' => $_SESSION['id'],
-			'idTopic' => $_GET["idTopic"],
-			'label0' => $aLabels[0],
-			'label1' => $aLabels[1],
-			'label2' => $aLabels[2],
-			'label3' => $aLabels[3],
-			)) or die(print_r($reqDisplayToDoList->errorInfo()));
+	WHERE idUser=? AND idTopic=? AND label0 IN $questionMarks[0] AND label1 IN $questionMarks[1] AND label2 IN $questionMarks[2] AND label3 IN $questionMarks[3] AND dateArchive IS NULL
+	ORDER BY dateCreation DESC");
+			$reqDisplayToDoList -> execute($aExecuteReq) or die(print_r($reqDisplayToDoList->errorInfo()));
 			//echo ('<br>'.$reqDisplayToDoList->rowCount().' rangs affectés');
 			
 			$toDoFetched = "";
