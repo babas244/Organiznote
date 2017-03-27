@@ -207,17 +207,22 @@ function submitToDoFull(ResponseForm) {
 	hideContextMenuToDo();
 	//alert (ResponseForm);
 	if (ResponseForm !== "") {
+		var sLabels = ResponseForm[1].toString()+ResponseForm[2]+ResponseForm[3]+ResponseForm[4];
 		if (toDoFocused === null ) {
 			var dateCreation = Date.now();
-			var sLabels = ResponseForm[1].toString()+ResponseForm[2]+ResponseForm[3]+ResponseForm[4];
 			var sToDoAddedJSON = '{"'+ sLabels +'":[["'+ ResponseForm[0] +'","'+ dateCreation +'",""]]}';
 			//alert (sToDoAddedJSON); 
 			ajaxCallNoResponse('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + ResponseForm[0] + "&dateCreation=" + dateCreation + "&sLabels=" + sLabels, insertToDoListBefore, sToDoAddedJSON);
 		}
-		else {n // c'est donc un update que l'on fait
-			
+		else { // c'est donc un update que l'on fait
+			var sLabelsToDoToUpdate = document.getElementById(toDoFocused).id.substr(4,4);
+			//...
 		}
 	}
+}
+
+function updateToDo(updatedToDoJSON) {
+	
 }
 
 function deleteToDoFromDOM (idDOMElementToDelete)  {
