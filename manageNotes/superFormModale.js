@@ -39,9 +39,6 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 				var oDOMForm = document.createElement(FormHTMLType);				
 			}
 			oDOMForm.name = oForm[rankInForm].name;
-			for (attribute in oForm[rankInForm].attributes) {
-				oDOMForm[attribute] = oForm[rankInForm].attributes[attribute];
-			}				
 
 			if (FormHTMLType === "select") {
 				for (var k = 0; k < oForm[rankInForm].options.length; k++) {
@@ -51,6 +48,10 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 				}
 			}
 			
+			for (attribute in oForm[rankInForm].attributes) {
+				oDOMForm[attribute] = oForm[rankInForm].attributes[attribute];
+			}				
+
 			oDOMForm.style.display = 'block';
 			
 			var oDOMFormItemLabel = document.createElement("div");
@@ -75,7 +76,7 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 	oDOMFormCommand.id = "cancelForm";
 	oDOMFormCommand.className = "formCommands";
 	oDOMFormCommand.innerHTML = "Annuler";
-	oDOMFormCommand.addEventListener('click', hideSuperFormModale, false);	
+	oDOMFormCommand.addEventListener('click', cancelForm, false);	
 	oDOMActiveWindow.appendChild(oDOMFormCommand);
 
 	oDOMFormCommand = document.createElement("button");
@@ -162,5 +163,10 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 	
 	function hideSuperFormModale() {
 		document.body.removeChild(document.getElementById("frameOfSuperForm"));
-	}	
+	}
+	
+	function cancelForm() {
+		hideSuperFormModale();
+		fCallbackExecute("");
+	}
 }

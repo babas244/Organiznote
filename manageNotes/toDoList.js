@@ -39,6 +39,7 @@ document.getElementById("noScroll").addEventListener('touchmove', function(event
 
 document.getElementById("addToDoForm").addEventListener('submit', function(e) {
 	e.preventDefault();
+	submitToDoQuick();
 }, false);
 
 function ajaxCall(sPathPhp, fCallBack, parameter1, parameter2, parameter3) {
@@ -181,13 +182,14 @@ function editToDo() {
 	var sForm = '[';
 	sForm += '{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "10", "value" : "' + document.getElementById(toDoFocused).content + '" }, "label" : "note"},{';
 	for (var labelTitleRank = 0; labelTitleRank < oLabels.title.length; labelTitleRank ++) {
-		sForm += '"name":"'+labelTitleRank+'","HTMLType":"select","attributes":{},"options":['; 
+		sForm += '"name":"'+labelTitleRank+'","HTMLType":"select","attributes":{"selectedIndex":"'+document.getElementById(toDoFocused).id.substr(4+labelTitleRank,1)+'"},"options":['; 
 		for (var labelRank = 0 ; labelRank < oLabels.content[labelTitleRank].length; labelRank++) {
 			sForm += '"'+oLabels.content[labelTitleRank][labelRank]+'",';
 		}
 	sForm = sForm.slice(0,-1)+ '], "label" : "'+oLabels.title[labelTitleRank]+'"},{';
 	}
 	sForm = sForm.slice(0,-2)+']';
+	//alert (sForm);
 	superFormModale(sForm, "Etiquettes", coucou, "json", fCheckFormToDo);
 }
 
@@ -202,7 +204,10 @@ function fCheckFormToDo(){
 }
 
 function coucou(ResponseForm) {
-	alert (ResponseForm);
+	if (ResponseForm === "") {
+		hideContextMenuToDo();
+	}
+	//alert (ResponseForm);
 	ajaxCall
 }
 
@@ -217,13 +222,11 @@ function initializeFormToDo() {
 }
 
 
-function submitToDo(){
+function submitToDoQuick(){
 	var toDoContent = document.getElementById("toDoTextarea").value;
 	hideFormEnterToDo();
 	if (toDoContent !=="") {
-		IdOfFirstToDo -=1;
-		var oDOMToInsertBefore = document.getElementById('toDo'+ IdOfFirstToDoInitial) === null ? 'lastAndInvisible' : 'toDo' + parseInt(IdOfFirstToDo + 1); 
-		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent + "&labels=000", insertToDoListBefore, oDOMToInsertBefore, "000"); // oDOMToInsertBefore est une string ici...
+		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent + "&labels=0000", insertToDoListBefore);
 	}
 }
 
