@@ -190,7 +190,7 @@ function editToDo() {
 	}
 	sForm = sForm.slice(0,-2)+']';
 	//alert (sForm);
-	superFormModale(sForm, "Etiquettes", coucou, "json", fCheckFormToDo);
+	superFormModale(sForm, "Etiquettes", submitToDoFull, "array", fCheckFormToDo);
 }
 
 function fCheckFormToDo(){
@@ -203,12 +203,21 @@ function fCheckFormToDo(){
 	}
 }
 
-function coucou(ResponseForm) {
-	if (ResponseForm === "") {
-		hideContextMenuToDo();
-	}
+function submitToDoFull(ResponseForm) {
+	hideContextMenuToDo();
 	//alert (ResponseForm);
-	ajaxCall
+	if (ResponseForm !== "") {
+		if (toDoFocused === null ) {
+			var dateCreation = Date.now();
+			var sLabels = ResponseForm[1].toString()+ResponseForm[2]+ResponseForm[3]+ResponseForm[4];
+			var sToDoAddedJSON = '{"'+ sLabels +'":[["'+ ResponseForm[0] +'","'+ dateCreation +'",""]]}';
+			//alert (sToDoAddedJSON); 
+			ajaxCallNoResponse('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + ResponseForm[0] + "&dateCreation=" + dateCreation + "&sLabels=" + sLabels, insertToDoListBefore, sToDoAddedJSON);
+		}
+		else {n // c'est donc un update que l'on fait
+			
+		}
+	}
 }
 
 function deleteToDoFromDOM (idDOMElementToDelete)  {
