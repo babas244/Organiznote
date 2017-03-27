@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Ven 24 Mars 2017 à 18:15
+-- Généré le :  Lun 27 Mars 2017 à 11:07
 -- Version du serveur :  5.7.11
 -- Version de PHP :  5.6.19
 
@@ -40,19 +40,6 @@ CREATE TABLE `notes` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `todoandlabels`
---
-
-CREATE TABLE `todoandlabels` (
-  `id` int(11) NOT NULL,
-  `idOfToDo` int(11) NOT NULL,
-  `labelTitleRank` varchar(255) NOT NULL,
-  `labelRank` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `todolists`
 --
 
@@ -60,11 +47,15 @@ CREATE TABLE `todolists` (
   `id` int(11) NOT NULL,
   `idUser` int(11) NOT NULL,
   `idTopic` int(11) NOT NULL,
-  `idNote` varchar(255) NOT NULL,
+  `noteRank` int(11) NOT NULL,
   `content` text NOT NULL,
-  `dateCreation` datetime DEFAULT NULL,
-  `dateExpired` datetime DEFAULT NULL,
-  `dateArchive` datetime DEFAULT NULL
+  `dateCreation` bigint(11) NOT NULL,
+  `dateExpired` bigint(11) DEFAULT NULL,
+  `dateArchive` bigint(11) DEFAULT NULL,
+  `label0` varchar(255) NOT NULL,
+  `label1` varchar(255) NOT NULL,
+  `label2` varchar(255) NOT NULL,
+  `label3` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -135,12 +126,6 @@ ALTER TABLE `notes`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `todoandlabels`
---
-ALTER TABLE `todoandlabels`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Index pour la table `todolists`
 --
 ALTER TABLE `todolists`
@@ -178,32 +163,27 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `notes`
 --
 ALTER TABLE `notes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=982;
---
--- AUTO_INCREMENT pour la table `todoandlabels`
---
-ALTER TABLE `todoandlabels`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=986;
 --
 -- AUTO_INCREMENT pour la table `todolists`
 --
 ALTER TABLE `todolists`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=156;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT pour la table `todo_userlabels`
 --
 ALTER TABLE `todo_userlabels`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 --
 -- AUTO_INCREMENT pour la table `todo_userlabelstitles`
 --
 ALTER TABLE `todo_userlabelstitles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 --
 -- AUTO_INCREMENT pour la table `topics`
 --
 ALTER TABLE `topics`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 --
 -- AUTO_INCREMENT pour la table `users`
 --
