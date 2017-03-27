@@ -223,10 +223,12 @@ function initializeFormToDo() {
 
 
 function submitToDoQuick(){
-	var toDoContent = document.getElementById("toDoTextarea").value;
+	var sToDoContent = document.getElementById("toDoTextarea").value;
 	hideFormEnterToDo();
-	if (toDoContent !=="") {
-		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + toDoContent + "&labels=0000", insertToDoListBefore);
+	if (sToDoContent !=="") {
+		var dateCreation = Date.now();
+		var sToDoAddedJSON = '{"0000":[["'+ sToDoContent +'","'+ dateCreation +'",""]]}';
+		ajaxCallNoResponse('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + sToDoContent + "&dateCreation=" + dateCreation + "&sLabels=0000", insertToDoListBefore, sToDoAddedJSON);
 	}
 }
 
