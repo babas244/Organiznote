@@ -229,13 +229,15 @@ function submitToDoFull(ResponseForm) {
 			ajaxCallNoResponse('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + ResponseForm[0] + "&dateCreation=" + dateCreation + "&sLabels=" + sLabels, insertToDoListBefore, sToDoAddedJSON);
 		}
 		else { // c'est donc un update que l'on fait
-			var sLabelsToDoToUpdate = document.getElementById(toDoFocused).id.substr(4,4);
-			//...
+			var sLabelsAndPositionToDoFocused = document.getElementById(toDoFocused).id.substr(4,5);
+			//alert (sLabelsAndPositionToDoFocused);
+			ajaxCallNoResponse('phpAjaxCalls_ToDo/updateToDo.php?idTopic=' + idTopic + "&toDoContent=" + ResponseForm[0] + "&sLabelsAndPositionToDoFocused=" + sLabelsAndPositionToDoFocused + "&sNewLabels=" + sLabels, updateToDo);
 		}
 	}
 }
 
 function updateToDo(updatedToDoJSON) {
+
 	
 }
 
