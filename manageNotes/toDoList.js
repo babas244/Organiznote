@@ -159,7 +159,7 @@ function insertToDoListBefore(sToDoListJSON, sIsNew) {
 				oDOMToDo.content = sContent;
 				oDOMToDo.innerHTML = sContent + '<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
 				addEventsDragAndDrop(oDOMToDo);
-				document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById("separatorLabels"+sLabels));
+				document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById("separatorLabels"+sLabels).nextSibling);
 			}
 		aLabelNbItems[sLabels] = aLabelNbItems[sLabels]===undefined ? nNbOfToDoInLabels : aLabelNbItems[sLabels] + nNbOfToDoInLabels;	
 		}
