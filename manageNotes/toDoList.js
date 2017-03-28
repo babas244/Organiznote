@@ -135,7 +135,7 @@ function displayToDoList (labelTitleRank, labelRank, isChecked) {
 	}
 }
 			
-function insertToDoListBefore(sToDoListJSON) {
+function insertToDoListBefore(sToDoListJSON, sIsNew) {
 	//alert (sToDoListJSON);
 	var oToDoListJSONParsed = sToDoListJSON == "" ? "" : JSON.parse(sToDoListJSON);
 	// if oToDoListJSONParsed =="" afficher "pas encore de notes" : non � mettre en dehors de cette function
@@ -144,7 +144,7 @@ function insertToDoListBefore(sToDoListJSON) {
 	for (sLabels in oToDoListJSONParsed) {
 		//alert (sLabels);
 		//alert (aLabelNbItems[sLabels]);
-		if (aLabelNbItems[sLabels] === undefined) {
+		if (aLabelNbItems[sLabels] === undefined || sIsNew === "newNote") { // il faut en fait deux fCallback diff�rentes ici
 			aLabels = sLabels.split("");
 			nNbOfToDoInLabels = oToDoListJSONParsed[sLabels].length;
 			for (var i = 0 ; i < nNbOfToDoInLabels ; i++ ) {
@@ -161,7 +161,7 @@ function insertToDoListBefore(sToDoListJSON) {
 				addEventsDragAndDrop(oDOMToDo);
 				document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById("separatorLabels"+sLabels));
 			}
-		aLabelNbItems[sLabels] = nNbOfToDoInLabels;	
+		aLabelNbItems[sLabels] = aLabelNbItems[sLabels]===undefined ? nNbOfToDoInLabels : aLabelNbItems[sLabels] + nNbOfToDoInLabels;	
 		}
 		else {
 			var aDOMToDoToDisplay = document.querySelectorAll('div[id^="toDo' + sLabels + '"]');
@@ -174,7 +174,7 @@ function insertToDoListBefore(sToDoListJSON) {
 				
 function deleteToDo () {
 	hideContextMenuToDo();
-	if (confirm("Êtes-vous sûr de bien vouloir effacer la note :\n" + document.getElementById(toDoFocused).innerHTML) == true) {
+	if (confirm("Êtes-vous sûr de bien vouloir effacer la note :\n" + document.getElementById(toDoFocused).content) == true) {
 		ajaxCallNoResponse('phpAjaxCalls_ToDo/deleteToDo.php?idTopic=' + idTopic + "&idInDdb=" + document.getElementById(toDoFocused).idInDdb, deleteToDoFromDOM, toDoFocused);	
 	}
 	else {
@@ -184,7 +184,7 @@ function deleteToDo () {
 
 function stateToDoDone () {
 	hideContextMenuToDo();
-	if (confirm("Êtes-vous sûr de bien vouloir archiver comme faite la note :\n" + document.getElementById(toDoFocused).innerHTML) == true) {
+	if (confirm("Êtes-vous sûr de bien vouloir archiver comme faite la note :\n" + document.getElementById(toDoFocused).content) == true) {
 		ajaxCallNoResponse('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic + "&idInDdb=" + document.getElementById(toDoFocused).idInDdb, deleteToDoFromDOM, toDoFocused);	
 	}
 	else {
@@ -256,7 +256,11 @@ function submitToDoQuick(){
 	if (sToDoContent !=="") {
 		var dateCreation = Date.now();
 		var sToDoAddedJSON = '{"0000":[["'+ sToDoContent +'","'+ dateCreation +'",""]]}';
-		ajaxCallNoResponse('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + sToDoContent + "&dateCreation=" + dateCreation + "&sLabels=0000", insertToDoListBefore, sToDoAddedJSON);
+		if (aLabelNbItems["0000"] === undefined) {
+			aLabelNbItems["0000"]=0;
+		} 
+		aLabelNbItems["0000"] += 1;
+		ajaxCallNoResponse('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + sToDoContent + "&dateCreation=" + dateCreation + "&sLabels=0000", insertToDoListBefore, sToDoAddedJSON, "newNote");
 	}
 }
 
