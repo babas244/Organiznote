@@ -57,13 +57,13 @@ function ajaxCall(sPathPhp, fCallBack, parameter1, parameter2, parameter3) {
 	}
 }
 
-function ajaxCallNoResponse(sPathPhp, fCallBack, parameter1, parameter2) {
+function ajaxCallNoResponse(sPathPhp, fCallBack, parameter1, parameter2, parameter3) {
 	var xhr = new XMLHttpRequest(); 
 	xhr.open ('GET', sPathPhp);
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
-			fCallBack(parameter1, parameter2);
+			fCallBack(parameter1, parameter2, parameter3);
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) {
 				alert('Une erreur est survenue !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
@@ -83,6 +83,7 @@ function displayLabelsCheckboxes(sLabelsJSON) {
 			oDOMLabelCheckbox.labelRank = labelRank;
 			oDOMLabelCheckbox.addEventListener('input', function (e){
 				displayToDoList(e.target.labelTitleRank, e.target.labelRank, e.target.checked);
+				// faut-il mettre ici à jour aLabelsChecked ?
 			}, false);
 			document.getElementById("containerOfToDo").appendChild(oDOMLabelCheckbox);
 			var oDOMDivLabel = document.createElement("span");
@@ -231,14 +232,33 @@ function submitToDoFull(ResponseForm) {
 		else { // c'est donc un update que l'on fait
 			var sLabelsAndPositionToDoFocused = document.getElementById(toDoFocused).id.substr(4,5);
 			//alert (sLabelsAndPositionToDoFocused);
-			ajaxCallNoResponse('phpAjaxCalls_ToDo/updateToDo.php?idTopic=' + idTopic + "&toDoContent=" + ResponseForm[0] + "&sLabelsAndPositionToDoFocused=" + sLabelsAndPositionToDoFocused + "&sNewLabels=" + sLabels, updateToDo);
+			ajaxCallNoResponse('phpAjaxCalls_ToDo/updateToDo.php?idTopic=' + idTopic + "&toDoContent=" + ResponseForm[0] + "&sLabelsAndPositionToDoFocused=" + sLabelsAndPositionToDoFocused + "&sNewLabels=" + sLabels, updateToDo, ResponseForm[0], sLabelsAndPositionToDoFocused, sLabels);
 		}
 	}
 }
 
-function updateToDo(updatedToDoJSON) {
-
+function updateToDo(sNewContent, sLabelsAndPositionToDoFocused, sNewLabels) {
+	var sLabelsToDoFocused = sLabelsAndPositionToDoFocused.substr(0,4);
+	var oDOMToDoFocused = document.getElementById('toDo'+sLabelsAndPositionToDoFocused);
 	
+	if (sLabelsToDoFocused === sNewLabels) {
+		oDOMToDoFocused.innerHTML = sNewContent + '<span class="dateExpired">'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) + '</div>'
+		oDOMToDoFocused.content = sNewContent;
+	}
+	else {
+		var sToDoFocusedPosition = sLabelsAndPositionToDoFocused.substr(4,1);
+		for (var i = sToDoFocusedPosition + 1 ; i < aLabelNbItems[sLabelsToDoFocused] ; i++) {
+			alert ('toDo'+sLabelsToDoFocused+i)
+			document.getElementById('toDo'+sLabelsToDoFocused+i).id = 'toDo'+sLabelsToDoFocused+parseInt(i-1);
+		}
+		aLabelNbItems[sLabelsToDoFocused] -= 1;
+		deleteToDoFromDOM(toDoFocused);
+		var sToDoNewJSON = '{"'+ sNewLabels +'":[["'+ sNewContent +'","'+ oDOMToDoFocused.dateCreation +'","'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) +'"]]}';
+		insertToDoListBefore(sToDoNewJSON);
+		if () {// afficher le nouveau toDo seulement si il a des labels déjà demandés à être affichés
+		
+		}
+	}
 }
 
 function deleteToDoFromDOM (idDOMElementToDelete)  {
