@@ -40,7 +40,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 			$reqUpdateToDo -> closeCursor();	
 		} 
 		else { // on a changé de sLabels 
-			// Il faut préparer la MAJ des positions : d'abord compter le nombre de toDo avec du nouveau sLabels
+			// Il faut préparer la MAJ des positions : d'abord compter le nombre de toDo avec du nouveau sLabels pour insérer à la fin
 			$reqCountToDoNewLabels = $bdd -> prepare("SELECT COUNT(*) AS nbOfToDoNewLabels FROM todolists 
 		WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND dateArchive IS NULL");
 				$reqCountToDoNewLabels -> execute(array(
