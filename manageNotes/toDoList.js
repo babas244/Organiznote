@@ -192,11 +192,24 @@ function deleteToDo () {
 function stateToDoDone () {
 	hideContextMenuToDo();
 	if (confirm("Êtes-vous sûr de bien vouloir archiver comme faite la note :\n" + document.getElementById(toDoFocused).content) == true) {
-		ajaxCallNoResponse('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic + "&idInDdb=" + document.getElementById(toDoFocused).idInDdb, deleteToDoFromDOM, toDoFocused);	
+		var dateArchive = new Date();
+		var sForm = '[{"name":"DateArchive", "attributes" : {"value" : "' + dateArchive + '" }, "label" : "Date d\'archivage (format AAAA-MM-JJThh:mm:ss)"}]';
+		//alert (sForm);
+		superFormModale(sForm, "Confirmation de la date d'archivage", setToDoDoneAjax, "array", fCheckFormDateArchive);
+
 	}
 	else {
 		toDoFocused = null;
 	}
+}
+
+function setToDoDoneAjax(dateArchive) {
+	//alert (dateArchive);
+	ajaxCallNoResponse('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic + '&dateArchive=' + dateArchive, deleteToDoFromDOM, toDoFocused);		
+}
+
+function fCheckFormDateArchive() {
+	return 'ok';
 }
 
 function editToDo() {
@@ -311,6 +324,7 @@ function resetFormToDo() {
 }
 
 function displayContextMenuToDo() {
+	document.getElementById(toDoFocused).style.backgroundColor = '#777777';
 	document.getElementById('greyLayerOnNoScroll').style.display = 'block';
 	document.getElementById('cancelContextMenu').style.display = 'inline-block';
 	document.getElementById('deleteToDo').style.display = 'inline-block';
@@ -320,6 +334,7 @@ function displayContextMenuToDo() {
 }
 
 function hideContextMenuToDo () {
+	document.getElementById(toDoFocused).style.backgroundColor = '#eeaaee';
 	document.getElementById('greyLayerOnNoScroll').style.display = 'none';
 	document.getElementById('cancelContextMenu').style.display = 'none';
 	document.getElementById('deleteToDo').style.display = 'none';
@@ -382,7 +397,7 @@ function addContextMenu(oDOMToDo) {
 	oDOMToDo.addEventListener('contextmenu', function(e) {
 		e.preventDefault();
 		toDoFocused = e.target.id;
-		displayContextMenuToDo(toDoFocused);
+		displayContextMenuToDo();
 	}, false);
 }
 
