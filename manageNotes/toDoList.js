@@ -180,7 +180,9 @@ function insertToDoListBefore(sToDoListJSON, sIsNew) {
 function deleteToDo () {
 	hideContextMenuToDo();
 	if (confirm("Êtes-vous sûr de bien vouloir effacer la note :\n" + document.getElementById(toDoFocused).content) == true) {
-		ajaxCallNoResponse('phpAjaxCalls_ToDo/deleteToDo.php?idTopic=' + idTopic + "&idInDdb=" + document.getElementById(toDoFocused).idInDdb, deleteToDoFromDOM, toDoFocused);	
+		toDoToDelete = toDoFocused;
+		var sLabelsAndPositionToDoFocused = document.getElementById(toDoFocused).id.substr(4,5);
+		ajaxCallNoResponse('phpAjaxCalls_ToDo/deleteToDo.php?idTopic=' + idTopic + "&sLabelsAndPositionToDo=" + sLabelsAndPositionToDoFocused, deleteToDoFromDOM, toDoToDelete);	
 	}
 	else {
 		toDoFocused = null;
@@ -271,8 +273,10 @@ function updateToDo(sNewContent, sLabelsAndPositionToDoFocused, sNewLabels) {
 	}
 }
 
-function deleteToDoFromDOM (idDOMElementToDelete)  {
+function deleteToDoFromDOM (idDOMElementToDelete) {
 	document.getElementById('noScroll').removeChild(document.getElementById(idDOMElementToDelete)); 
+	// renommer les id  
+	toDoFocused = null;
 }				
 
 function initializeFormToDo() {
