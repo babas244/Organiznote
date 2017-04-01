@@ -254,13 +254,7 @@ function updateToDo(sNewContent, sLabelsAndPositionToDoFocused, sNewLabels) {
 		oDOMToDoFocused.content = sNewContent;
 	}
 	else { // les sLabels changent aussi
-		var sToDoFocusedPosition = sLabelsAndPositionToDoFocused.substr(4,1);
 		deleteToDoFromDOM(toDoFocused);
-		for (var i = parseInt(sToDoFocusedPosition) + 1 ; i < aLabelNbItems[sLabelsToDoFocused] ; i++) {
-			//alert ('toDo'+sLabelsToDoFocused+i)
-			document.getElementById('toDo'+sLabelsToDoFocused+i).id = 'toDo'+sLabelsToDoFocused+parseInt(i-1); // on décale les id de 1
-		}
-		aLabelNbItems[sLabelsToDoFocused] -= 1;
 		var sToDoNewJSON = '{"'+ sNewLabels +'":[["'+ sNewContent +'","'+ oDOMToDoFocused.dateCreation +'","'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) +'"]]}';
 		insertToDoListBefore(sToDoNewJSON, "newNote");
 		var aLabelsOfNewToDo = sNewLabels.split("");
@@ -273,9 +267,15 @@ function updateToDo(sNewContent, sLabelsAndPositionToDoFocused, sNewLabels) {
 	}
 }
 
-function deleteToDoFromDOM (idDOMElementToDelete) {
-	document.getElementById('noScroll').removeChild(document.getElementById(idDOMElementToDelete)); 
-	// renommer les id  
+function deleteToDoFromDOM (idDOMToDoFocused) {
+	document.getElementById('noScroll').removeChild(document.getElementById(idDOMToDoFocused)); 
+	var sLabelsToDoFocused = idDOMToDoFocused.substr(4,4);
+	var sToDoFocusedPosition = idDOMToDoFocused.substr(8);
+	for (var i = parseInt(sToDoFocusedPosition) + 1 ; i < aLabelNbItems[sLabelsToDoFocused] ; i++) {
+		//alert ('toDo'+sLabelsToDoFocused+i)
+		document.getElementById('toDo'+sLabelsToDoFocused+i).id = 'toDo'+sLabelsToDoFocused+parseInt(i-1); // on décale les id de 1
+	}
+	aLabelNbItems[sLabelsToDoFocused] -= 1;
 	toDoFocused = null;
 }				
 
