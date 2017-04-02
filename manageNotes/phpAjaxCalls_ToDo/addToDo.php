@@ -6,7 +6,7 @@ session_start();
 
 if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoContent"]) && isset($_GET["dateCreation"]) && isset($_GET["sLabels"])) {
 	
-	if (preg_match("#^[0-9]+$#", $_GET["dateCreation"]) && preg_match("#^[0-9]{4}$#", $_GET["sLabels"])) {
+	if (preg_match("#^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$#", $_GET["dateCreation"]) && preg_match("#^[0-9]{4}$#", $_GET["sLabels"])) {
 		
 		include '../../log_in_bdd.php';
 

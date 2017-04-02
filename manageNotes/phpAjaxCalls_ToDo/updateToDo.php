@@ -4,9 +4,9 @@ header("Content-Type: application/json; charset=UTF-8");
 
 session_start();
 
-if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoContent"])  && isset($_GET["sLabelsAndPositionToDoFocused"]) && isset($_GET["sNewLabels"])) {
+if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoContent"]) && isset($_GET["sLabels"]) && isset($_GET["position"]) && isset($_GET["sNewLabels"])) {
 	
-	if (preg_match("#^[0-9]{5}$#", $_GET["sLabelsAndPositionToDoFocused"]) && preg_match("#^[0-9]{4}$#", $_GET["sNewLabels"])) {
+	if (preg_match("#^[0-9]{4}$#", $_GET["sLabels"]) && preg_match("#^[0-9]+$#", $_GET["position"]) && preg_match("#^[0-9]{4}$#", $_GET["sNewLabels"])) {
 		
 		include '../../log_in_bdd.php';
 
@@ -14,15 +14,14 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
 		$toDoContent = htmlspecialchars($_GET["toDoContent"]);
-		$sLabelsAndPositionToDoFocused = htmlspecialchars($_GET["sLabelsAndPositionToDoFocused"]);
+		$sLabels = htmlspecialchars($_GET["sLabels"]);
+		$aLabels = str_split($sLabels);
+		$position = htmlspecialchars($_GET["position"]);		
+		
 		$sNewLabels = htmlspecialchars($_GET["sNewLabels"]); // utile ??
-		
-		$aLabelsAndPositionToDoFocused = str_split($sLabelsAndPositionToDoFocused);
-		$positionToDoFocused = $aLabelsAndPositionToDoFocused[4];
-		
 		//$aNewLabels = array(); //nécessaire ??
 		$aNewLabels = str_split($sNewLabels);
-		if ($aLabelsAndPositionToDoFocused[0] == $aNewLabels[0] && $aLabelsAndPositionToDoFocused[1] == $aNewLabels[1] && $aLabelsAndPositionToDoFocused[2] == $aNewLabels[2] && $aLabelsAndPositionToDoFocused[3] == $aNewLabels[3]) {
+		if ($aLabels[0] == $aNewLabels[0] && $aLabels[1] == $aNewLabels[1] && $aLabels[2] == $aNewLabels[2] && $aLabels[3] == $aNewLabels[3]) {
 			
 			// on n'a donc pas changé de sLabels, on udpate que le content		
 			$reqUpdateToDo = $bdd -> prepare('UPDATE todolists SET content=:newNote
@@ -31,11 +30,11 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 				'idUser' => $_SESSION['id'],
 				'idTopic' => $idTopic,
 				'newNote' => $toDoContent,
-				'label0' => $aLabelsAndPositionToDoFocused[0],
-				'label1' => $aLabelsAndPositionToDoFocused[1],
-				'label2' => $aLabelsAndPositionToDoFocused[2],
-				'label3' => $aLabelsAndPositionToDoFocused[3],
-				'NoteRank'=> $positionToDoFocused)) or die(print_r($reqUpdateToDo->errorInfo()));
+				'label0' => $aLabels[0],
+				'label1' => $aLabels[1],
+				'label2' => $aLabels[2],
+				'label3' => $aLabels[3],
+				'NoteRank'=> $position)) or die(print_r($reqUpdateToDo->errorInfo()));
 			//echo ('<br>'.$reqUpdateToDo->rowCount().' rangs affectés');
 			$reqUpdateToDo -> closeCursor();	
 		} 
@@ -70,11 +69,11 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 				'newLabel1' => $aNewLabels[1],
 				'newLabel2' => $aNewLabels[2],
 				'newLabel3' => $aNewLabels[3],
-				'oldLabel0' => $aLabelsAndPositionToDoFocused[0],
-				'oldLabel1' => $aLabelsAndPositionToDoFocused[1],
-				'oldLabel2' => $aLabelsAndPositionToDoFocused[2],
-				'oldLabel3' => $aLabelsAndPositionToDoFocused[3],
-				'oldNoteRank'=> $positionToDoFocused)) or die(print_r($reqUpdateToDo->errorInfo()));
+				'oldLabel0' => $aLabels[0],
+				'oldLabel1' => $aLabels[1],
+				'oldLabel2' => $aLabels[2],
+				'oldLabel3' => $aLabels[3],
+				'oldNoteRank'=> $position)) or die(print_r($reqUpdateToDo->errorInfo()));
 			//echo ('<br>'.$reqUpdateToDo->rowCount().' rangs affectés');
 			$reqUpdateToDo -> closeCursor();
 			
@@ -84,11 +83,11 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 				$reqUpdateToDo -> execute(array(
 				'idUser' => $_SESSION['id'],
 				'idTopic' => $idTopic,
-				'label0' => $aLabelsAndPositionToDoFocused[0],
-				'label1' => $aLabelsAndPositionToDoFocused[1],
-				'label2' => $aLabelsAndPositionToDoFocused[2],
-				'label3' => $aLabelsAndPositionToDoFocused[3],
-				'oldNoteRank'=> $positionToDoFocused)) or die(print_r($reqUpdateToDo->errorInfo()));
+				'label0' => $aLabels[0],
+				'label1' => $aLabels[1],
+				'label2' => $aLabels[2],
+				'label3' => $aLabels[3],
+				'oldNoteRank'=> $position)) or die(print_r($reqUpdateToDo->errorInfo()));
 			//echo ('<br>'.$reqUpdateToDo->rowCount().' rangs affectés');
 			$reqUpdateToDo -> closeCursor();
 			

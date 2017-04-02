@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Lun 27 Mars 2017 à 11:07
+-- Généré le :  Dim 02 Avril 2017 à 13:09
 -- Version du serveur :  5.7.11
 -- Version de PHP :  5.6.19
 
@@ -49,9 +49,9 @@ CREATE TABLE `todolists` (
   `idTopic` int(11) NOT NULL,
   `noteRank` int(11) NOT NULL,
   `content` text NOT NULL,
-  `dateCreation` bigint(11) NOT NULL,
-  `dateExpired` bigint(11) DEFAULT NULL,
-  `dateArchive` bigint(11) DEFAULT NULL,
+  `dateCreation` datetime DEFAULT NULL,
+  `dateExpired` varchar(255) DEFAULT NULL,
+  `dateArchive` varchar(255) DEFAULT NULL,
   `label0` varchar(255) NOT NULL,
   `label1` varchar(255) NOT NULL,
   `label2` varchar(255) NOT NULL,
@@ -163,27 +163,27 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `notes`
 --
 ALTER TABLE `notes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=986;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=990;
 --
 -- AUTO_INCREMENT pour la table `todolists`
 --
 ALTER TABLE `todolists`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=218;
 --
 -- AUTO_INCREMENT pour la table `todo_userlabels`
 --
 ALTER TABLE `todo_userlabels`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
 --
 -- AUTO_INCREMENT pour la table `todo_userlabelstitles`
 --
 ALTER TABLE `todo_userlabelstitles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 --
 -- AUTO_INCREMENT pour la table `topics`
 --
 ALTER TABLE `topics`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 --
 -- AUTO_INCREMENT pour la table `users`
 --

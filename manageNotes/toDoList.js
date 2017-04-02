@@ -1,4 +1,4 @@
-var toDoFocused = null;
+var toDoFocused = [{id:null},{sLabels:null},{position:null}];
 var aNbOfLabels = [5,3,3,3]; // à charger depuis la bdd
 var isDisplayDateExpired = false;
 var aLabelsChecked =[[1,0,0,0,0],[1,1,1],[1,1,1],[1,1,1]]; // à fabriquer par une boucle après chargement de aNbOfLabels
@@ -178,45 +178,50 @@ function insertToDoListBefore(sToDoListJSON, sIsNew) {
 }				
 				
 function deleteToDo () {
-	hideContextMenuToDo();
-	if (confirm("ÃŠtes-vous sÃ»r de bien vouloir effacer la note :\n" + document.getElementById(toDoFocused).content) == true) {
-		toDoToDelete = toDoFocused;
-		var sLabelsAndPositionToDoFocused = document.getElementById(toDoFocused).id.substr(4,5);
-		ajaxCallNoResponse('phpAjaxCalls_ToDo/deleteToDo.php?idTopic=' + idTopic + "&sLabelsAndPositionToDo=" + sLabelsAndPositionToDoFocused, deleteToDoFromDOM, toDoToDelete);	
+	if (confirm("ÃŠtes-vous sÃ»r de bien vouloir effacer la note :\n" + document.getElementById(toDoFocused[0].id).content) == true) {
+		ajaxCallNoResponse('phpAjaxCalls_ToDo/deleteToDo.php?idTopic=' + idTopic + "&sLabels=" + toDoFocused[0].sLabels + "&position=" + toDoFocused[0].position, deleteToDoAndHideContextMenu, toDoFocused[0].id);	
 	}
-	else {
-		toDoFocused = null;
+	else { 
+		hideContextMenuToDo();
 	}
 }
 
 function stateToDoDone () {
-	hideContextMenuToDo();
-	if (confirm("ÃŠtes-vous sÃ»r de bien vouloir archiver comme faite la note :\n" + document.getElementById(toDoFocused).content) == true) {
-		var dateArchive = new Date();
-		var sForm = '[{"name":"DateArchive", "attributes" : {"value" : "' + dateArchive + '" }, "label" : "Date d\'archivage (format AAAA-MM-JJThh:mm:ss)"}]';
+	if (confirm("ÃŠtes-vous sÃ»r de bien vouloir archiver comme faite la note :\n" + document.getElementById(toDoFocused[0].id).content) == true) {
+		var dateArchive = new Date().toISOString().slice(0,-8);
+		var sForm = '[{"name":"DateArchive", "attributes" : {"value" : "' + dateArchive + '" }, "label" : "Date d\'archivage (format AAAA-MM-JJThh:mm)"}]';
 		//alert (sForm);
 		superFormModale(sForm, "Confirmation de la date d'archivage", setToDoDoneAjax, "array", fCheckFormDateArchive);
-
-	}
+	} 
 	else {
-		toDoFocused = null;
+		hideContextMenuToDo();
 	}
 }
 
-function setToDoDoneAjax(dateArchive) {
-	//alert (dateArchive);
-	ajaxCallNoResponse('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic + '&dateArchive=' + dateArchive, deleteToDoFromDOM, toDoFocused);		
+function setToDoDoneAjax(aDateArchive) {
+	ajaxCallNoResponse('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic + '&dateArchive=' + aDateArchive[0].replace("T"," ")+":00" + "&sLabels=" + toDoFocused[0].sLabels + "&position=" + toDoFocused[0].position, deleteToDoAndHideContextMenu, toDoFocused[0].id);		
+}
+
+function deleteToDoAndHideContextMenu(idDOMToDelete) {
+	deleteToDoFromDOM(idDOMToDelete);
+	hideContextMenuToDo();
 }
 
 function fCheckFormDateArchive() {
-	return 'ok';
+	if (/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]$/.test(oForm[0].value)) {
+		return 'ok';		
+	} 
+	else {
+		alert ('Format de date non correct, il faut AAAA-MM-JJThh:mm, et dans des valeurs possibles')
+		return "DateArchive"
+	}
 }
 
 function editToDo() {
 	var sForm = '[';
-	sForm += '{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "10", "value" : "' + document.getElementById(toDoFocused).content + '" }, "label" : "note"},{';
+	sForm += '{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "10", "value" : "' + document.getElementById(toDoFocused[0].id).content + '" }, "label" : "note"},{';
 	for (var labelTitleRank = 0; labelTitleRank < oLabels.title.length; labelTitleRank ++) {
-		sForm += '"name":"'+labelTitleRank+'","HTMLType":"select","attributes":{"selectedIndex":"'+document.getElementById(toDoFocused).id.substr(4+labelTitleRank,1)+'"},"options":['; 
+		sForm += '"name":"'+labelTitleRank+'","HTMLType":"select","attributes":{"selectedIndex":"'+document.getElementById(toDoFocused[0].id).id.substr(4+labelTitleRank,1)+'"},"options":['; 
 		for (var labelRank = 0 ; labelRank < oLabels.content[labelTitleRank].length; labelRank++) {
 			sForm += '"'+oLabels.content[labelTitleRank][labelRank]+'",';
 		}
@@ -238,58 +243,49 @@ function fCheckFormToDo(){
 }
 
 function submitToDoFull(ResponseForm) {
-	hideContextMenuToDo();
-	//alert (ResponseForm);
 	if (ResponseForm !== "") {
-		var sLabels = ResponseForm[1].toString()+ResponseForm[2]+ResponseForm[3]+ResponseForm[4];
-		if (toDoFocused === null ) {
-			var dateCreation = Date.now();
-			var sToDoAddedJSON = '{"'+ sLabels +'":[["'+ ResponseForm[0] +'","'+ dateCreation +'",""]]}';
+		var sLabelsForm = ResponseForm[1].toString()+ResponseForm[2]+ResponseForm[3]+ResponseForm[4];
+		if (toDoFocused[0].id === null ) {
+			var dateCreation = new Date().toISOString().slice(0,-8).replace("T"," ")+":00";
+			var sToDoAddedJSON = '{"'+ sLabelsForm +'":[["'+ ResponseForm[0] +'","'+ dateCreation +'",""]]}';
 			//alert (sToDoAddedJSON); 
-			ajaxCallNoResponse('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + ResponseForm[0] + "&dateCreation=" + dateCreation + "&sLabels=" + sLabels, insertToDoListBefore, sToDoAddedJSON);
+			ajaxCallNoResponse('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + ResponseForm[0] + "&dateCreation=" + dateCreation + "&sLabels=" + sLabels, addNewToDoWithLabels, sToDoAddedJSON);
 		}
 		else { // c'est donc un update que l'on fait
-			var sLabelsAndPositionToDoFocused = document.getElementById(toDoFocused).id.substr(4,5);
-			//alert (sLabelsAndPositionToDoFocused);
-			//alert (sLabels);
-			ajaxCallNoResponse('phpAjaxCalls_ToDo/updateToDo.php?idTopic=' + idTopic + "&toDoContent=" + ResponseForm[0] + "&sLabelsAndPositionToDoFocused=" + sLabelsAndPositionToDoFocused + "&sNewLabels=" + sLabels, updateToDo, ResponseForm[0], sLabelsAndPositionToDoFocused, sLabels);
+			ajaxCallNoResponse('phpAjaxCalls_ToDo/updateToDo.php?idTopic=' + idTopic + "&toDoContent=" + ResponseForm[0] + "&sLabels=" + toDoFocused[0].sLabels + "&position=" + toDoFocused[0].position + "&sNewLabels=" + sLabelsForm, updateToDo, ResponseForm[0], sLabelsForm);
 		}
 	}
 }
 
-function updateToDo(sNewContent, sLabelsAndPositionToDoFocused, sNewLabels) {
-	var sLabelsToDoFocused = sLabelsAndPositionToDoFocused.substr(0,4);
-	//alert (sLabelsToDoFocused)
-	var oDOMToDoFocused = document.getElementById('toDo'+sLabelsAndPositionToDoFocused);
-	
-	if (sLabelsToDoFocused === sNewLabels) { // les sLabels ne changent pas
+function addNewToDoWithLabels(sToDoAddedJSON) {
+	insertToDoListBefore(sToDoAddedJSON);
+	hideContextMenuToDo();
+}
+
+function updateToDo(sNewContent, sNewLabels) {
+	var oDOMToDoFocused = document.getElementById(toDoFocused[0].id);
+	if (toDoFocused[0].sLabels === sNewLabels) { // les sLabels ne changent pas
 		oDOMToDoFocused.innerHTML = sNewContent + '<span class="dateExpired">'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) + '</div>'
 		oDOMToDoFocused.content = sNewContent;
 	}
 	else { // les sLabels changent aussi
-		deleteToDoFromDOM(toDoFocused);
-		var sToDoNewJSON = '{"'+ sNewLabels +'":[["'+ sNewContent +'","'+ oDOMToDoFocused.dateCreation +'","'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) +'"]]}';
-		insertToDoListBefore(sToDoNewJSON, "newNote");
+		deleteToDoFromDOM(toDoFocused[0].id);
 		var aLabelsOfNewToDo = sNewLabels.split("");
-		//alert ("aLabelsOfNewToDo =" +aLabelsOfNewToDo[0] + aLabelsOfNewToDo[1] + aLabelsOfNewToDo[2]+aLabelsOfNewToDo[3])
-		//alert (aLabelsOfNewToDo[0]+aLabelsOfNewToDo[1]+aLabelsOfNewToDo[2]+aLabelsOfNewToDo[3]+ " = "+aLabelsChecked[0][aLabelsOfNewToDo[0]]+aLabelsChecked[1][aLabelsOfNewToDo[1]]+aLabelsChecked[2][aLabelsOfNewToDo[2]]+aLabelsChecked[3][aLabelsOfNewToDo[3]]);
-		if (aLabelsChecked[0][aLabelsOfNewToDo[0]]==0 || aLabelsChecked[1][aLabelsOfNewToDo[1]]==0 || aLabelsChecked[2][aLabelsOfNewToDo[2]]==0 || aLabelsChecked[3][aLabelsOfNewToDo[3]]==0) {// afficher le nouveau toDo seulement si il a des labels déjà demandés à être affichés
-			//alert ('toDo'+sNewLabels+aLabelNbItems[sNewLabels])
-			document.getElementById('toDo'+sNewLabels+parseInt((aLabelNbItems[sNewLabels])-1)).style.display = 'none';
+		if (aLabelsChecked[0][aLabelsOfNewToDo[0]]==1 && aLabelsChecked[1][aLabelsOfNewToDo[1]]==1 && aLabelsChecked[2][aLabelsOfNewToDo[2]]==1 && aLabelsChecked[3][aLabelsOfNewToDo[3]]==1) {// afficher le nouveau toDo seulement si il a des labels déjà demandés à être affichés
+			var sToDoNewJSON = '{"'+ sNewLabels +'":[["'+ sNewContent +'","'+ oDOMToDoFocused.dateCreation +'","'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) +'"]]}';
+			insertToDoListBefore(sToDoNewJSON, "newNote");
 		}
 	}
+	hideContextMenuToDo();
 }
 
 function deleteToDoFromDOM (idDOMToDoFocused) {
 	document.getElementById('noScroll').removeChild(document.getElementById(idDOMToDoFocused)); 
-	var sLabelsToDoFocused = idDOMToDoFocused.substr(4,4);
-	var sToDoFocusedPosition = idDOMToDoFocused.substr(8);
-	for (var i = parseInt(sToDoFocusedPosition) + 1 ; i < aLabelNbItems[sLabelsToDoFocused] ; i++) {
-		//alert ('toDo'+sLabelsToDoFocused+i)
-		document.getElementById('toDo'+sLabelsToDoFocused+i).id = 'toDo'+sLabelsToDoFocused+parseInt(i-1); // on décale les id de 1
+	for (var i = parseInt(toDoFocused[0].position) + 1 ; i < aLabelNbItems[toDoFocused[0].sLabels] ; i++) {
+		alert (i);
+		document.getElementById('toDo'+toDoFocused[0].sLabels+i).id = 'toDo'+toDoFocused[0].sLabels+parseInt(i-1); // on décale les id de 1
 	}
-	aLabelNbItems[sLabelsToDoFocused] -= 1;
-	toDoFocused = null;
+	aLabelNbItems[toDoFocused[0].sLabels] -= 1;
 }				
 
 function initializeFormToDo() {
@@ -303,12 +299,12 @@ function submitToDoQuick(){
 	var sToDoContent = document.getElementById("toDoTextarea").value;
 	hideFormEnterToDo();
 	if (sToDoContent !=="") {
-		var dateCreation = Date.now();
+		var dateCreation = new Date().toISOString().slice(0,-5).replace("T"," ");
+		alert (dateCreation)
 		var sToDoAddedJSON = '{"0000":[["'+ sToDoContent +'","'+ dateCreation +'",""]]}';
 		if (aLabelNbItems["0000"] === undefined) {
 			aLabelNbItems["0000"]=0;
-		} 
-		//aLabelNbItems["0000"] += 1;
+		}
 		ajaxCallNoResponse('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + sToDoContent + "&dateCreation=" + dateCreation + "&sLabels=0000", insertToDoListBefore, sToDoAddedJSON, "newNote");
 	}
 }
@@ -324,7 +320,7 @@ function resetFormToDo() {
 }
 
 function displayContextMenuToDo() {
-	document.getElementById(toDoFocused).style.backgroundColor = '#777777';
+	document.getElementById(toDoFocused[0].id).style.backgroundColor = '#777777';
 	document.getElementById('greyLayerOnNoScroll').style.display = 'block';
 	document.getElementById('cancelContextMenu').style.display = 'inline-block';
 	document.getElementById('deleteToDo').style.display = 'inline-block';
@@ -334,7 +330,10 @@ function displayContextMenuToDo() {
 }
 
 function hideContextMenuToDo () {
-	document.getElementById(toDoFocused).style.backgroundColor = '#eeaaee';
+	if (document.getElementById(toDoFocused[0].id) !== null) {
+		document.getElementById(toDoFocused[0].id).style.backgroundColor = '#eeaaee';
+	}
+	toDoFocused = [{id:null},{sLabels:null},{position:null}];
 	document.getElementById('greyLayerOnNoScroll').style.display = 'none';
 	document.getElementById('cancelContextMenu').style.display = 'none';
 	document.getElementById('deleteToDo').style.display = 'none';
@@ -396,7 +395,9 @@ function addEventsDragAndDropToLastAndInvisible(DOMElement) {
 function addContextMenu(oDOMToDo) {
 	oDOMToDo.addEventListener('contextmenu', function(e) {
 		e.preventDefault();
-		toDoFocused = e.target.id;
+		toDoFocused[0].id = e.target.id;
+		toDoFocused[0].sLabels = toDoFocused[0].id.substr(4,4);
+		toDoFocused[0].position = toDoFocused[0].id.substr(8); 
 		displayContextMenuToDo();
 	}, false);
 }
