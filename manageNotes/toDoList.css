@@ -48,6 +48,11 @@
 	background-color: #ff0000;
 }
 
+div[id^="separatorLabels"]
+{
+	border: 1px black solid;
+}
+
 .dateExpired
 {
 	background-color: blue;
