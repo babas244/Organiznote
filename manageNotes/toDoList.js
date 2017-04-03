@@ -143,15 +143,12 @@ function insertToDoListBefore(sToDoListJSON, sIsNew) {
 	var sContent;
 	var nNbOfToDoInLabels;
 	for (sLabels in oToDoListJSONParsed) {
-		//alert (sLabels);
-		//alert (aLabelNbItems[sLabels]);
 		if (aLabelNbItems[sLabels] === undefined || sIsNew === "newNote") { // il faut en fait deux fCallback différentes ici
 			aLabels = sLabels.split("");
 			nNbOfToDoInLabels = oToDoListJSONParsed[sLabels].length;
 			aLabelNbItems[sLabels] = aLabelNbItems[sLabels]=== undefined ? 0 : aLabelNbItems[sLabels];
 			//alert (nNbOfToDoInLabels+"     "+aLabelNbItems[sLabels])
 			for (var i = 0 ; i < nNbOfToDoInLabels; i++ ) {
-				//alert (i)
 				sContent = oToDoListJSONParsed[sLabels][i][0].replace(/&lt;br&gt;/gi, "\n");
 				var oDOMToDo = document.createElement("div");
 				oDOMToDo.id = 'toDo'+sLabels+(parseInt(i)+parseInt(aLabelNbItems[sLabels]));
@@ -161,12 +158,11 @@ function insertToDoListBefore(sToDoListJSON, sIsNew) {
 				oDOMToDo.dateCreation = oToDoListJSONParsed[sLabels][i][1];
 				oDOMToDo.dateExpired = oToDoListJSONParsed[sLabels][i][2];
 				oDOMToDo.content = sContent;
-				oDOMToDo.innerHTML = sContent + " :"+sLabels+(parseInt(i)+parseInt(aLabelNbItems[sLabels]))+'<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
+				oDOMToDo.innerHTML = sContent+'<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
 				addEventsDragAndDrop(oDOMToDo);
 				document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById("separatorLabels"+sLabels).nextSibling);
 			}
 		aLabelNbItems[sLabels] += nNbOfToDoInLabels;	
-		//alert ("sLabels "+ sLabels+"a items = "+ aLabelNbItems[sLabels])
 		}
 		else {
 			var aDOMToDoToDisplay = document.querySelectorAll('div[id^="toDo' + sLabels + '"]');
@@ -229,7 +225,6 @@ function editToDo() {
 	sForm = sForm.slice(0,-1)+ '], "label" : "'+oLabels.title[labelTitleRank]+'"},{';
 	}
 	sForm = sForm.slice(0,-2)+']';
-	//alert (sForm);
 	superFormModale(sForm, "Etiquettes", submitToDoFull, "array", fCheckFormToDo);
 }
 
@@ -286,7 +281,6 @@ function updateToDo(sNewContent, sNewLabels) {
 function deleteToDoFromDOM (idDOMToDoFocused) {
 	document.getElementById('noScroll').removeChild(document.getElementById(idDOMToDoFocused)); 
 	for (var i = parseInt(toDoFocused[0].position) + 1 ; i < aLabelNbItems[toDoFocused[0].sLabels] ; i++) {
-		alert (i);
 		document.getElementById('toDo'+toDoFocused[0].sLabels+i).id = 'toDo'+toDoFocused[0].sLabels+parseInt(i-1); // on décale les id de 1
 	}
 	aLabelNbItems[toDoFocused[0].sLabels] -= 1;
