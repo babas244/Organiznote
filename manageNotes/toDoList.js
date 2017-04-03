@@ -3,7 +3,7 @@ var aNbOfLabels = [5,3,3,3]; // à charger depuis la bdd
 var isDisplayDateExpired = false;
 var aLabelsChecked =[[1,0,0,0,0],[1,1,1],[1,1,1],[1,1,1]]; // à fabriquer par une boucle après chargement de aNbOfLabels
 var aLabelNbItems = {}; 
-
+		
 addEventsDragAndDropToLastAndInvisible(document.getElementById("lastAndInvisible"));
 
 counterInsertDivSeparatorLabels();
@@ -188,8 +188,9 @@ function deleteToDo () {
 
 function stateToDoDone () {
 	if (confirm("ÃŠtes-vous sÃ»r de bien vouloir archiver comme faite la note :\n" + document.getElementById(toDoFocused[0].id).content) == true) {
-		var dateArchive = new Date().toISOString().slice(0,-8);
-		var sForm = '[{"name":"DateArchive", "attributes" : {"value" : "' + dateArchive + '" }, "label" : "Date d\'archivage (format AAAA-MM-JJThh:mm)"}]';
+			var dateArchiveCreated = new Date()
+			var dateArchive = dateArchiveCreated.toISOString().substr(0,11)+dateArchiveCreated.getHours()+dateArchiveCreated.toISOString().substr(13,3);
+			var sForm = '[{"name":"DateArchive", "attributes" : {"value" : "' + dateArchive + '" }, "label" : "Date d\'archivage (format AAAA-MM-JJThh:mm)"}]';
 		//alert (sForm);
 		superFormModale(sForm, "Confirmation de la date d'archivage", setToDoDoneAjax, "array", fCheckFormDateArchive);
 	} 
@@ -198,8 +199,8 @@ function stateToDoDone () {
 	}
 }
 
-function setToDoDoneAjax(aDateArchive) {
-	ajaxCallNoResponse('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic + '&dateArchive=' + aDateArchive[0].replace("T"," ")+":00" + "&sLabels=" + toDoFocused[0].sLabels + "&position=" + toDoFocused[0].position, deleteToDoAndHideContextMenu, toDoFocused[0].id);		
+function setToDoDoneAjax(aFormDateArchive) {
+	ajaxCallNoResponse('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic + '&dateArchive=' + aFormDateArchive[0].replace("T"," ")+":00" + "&sLabels=" + toDoFocused[0].sLabels + "&position=" + toDoFocused[0].position, deleteToDoAndHideContextMenu, toDoFocused[0].id);		
 }
 
 function deleteToDoAndHideContextMenu(idDOMToDelete) {
@@ -219,9 +220,9 @@ function fCheckFormDateArchive() {
 
 function editToDo() {
 	var sForm = '[';
-	sForm += '{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "10", "value" : "' + document.getElementById(toDoFocused[0].id).content + '" }, "label" : "note"},{';
+	sForm += '{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700", "value" : "' + document.getElementById(toDoFocused[0].id).content + '" }, "label" : "note"},{';
 	for (var labelTitleRank = 0; labelTitleRank < oLabels.title.length; labelTitleRank ++) {
-		sForm += '"name":"'+labelTitleRank+'","HTMLType":"select","attributes":{"selectedIndex":"'+document.getElementById(toDoFocused[0].id).id.substr(4+labelTitleRank,1)+'"},"options":['; 
+		sForm += '"name":"'+labelTitleRank+'","HTMLType":"select","attributes":{"selectedIndex":"'+toDoFocused[0].sLabels.substr(labelTitleRank,1)+'"},"options":['; 
 		for (var labelRank = 0 ; labelRank < oLabels.content[labelTitleRank].length; labelRank++) {
 			sForm += '"'+oLabels.content[labelTitleRank][labelRank]+'",';
 		}
@@ -246,7 +247,7 @@ function submitToDoFull(ResponseForm) {
 	if (ResponseForm !== "") {
 		var sLabelsForm = ResponseForm[1].toString()+ResponseForm[2]+ResponseForm[3]+ResponseForm[4];
 		if (toDoFocused[0].id === null ) {
-			var dateCreation = new Date().toISOString().slice(0,-8).replace("T"," ")+":00";
+			var dateCreation = sLocalDatetime(new Date());
 			var sToDoAddedJSON = '{"'+ sLabelsForm +'":[["'+ ResponseForm[0] +'","'+ dateCreation +'",""]]}';
 			//alert (sToDoAddedJSON); 
 			ajaxCallNoResponse('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + ResponseForm[0] + "&dateCreation=" + dateCreation + "&sLabels=" + sLabels, addNewToDoWithLabels, sToDoAddedJSON);
@@ -254,6 +255,9 @@ function submitToDoFull(ResponseForm) {
 		else { // c'est donc un update que l'on fait
 			ajaxCallNoResponse('phpAjaxCalls_ToDo/updateToDo.php?idTopic=' + idTopic + "&toDoContent=" + ResponseForm[0] + "&sLabels=" + toDoFocused[0].sLabels + "&position=" + toDoFocused[0].position + "&sNewLabels=" + sLabelsForm, updateToDo, ResponseForm[0], sLabelsForm);
 		}
+	}
+	else {
+		hideContextMenuToDo();
 	}
 }
 
@@ -299,8 +303,7 @@ function submitToDoQuick(){
 	var sToDoContent = document.getElementById("toDoTextarea").value;
 	hideFormEnterToDo();
 	if (sToDoContent !=="") {
-		var dateCreation = new Date().toISOString().slice(0,-5).replace("T"," ");
-		alert (dateCreation)
+		var dateCreation = sLocalDatetime(new Date());
 		var sToDoAddedJSON = '{"0000":[["'+ sToDoContent +'","'+ dateCreation +'",""]]}';
 		if (aLabelNbItems["0000"] === undefined) {
 			aLabelNbItems["0000"]=0;
@@ -402,7 +405,10 @@ function addContextMenu(oDOMToDo) {
 	}, false);
 }
 
-// effacer un toDo : par appui long ?? puis touche corbeille. ou icones dedans mais pas beaucoup  de place ???? En plus il faut du multiple !!
+function XX(integer) {
+	return integer>9 ? ""+integer : "0"+integer;
+}
 
-
-// archiver un toDo comme fait 
+function sLocalDatetime(date){
+	return date.getFullYear()+"-"+XX(date.getMonth()+1)+"-"+XX(date.getDate())+" "+XX(date.getHours())+":"+XX(date.getMinutes())+":"+XX(date.getSeconds());	
+}
