@@ -3,14 +3,15 @@ header("Content-Type: text/plain");
 
 session_start();
 
-if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCutPath"]) && isset($_GET["sPathWhereToPaste"]) && isset($_GET["rowOfPasteFolder"])) {
+if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCutPath"]) && isset($_GET["sPathWhereToPaste"]) && isset($_GET["rowOfPasteItem"])) {
 
-	if ((preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sCutPath"])) && (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sPathWhereToPaste"]))) {		
+	if ((preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sCutPath"])) && (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sPathWhereToPaste"])) && (preg_match("#^[0-9]{2}*$#", $_GET["rowOfPasteItem"]))) {		
 		
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
 		$sCutPath = htmlspecialchars($_GET["sCutPath"]);
+		$aORb = substr($sCutPath,-3,1);
 		$sPathWhereToPaste = htmlspecialchars($_GET["sPathWhereToPaste"]);
-		$rowOfPasteFolder = htmlspecialchars($_GET["rowOfPasteFolder"]);
+		$rowOfPasteItem = htmlspecialchars($_GET["rowOfPasteItem"]);
 		
 		include '../../log_in_bdd.php';		
 		
@@ -22,13 +23,14 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCutPath"]
 		//exit;
 		
 		$reqUpdatePathFamilyOfCutPath = $bdd -> prepare('	UPDATE notes 
-								SET idNote=CONCAT(:pathWhereToPaste , "a" , :rowOfPasteFolder, SUBSTRING(idNote, :lengthCutPath + 1)) 
+								SET idNote=CONCAT(:pathWhereToPaste , :aORb , :rowOfPasteItem, SUBSTRING(idNote, :lengthCutPath + 1)) 
 								WHERE idUser=:idUser AND idTopic=:idTopic AND idNote LIKE :startWithCutPath');
 			$reqUpdatePathFamilyOfCutPath -> execute(array(
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $idTopic, 
 			'pathWhereToPaste' => $sPathWhereToPaste,
-			'rowOfPasteFolder' => $rowOfPasteFolder,
+			'aORb' => $aORb,
+			'rowOfPasteItem' => $rowOfPasteItem,
 			'lengthCutPath' => $lengthCutPath,
 			'startWithCutPath' => $sCutPath.'%')) or die(print_r($reqUpdatePathFamilyOfCutPath->errorInfo()));
 		echo ('<br>'.$reqUpdatePathFamilyOfCutPath->rowCount()." lignes affectées dans reqUpdatePathFamilyOfCutPath<br>");
@@ -40,12 +42,13 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCutPath"]
 		$nRankDeleted = intval(substr($sRankDeleted,-2));
 		$lengthPathParent = strlen($sPathParent);
 		$reqUpdateSiblingsAndChildren = $bdd -> prepare('	UPDATE notes 
-								SET idNote=CONCAT(:pathParent, "a" , LPAD((SUBSTRING(idNote,:lengthPathParent+2,2)-1),2,"0"),SUBSTRING(idNote,:lengthPathParent + 4)) 
+								SET idNote=CONCAT(:pathParent, :aORb , LPAD((SUBSTRING(idNote,:lengthPathParent+2,2)-1),2,"0"),SUBSTRING(idNote,:lengthPathParent + 4)) 
 								WHERE idUser=:idUser AND idTopic=:idTopic AND idNote LIKE :startWithPathParent AND convert(SUBSTRING(idNote,:lengthPathParent+2,2),signed) > :nRankDeleted');
 		$reqUpdateSiblingsAndChildren -> execute(array(
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $idTopic,
 			'pathParent' => $sPathParent,
+			'aORb' => $aORb,
 			'lengthPathParent' => $lengthPathParent,
 			'startWithPathParent' => $sPathParent.'a%',
 			'nRankDeleted' => $nRankDeleted)) or die(print_r($reqUpdateSiblingsAndChildren->errorInfo()));		

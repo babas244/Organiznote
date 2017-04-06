@@ -334,7 +334,7 @@ document.getElementById("moveTreeItem").addEventListener('click', function() {
 
 document.getElementById("pasteHereTreeItem").addEventListener('click', function() {
 	hideContextMenu();
-	alert ("pathFocused =" + pathFocused + "  pathToPaste =" + pathToPaste);
+	//alert ("pathFocused =" + pathFocused + "  pathToPaste =" + pathToPaste);
 	if (pathFocused === pathToPaste.slice(0,-3)) {
 		alert("Vous essayez de coller votre item à l'endroit où il se trouve déjà. Recommencez à un autre endroit.");
 		resetColorTreeItem();
@@ -346,7 +346,7 @@ document.getElementById("pasteHereTreeItem").addEventListener('click', function(
 	else {
 		if (pathToPaste.substr(-3,1)==="a") {
 			if (ToutesCategories[pathFocused].nbOfFolders <= 98) {
-				queryXHRMoveFolder(pathToPaste, pathFocused);							
+				queryXHRMoveItem(pathToPaste, pathFocused);							
 			}
 			else {
 				alert("Pas possible de déplacer la catégorie ici.\n\nVous avez atteint la limite prévue des 99 sous-catégories !\n\nIl serait utile de mieux réorganiser les catégories.")
@@ -356,7 +356,7 @@ document.getElementById("pasteHereTreeItem").addEventListener('click', function(
 		}
 		else if (pathToPaste.substr(-3,1)==="b"){
 			if (ToutesCategories[pathFocused].nbOfNotes <= 98) {
-				queryXHRMoveNote(pathToPaste, pathFocused);							
+				queryXHRMoveItem(pathToPaste, pathFocused);							
 			}
 			else {
 				alert("Pas possible de déplacer la catégorie ici.\n\nVous avez atteint la limite prévue des 99 notes !\n\nIl serait utile de mieux réorganiser les notes.")
@@ -574,16 +574,16 @@ function queryXhrDeleteFolder(sCategoryToDelete) {
 	}
 }
 
-function queryXHRMoveFolder(sCutPath, sPathWhereToPaste) {
-	var rowOfPasteFolder = XX(parseInt(ToutesCategories[sPathWhereToPaste].nbOfFolders)+1); // ou trouver ce nombre et le XX du cote serveur avec une requete dbb?
-	//alert (rowOfPasteFolder);
+function queryXHRMoveItem(sCutPath, sPathWhereToPaste) {
+	var sNbItemType = sCutPath.substr(-3,1) === "a" ? "nbOfFolders" : "nbOfNotes"; 
+	var rowOfPasteItem = XX(parseInt(ToutesCategories[sPathWhereToPaste][sNbItemType])+1); // ou trouver ce nombre et le XX du cote serveur avec une requete dbb?
+	//alert (rowOfPasteItem);
 	arborescenceNotes.seDeplacerDanslArborescenceReduite(pathFocused);
 	var xhr = new XMLHttpRequest(); 
-	xhr.open ('GET', 'ajax/moveFolder.php?idTopic=' + idTopic + '&sCutPath=' + sCutPath + '&sPathWhereToPaste=' + sPathWhereToPaste + '&sPathWhereToPaste=' + sPathWhereToPaste + '&rowOfPasteFolder=' + rowOfPasteFolder);
+	xhr.open ('GET', 'ajax/moveItem.php?idTopic=' + idTopic + '&sCutPath=' + sCutPath + '&sPathWhereToPaste=' + sPathWhereToPaste + '&sPathWhereToPaste=' + sPathWhereToPaste + '&rowOfPasteItem=' + rowOfPasteItem);
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {	
-		alert ('effacement')
 		//alert("Dans queryXHRMoveFolder, sIdCategoryToEdit = "+sIdCategoryToEdit);
 		
 		// effacer toutes les div des treeItem dans le folder parent de CutPath (mais pas le folder parent lui-même)
@@ -601,7 +601,7 @@ function queryXHRMoveFolder(sCutPath, sPathWhereToPaste) {
 		ToutesCategories[sPathParentOfCutPath].nbOfNotes =0;
 		
 		// insérer le folder déplacé dans sPathWhereToPaste
-		var sInstantiateFolderMoved = '["'+pathFocused+'a'+rowOfPasteFolder+'","'+ToutesCategories[sCutPath].sContent+'"]';
+		var sInstantiateFolderMoved = '["'+pathFocused+sCutPath.substr(-3,1)+rowOfPasteItem+'","'+ToutesCategories[sCutPath].sContent+'"]';
 		instancierArborescenceRecuperee ( sInstantiateFolderMoved , pathFocused );
 		document.getElementById("fondPageEntrerTexte").style.display = 'none';
 		resetColorTreeItem();
@@ -611,7 +611,7 @@ function queryXHRMoveFolder(sCutPath, sPathWhereToPaste) {
 		//ajouter l'affichage de ce qui a �t� coll�
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-				alert('Une erreur est survenue dans queryXHRMoveFolder !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
+				alert('Une erreur est survenue dans queryXHRMoveItem !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
 		}
 	}
 }
