@@ -54,6 +54,7 @@ if (!isset($_SESSION['id'])) {
     <head>
         <title>manageTopics</title>
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+		<meta name="robots" content="noindex,nofollow">
 		<link rel="stylesheet" href="manageTopics.css" />
     </head>
     <body>
@@ -89,7 +90,7 @@ if (!isset($_SESSION['id'])) {
 			<form method="post" action="createNewTopic.php">
 				<fieldset>
 					<legend>Créer un nouveau <strong>sujet</strong> de notes</legend>
-					Titre :<input type="text" name="newTopic"><br><br>
+					Titre :<input type="text" name="newTopic"  maxlength="254"><br><br>
 					Couleur de fond :<input type="color" id="colorBackGround" name="colorBackGround" value="#ffff11" onchange="updateApercu()"><br><br>
 					Couleur du texte : <input type="color" id="colorFont" name="colorFont" value="#000000" onchange="updateApercu()"><br><br>
 					Aperçu : <div id="apercu">Sujet</div><br><br>

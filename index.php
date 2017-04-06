@@ -18,8 +18,8 @@ if (isset($_COOKIE['user'])) {
 		<form method="post" action="manageTopics.php"> 
 			<fieldset>
 				<legend>Connexion</legend>
-				Pseudo : <input type="text" name="user" autofocus><br><br>
-				Mot de passe : <input type="password" name="pass"><br><br>
+				Pseudo : <input type="text" name="user" maxlength="254" autofocus><br><br>
+				Mot de passe : <input type="password" name="pass" maxlength="254"><br><br>
 				<input type="checkbox" name="stayConnected"> Rester connecté<br>
 				<input type="submit" value="Se connecter">
 			</fieldset>
@@ -27,10 +27,10 @@ if (isset($_COOKIE['user'])) {
 		<form method="post" action="createNewAccount.php"> 
 			<fieldset>
 				<legend>Créer un nouveau compte</legend>
-				Pseudo : <input type="text" name="user"><br><br>
-				Mot de passe : <input type="password" name="pass"><br><br>
-				Entrer à nouveau votre mot de passe : <input type="password" name="rePass"><br><br>
-				Adresse email (facultatif) : <input type="email" name="email"><br><br>
+				Pseudo : <input type="text" name="user" maxlength="254"><br><br>
+				Mot de passe : <input type="password" name="pass" maxlength="254"><br><br>
+				Entrer à nouveau votre mot de passe : <input type="password" name="rePass" maxlength="254"><br><br>
+				Adresse email (facultatif) : <input type="email" name="email" maxlength="254"><br><br>
 				<input type="submit" value="Créer">
 			</fieldset>
 		</form>

@@ -53,7 +53,7 @@ include '../sessionAuthentication.php';
 							<button id="cancelAddToDo"><-</button>
 							<div id="frameTextareaToDoForm">
 								<form id="addToDoForm">
-									<input type="textarea" name="toDoTextarea" id="toDoTextarea" placeholder="Ecrire ici">
+									<input type="textarea" name="toDoTextarea" id="toDoTextarea" placeholder="Ecrire ici" maxlength="1700">
 								</form>		
 							</div>
 							<button id="resetAddToDoForm">x</button>	
