@@ -334,6 +334,7 @@ document.getElementById("moveTreeItem").addEventListener('click', function() {
 
 document.getElementById("pasteHereTreeItem").addEventListener('click', function() {
 	hideContextMenu();
+	alert ("pathFocused =" + pathFocused + "  pathToPaste =" + pathToPaste);
 	if (pathFocused === pathToPaste.slice(0,-3)) {
 		alert("Vous essayez de coller votre item à l'endroit où il se trouve déjà. Recommencez à un autre endroit.");
 		resetColorTreeItem();
@@ -343,9 +344,25 @@ document.getElementById("pasteHereTreeItem").addEventListener('click', function(
 		resetColorTreeItem();
 	}
 	else {
-		if (pathFocused.substr(-3,1)==="a" || pathFocused==="01") {
-			// ajouter un test pour savoir si pas plus de 98 folders déjà
-			queryXHRMoveFolder(pathToPaste, pathFocused);			
+		if (pathToPaste.substr(-3,1)==="a") {
+			if (ToutesCategories[pathFocused].nbOfFolders <= 98) {
+				queryXHRMoveFolder(pathToPaste, pathFocused);							
+			}
+			else {
+				alert("Pas possible de déplacer la catégorie ici.\n\nVous avez atteint la limite prévue des 99 sous-catégories !\n\nIl serait utile de mieux réorganiser les catégories.")
+				resetColorTreeItem();
+				pathFocused = null;
+			}
+		}
+		else if (pathToPaste.substr(-3,1)==="b"){
+			if (ToutesCategories[pathFocused].nbOfNotes <= 98) {
+				queryXHRMoveNote(pathToPaste, pathFocused);							
+			}
+			else {
+				alert("Pas possible de déplacer la catégorie ici.\n\nVous avez atteint la limite prévue des 99 notes !\n\nIl serait utile de mieux réorganiser les notes.")
+				resetColorTreeItem();
+				pathFocused = null;
+			}
 		}
 	}
 }, false);
@@ -560,11 +577,13 @@ function queryXhrDeleteFolder(sCategoryToDelete) {
 function queryXHRMoveFolder(sCutPath, sPathWhereToPaste) {
 	var rowOfPasteFolder = XX(parseInt(ToutesCategories[sPathWhereToPaste].nbOfFolders)+1); // ou trouver ce nombre et le XX du cote serveur avec une requete dbb?
 	//alert (rowOfPasteFolder);
+	arborescenceNotes.seDeplacerDanslArborescenceReduite(pathFocused);
 	var xhr = new XMLHttpRequest(); 
 	xhr.open ('GET', 'ajax/moveFolder.php?idTopic=' + idTopic + '&sCutPath=' + sCutPath + '&sPathWhereToPaste=' + sPathWhereToPaste + '&sPathWhereToPaste=' + sPathWhereToPaste + '&rowOfPasteFolder=' + rowOfPasteFolder);
 	xhr.send(null);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {	
+		alert ('effacement')
 		//alert("Dans queryXHRMoveFolder, sIdCategoryToEdit = "+sIdCategoryToEdit);
 		
 		// effacer toutes les div des treeItem dans le folder parent de CutPath (mais pas le folder parent lui-même)
@@ -584,7 +603,6 @@ function queryXHRMoveFolder(sCutPath, sPathWhereToPaste) {
 		// insérer le folder déplacé dans sPathWhereToPaste
 		var sInstantiateFolderMoved = '["'+pathFocused+'a'+rowOfPasteFolder+'","'+ToutesCategories[sCutPath].sContent+'"]';
 		instancierArborescenceRecuperee ( sInstantiateFolderMoved , pathFocused );
-		arborescenceNotes.seDeplacerDanslArborescenceReduite(pathFocused);
 		document.getElementById("fondPageEntrerTexte").style.display = 'none';
 		resetColorTreeItem();
 		pathFocused = null;
@@ -597,8 +615,6 @@ function queryXHRMoveFolder(sCutPath, sPathWhereToPaste) {
 		}
 	}
 }
-
-
 
 function CategorieAbstraite(id, sContent, niveauDeCategorie, nbOfFolders, nbOfNotes) {
 	this.id = id;

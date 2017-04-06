@@ -93,6 +93,7 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['rePass']) &&
     <head>
         <title>page de session</title>
         <meta charset="utf-8"/>
+		<meta name="robots" content="noindex,nofollow">
     </head>
     <body>
 		<br><br><a href="index.php"> vers la page d'accueil </a>

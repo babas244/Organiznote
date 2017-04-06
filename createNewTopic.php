@@ -11,6 +11,7 @@ include 'sessionAuthentication.php';
     <head>
         <title>create new topic</title>
         <meta charset="utf-8"/>
+		<meta name="robots" content="noindex,nofollow">
     </head>
     <body>
 
