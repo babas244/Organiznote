@@ -27,9 +27,9 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["label0"]) 
 			$questionMarks[$i] = substr($questionMarks[$i], 0, -1).')';
 		}
 	
-		include '../../log_in_bdd.php';		
+		require '../../log_in_bdd.php';		
 		
-		include '../../isIdTopicSafeAndMatchUser.php';
+		require '../../isIdTopicSafeAndMatchUser.php';
 	
 		$reqDisplayToDoList = $bdd -> prepare("SELECT content, dateCreation, dateExpired, label0, label1, label2, label3 
 												FROM todolists 

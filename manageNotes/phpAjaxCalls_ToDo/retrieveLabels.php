@@ -9,9 +9,9 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
 
-		include '../../log_in_bdd.php';		
+		require '../../log_in_bdd.php';		
 		
-		include '../../isIdTopicSafeAndMatchUser.php';
+		require '../../isIdTopicSafeAndMatchUser.php';
 	
 		$reqRetrieveLabels = $bdd -> prepare('SELECT todo_userlabelstitles.content AS labelTitleContent, todo_userlabelstitles.rankLabelTitle AS rankLabelTitle, todo_userlabels.content AS labelContent
 											FROM todo_userlabels 

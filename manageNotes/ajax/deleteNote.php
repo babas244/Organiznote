@@ -9,9 +9,9 @@ session_start();
 
 if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryToDelete"]) && (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sCategoryToDelete"]))) {
 
-	include '../../log_in_bdd.php';
+	require '../../log_in_bdd.php';
 
-	include '../../isIdTopicSafeAndMatchUser.php';
+	require '../../isIdTopicSafeAndMatchUser.php';
 	
 	$sCategoryOfDad = substr($_GET["sCategoryToDelete"],0,-3);
 	

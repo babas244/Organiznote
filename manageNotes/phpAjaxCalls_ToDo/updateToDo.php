@@ -8,9 +8,9 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 	
 	if (preg_match("#^[0-9]{4}$#", $_GET["sLabels"]) && preg_match("#^[0-9]+$#", $_GET["position"]) && preg_match("#^[0-9]{4}$#", $_GET["sNewLabels"])) {
 		
-		include '../../log_in_bdd.php';
+		require '../../log_in_bdd.php';
 
-		include '../../isIdTopicSafeAndMatchUser.php';
+		require '../../isIdTopicSafeAndMatchUser.php';
 
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
 		$toDoContent = htmlspecialchars($_GET["toDoContent"]);

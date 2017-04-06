@@ -13,9 +13,9 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCutPath"]
 		$sPathWhereToPaste = htmlspecialchars($_GET["sPathWhereToPaste"]);
 		$rowOfPasteItem = htmlspecialchars($_GET["rowOfPasteItem"]);
 		
-		include '../../log_in_bdd.php';		
+		require '../../log_in_bdd.php';		
 		
-		include '../../isIdTopicSafeAndMatchUser.php';
+		require '../../isIdTopicSafeAndMatchUser.php';
 		
 		// on update les noms de tous les paths descendants de sCutPath et aussi sCutPath
 		$lengthCutPath = strlen($sCutPath); // on pourrait mettre le +1 ici au lieu de le recalculer dans la requete à chaque fois

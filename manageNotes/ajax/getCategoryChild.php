@@ -9,9 +9,9 @@ if (isset($_SESSION['id']) && isset($_GET["sCategoriePere"]) && (preg_match("#^[
 	
 	$sCategoriePere = $_GET["sCategoriePere"]; //utile ou pas ?
 
-	include '../../log_in_bdd.php';
+	require '../../log_in_bdd.php';
 
-	include '../../isIdTopicSafeAndMatchUser.php';
+	require '../../isIdTopicSafeAndMatchUser.php';
 		
 	$req = $bdd -> prepare('SELECT idNote, content FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote REGEXP :aTrouver AND idNote NOT LIKE :categoriepere ORDER BY idNote');
 	$req -> execute(array(

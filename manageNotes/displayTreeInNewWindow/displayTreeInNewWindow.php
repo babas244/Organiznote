@@ -1,7 +1,7 @@
 <?php
 header("Content-Type: text/html");
 session_start();
-include '../../log_in_bdd.php';
+require '../../log_in_bdd.php';
  ?>
 
 <!DOCTYPE html>

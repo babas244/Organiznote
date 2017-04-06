@@ -1,7 +1,7 @@
 <?php 
 session_start();
 
-include 'log_in_bdd.php';  /* include 'sessin AUthentication.php'; ???*/
+require 'log_in_bdd.php';  /* require 'sessin AUthentication.php'; ???*/
 
 if (!isset($_SESSION['id'])) {
 	$req = $bdd->prepare('SELECT id FROM users WHERE user = :user AND hashPass = :hashPass');
@@ -62,7 +62,7 @@ if (!isset($_SESSION['id'])) {
 		if (isset($_SESSION['id'])) {
 			echo "Bonjour, ".$_SESSION['user'].', vous êtes connecté.  '; 
 			echo '<a href="logout.php">(se déconnecter)</a>';	
-			// include 'log_in_bdd.php'; // besoin ou pas ??
+			// require 'log_in_bdd.php'; // besoin ou pas ??
 			
 			$req = $bdd -> prepare('SELECT topic,id,colorBackGround,colorFont FROM topics WHERE idUser= :idUser'); //
 			$req -> execute (array (

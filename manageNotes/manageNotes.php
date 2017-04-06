@@ -1,9 +1,9 @@
 <?php 
 session_start();
 
-include '../log_in_bdd.php';
+require '../log_in_bdd.php';
 
-include '../sessionAuthentication.php';
+require '../sessionAuthentication.php';
 
 // il faut vérifier que idTopic est de la bonne forme
 ?>

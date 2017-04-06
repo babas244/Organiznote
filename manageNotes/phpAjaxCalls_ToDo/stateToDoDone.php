@@ -8,9 +8,9 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["dateArchiv
 	
 	if (preg_match("#^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:00$#", $_GET["dateArchive"]) && preg_match("#^[0-9]{4}$#", $_GET["sLabels"]) && preg_match("#^[0-9]+$#", $_GET["position"])) {
 
-		include '../../log_in_bdd.php';
+		require '../../log_in_bdd.php';
 
-		include '../../isIdTopicSafeAndMatchUser.php';
+		require '../../isIdTopicSafeAndMatchUser.php';
 		
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
 		$dateArchive = htmlspecialchars($_GET["dateArchive"]);

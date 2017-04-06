@@ -45,7 +45,7 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['rePass']) &&
 
 	if ($user && $hashPass && ($emailIsCorrect || $email=="")) {
 
-		include 'log_in_bdd.php';
+		require 'log_in_bdd.php';
 	
 		//tester si le nom d'user existe déjà
 		$reqUserExists = $bdd->prepare('SELECT user FROM users WHERE user= :user');
