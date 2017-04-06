@@ -5,7 +5,9 @@ require '../log_in_bdd.php';
 
 require '../sessionAuthentication.php';
 
-// il faut vérifier que idTopic est de la bonne forme
+if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
+	require '../isIdTopicSafeAndMatchUser.php';
+	$idTopic = htmlspecialchars($_GET['idTopic']);	
 ?>
 
 
@@ -26,7 +28,7 @@ require '../sessionAuthentication.php';
 				$reqGetTopic = $bdd -> prepare('SELECT topic FROM topics WHERE idUser=:idUser AND id=:idTopic');
 					$reqGetTopic -> execute(array(
 					'idUser' => $_SESSION['id'],
-					'idTopic' => $_GET['idTopic']));
+					'idTopic' => $idTopic));
 					$resultat = $reqGetTopic -> fetch();
 				$topic = $resultat['topic'];
 				if ($reqGetTopic->rowCount() == 0) {
@@ -157,7 +159,8 @@ require '../sessionAuthentication.php';
 		<script>
 			<?php
 			echo "var idUser = ".$_SESSION['id'].";"; 
-			echo "var idTopic = ". $_GET['idTopic'].";";
+			echo "var idTopic = ". $idTopic.";";
+}			
 			?>
 		</script>
 		

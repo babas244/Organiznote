@@ -11,10 +11,12 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 
 	require '../../isIdTopicSafeAndMatchUser.php';
 	
+	$idTopic = htmlspecialchars($_GET["idTopic"]);
+	
 	$reqGetTopic = $bdd -> prepare('SELECT topic FROM topics WHERE idUser=:idUser AND id=:idTopic');
 		$reqGetTopic -> execute(array(
 		'idUser' => $_SESSION['id'],
-		'idTopic' => $_GET['idTopic']));
+		'idTopic' => $idTopic));
 		
 		$resultat = $reqGetTopic -> fetch();
 		echo '{"topic":"'.$resultat['topic'].'"}';

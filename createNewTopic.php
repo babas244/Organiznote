@@ -22,7 +22,9 @@ if (isset($_SESSION['id']) && isset($_POST['newTopic']) && isset($_POST['colorBa
 	}
 	else {
 		$newTopic = htmlspecialchars($_POST['newTopic']);
-
+		$colorBackGround = htmlspecialchars($_POST['colorBackGround']);
+		$colorFont = htmlspecialchars($_POST['colorFont']);
+		
 		// déterminer si le topic existe déjà
 		$bTopicAlreadyExists = false;	
 		$reqCheckifTopicAlreadyExists = $bdd->prepare('SELECT topic FROM topics WHERE idUser=:idUser');
@@ -44,8 +46,8 @@ if (isset($_SESSION['id']) && isset($_POST['newTopic']) && isset($_POST['colorBa
 			$reqInsertTopic -> execute (array(
 				'topic' => $newTopic,
 				'idUser' => $_SESSION['id'],
-				'colorBackGround' => $_POST['colorBackGround'],
-				'colorFont' => $_POST['colorFont']));
+				'colorBackGround' => $colorBackGround,
+				'colorFont' => $colorFont));
 			//echo "Le nouveau Sujet ".$newTopic." a été crée.";
 			$reqInsertTopic -> closeCursor();
 			

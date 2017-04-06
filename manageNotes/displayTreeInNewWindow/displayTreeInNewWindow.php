@@ -2,6 +2,8 @@
 header("Content-Type: text/html");
 session_start();
 require '../../log_in_bdd.php';
+require '../../isIdTopicSafeAndMatchUser.php';
+$idTopic = htmlspecialchars($_GET["idTopic"]);
  ?>
 
 <!DOCTYPE html>
@@ -12,7 +14,7 @@ require '../../log_in_bdd.php';
 				$reqGetTopic = $bdd -> prepare('SELECT topic FROM topics WHERE idUser=:idUser AND id=:idTopic');
 					$reqGetTopic -> execute(array(
 					'idUser' => $_SESSION['id'],
-					'idTopic' => $_GET['idTopic']));
+					'idTopic' => $idTopic));
 					$resultat = $reqGetTopic -> fetch();
 				echo $resultat['topic'];
 				$reqGetTopic -> closeCursor();	
@@ -33,7 +35,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sOriginPat
 	$reqRetrieveTree = $bdd -> prepare('SELECT idNote, content FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote LIKE :startWithPathParent ORDER BY IdNote');
 		$reqRetrieveTree -> execute(array(
 		'idUser' => $_SESSION['id'],
-		'idTopic' => $_GET["idTopic"],
+		'idTopic' => $idTopic,
 		'startWithPathParent' => $sOriginPathTreeToDisplay.'%')) or die(print_r($reqRetrieveTree->errorInfo()));
 
 	while ($donnees = $reqRetrieveTree->fetch()) {

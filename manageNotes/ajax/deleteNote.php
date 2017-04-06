@@ -7,39 +7,43 @@ header("Content-Type: text/plain");
 
 session_start();
 
-if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryToDelete"]) && (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sCategoryToDelete"]))) {
+if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryToDelete"])) {
 
-	require '../../log_in_bdd.php';
+	if (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sCategoryToDelete"])) {
 
-	require '../../isIdTopicSafeAndMatchUser.php';
-	
-	$sCategoryOfDad = substr($_GET["sCategoryToDelete"],0,-3);
-	
-	// on efface la note
-	$reqDeleteNote = $bdd -> prepare('DELETE FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote=:idNoteToDelete');
-		$reqDeleteNote -> execute(array(
-		'idUser' => $_SESSION['id'],
-		'idTopic' => $_GET["idTopic"], 
-		'idNoteToDelete' => $_GET["sCategoryToDelete"]));
-	$reqDeleteNote->closeCursor();
+		require '../../log_in_bdd.php';
 
-										
-	// on update toutes les notes affectés par le décalage
-	$sPathParent = $sCategoryOfDad;
-	$sRankDeleted = $_GET["sCategoryToDelete"];
-	$nRankDeleted = intval(substr($sRankDeleted,-2));
-	$lengthPathParent = strlen($sPathParent);
-	$reqUpdateSiblings = $bdd -> prepare('	UPDATE notes 
-							SET idNote=CONCAT(:pathParent, "b" , LPAD((SUBSTRING(idNote,:lengthPathParent+2,2)-1),2,"0"),SUBSTRING(idNote,:lengthPathParent + 4)) 
-							WHERE idUser=:idUser AND idTopic=:idTopic AND idNote LIKE :startWithPathParent AND convert(SUBSTRING(idNote,:lengthPathParent+2,2),signed) > :nRankDeleted');
-	$reqUpdateSiblings -> execute(array(
-		'idUser' => $_SESSION['id'],
-		'idTopic' => $_GET["idTopic"],
-		'pathParent' => $sPathParent,
-		'lengthPathParent' => $lengthPathParent,
-		'startWithPathParent' => $sPathParent.'b%',
-		'nRankDeleted' => $nRankDeleted));		
-	$reqUpdateSiblings->closeCursor();  // attention la requete concerne les folders ET les notes 									
+		require '../../isIdTopicSafeAndMatchUser.php';
+		
+		$sCategoryToDelete = htmlspecialchars($_GET["sCategoryToDelete"]);
+		$sCategoryOfDad = substr($sCategoryToDelete,0,-3);
+		
+		// on efface la note
+		$reqDeleteNote = $bdd -> prepare('DELETE FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote=:idNoteToDelete');
+			$reqDeleteNote -> execute(array(
+			'idUser' => $_SESSION['id'],
+			'idTopic' => $idTopic, 
+			'idNoteToDelete' => $sCategoryToDelete));
+		$reqDeleteNote->closeCursor();
+
+											
+		// on update toutes les notes affectés par le décalage
+		$sPathParent = $sCategoryOfDad;
+		$sRankDeleted = $sCategoryToDelete;
+		$nRankDeleted = intval(substr($sRankDeleted,-2));
+		$lengthPathParent = strlen($sPathParent);
+		$reqUpdateSiblings = $bdd -> prepare('	UPDATE notes 
+								SET idNote=CONCAT(:pathParent, "b" , LPAD((SUBSTRING(idNote,:lengthPathParent+2,2)-1),2,"0"),SUBSTRING(idNote,:lengthPathParent + 4)) 
+								WHERE idUser=:idUser AND idTopic=:idTopic AND idNote LIKE :startWithPathParent AND convert(SUBSTRING(idNote,:lengthPathParent+2,2),signed) > :nRankDeleted');
+		$reqUpdateSiblings -> execute(array(
+			'idUser' => $_SESSION['id'],
+			'idTopic' => $idTopic,
+			'pathParent' => $sPathParent,
+			'lengthPathParent' => $lengthPathParent,
+			'startWithPathParent' => $sPathParent.'b%',
+			'nRankDeleted' => $nRankDeleted));		
+		$reqUpdateSiblings->closeCursor();  // attention la requete concerne les folders ET les notes 									
+	}
 }
 
 else {
