@@ -71,6 +71,16 @@ li button:hover, li:hover
 	display: block;
 }
 
+#greyLayerOnFrameOfTree
+{
+	position: absolute;
+	z-index: 1;
+	background-color: rgba(0,0,0,0.4); 
+	height: 100%;
+	width: 100%;
+	display: none; 
+}
+
 #01
 {
 	width: 250px;

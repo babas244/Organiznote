@@ -10,6 +10,7 @@ document.getElementById("displayAndHideTree").addEventListener('click', function
 	document.getElementById("containerOfTree").style.zIndex = TreezIndex;
 }, false);
 
+document.getElementById("greyLayerOnFrameOfTree").style.display = "block";
 fInstantiateRoot();
 
 function fInstantiateRoot() {
@@ -36,9 +37,10 @@ function fInstantiateRoot() {
 				pathFocused = e.target.id;				
 				displayContextMenu("01");
 			}, false);
-		} 	
+		document.getElementById("greyLayerOnFrameOfTree").style.display = "none";
+		}
 		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-			alert('Une erreur est survenue dans fInstantiateRoot !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
+			alert('L\'initialisation de la page n\'a pas eu lieu correctement. Veuillez recharger la page. \n\nCode d\'erreur:' + xhr.status + '\nTexte: ' + xhr.statusText);
 		}
 	}
 }	

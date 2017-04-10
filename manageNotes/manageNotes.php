@@ -73,6 +73,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		
 		<div id="containerOfTree">
 			<div id="frameOfTree">
+				<div id="greyLayerOnFrameOfTree"></div>
 				<div id="01" class="folder">   <!--div "racine", à mettre dans dataTree.js ?--> 
 				</div>
 				<div id="menu">
