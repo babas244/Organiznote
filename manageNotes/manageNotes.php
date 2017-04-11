@@ -30,13 +30,13 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 					'idUser' => $_SESSION['id'],
 					'idTopic' => $idTopic));
 					$resultat = $reqGetTopic -> fetch();
-				$topic = $resultat['topic'];
+				$_SESSION['topic'] = $resultat['topic'];
 				if ($reqGetTopic->rowCount() == 0) {
 					header("Location: ../logout.php");
 				}
 			$reqGetTopic -> closeCursor();
 
-				echo "Bonjour <strong>".$_SESSION['user']."</strong>, vous êtes connecté sur le topic : ".$topic;
+				echo "Bonjour <strong>".$_SESSION['user']."</strong>, vous êtes connecté sur le topic : ".$_SESSION['topic'];
 			?>
 			<a href="../logout.php">(se déconnecter)</a>.
 			<div id="frameOfSwitchToTreeForMobile">
@@ -138,6 +138,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 					<button id="DisplayContentFolder" class="contextMenu isRoot isFolder">Afficher l'arbre contenu dedans</button>
 					<button id="changeCategoryIntoNote" class="contextMenu isFolder">Transformer catégorie en note</button>							
 					<button id="changeNoteIntoCategory" class="contextMenu isNote">Transformer note en catégorie</button>
+					<button id="exportTreeFromHere" class="contextMenu isRoot isFolder">exporter d'ici en JSON</button>
 					<button id="getOutFromHere" class="contextMenu isPastingHere isCancel">Sortir d'ici</button>
 					<button id="cancel" class="contextMenu isRoot isFolder isNote isPastingHere isCancel">Annuler</button>
 				</div>	

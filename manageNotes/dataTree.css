@@ -162,6 +162,7 @@ div#frameContextMenuTree
 #DisplayContentFolder {background-color: #42ce75;}
 #changeCategoryIntoNote {background-color: #dddddd;}
 #changeNoteIntoCategory {background-color: #ffff00;}
+#exportTreeFromHere {background-color: #f6b1f3;}
 #cancel {background-color: red;}
 
 #insertNewNote:hover {background-color: #d7d5d5;} 
@@ -176,6 +177,7 @@ div#frameContextMenuTree
 #DisplayContentFolder:hover {background-color: #2be76f;}
 #changeCategoryIntoNote:hover {background-color: #fcfcfc;}
 #changeNoteIntoCategory:hover {background-color: #e9e94d;}
+#exportTreeFromHere:hover {background-color: #f986f4;}
 #cancel:hover {background-color: #fc5757;}
 
 

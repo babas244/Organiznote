@@ -653,6 +653,17 @@ document.getElementById("importerXML").addEventListener('click', function import
 	};
 }, false);
 
+document.getElementById("exportTreeFromHere").addEventListener('click', function () {
+	hideContextMenu();
+	exportTreeFromHere(pathFocused);
+	alert("Le fichier à télécharger a été créé.");
+	resetColorTreeItem();
+	pathFocused = null;
+}, false);
+	
+function exportTreeFromHere(sParentPathOfTreeToExport) {
+	window.open('exports/downloadDataTreeJSON?idTopic='+idTopic+'&sParentPathOfTreeToExport='+sParentPathOfTreeToExport);	
+}
 
 function XX(integer) {
 	return integer>9 ? ""+integer : "0"+integer;
