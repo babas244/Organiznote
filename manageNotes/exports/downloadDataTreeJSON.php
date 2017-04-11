@@ -39,8 +39,10 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sParentPat
 		
 		$stringJSON = '{';
 		
+		$lengthOfsParentPathOfTreeToExport = strlen($sParentPathOfTreeToExport);
+		
 		while ($donnees = $reqRetrieveTree->fetch()) {
-			$stringJSON .='"'.$donnees['idNote'].'":["'.$donnees['content'].'","'.$donnees['dateCreation'].'"],';
+			$stringJSON .='"'.substr($donnees['idNote'],$lengthOfsParentPathOfTreeToExport).'":["'.$donnees['content'].'","'.$donnees['dateCreation'].'"],';
 		}
 		
 	$reqRetrieveTree->closeCursor();		
