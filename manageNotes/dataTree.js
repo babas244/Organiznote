@@ -638,19 +638,27 @@ function displayTreeInNewWindow(sOriginPathTreeToDisplay) {
 }
 
 
-document.getElementById("importerXML").addEventListener('click', function importerXML() {
-	document.getElementById("fondPageEntrerTexte").style.display = 'block';
-	document.getElementById("chargerfichierXML").style.display= 'block';
-	document.querySelector('#chargerfichierXML').onchange = function() {
-		var reader = new FileReader();
-		reader.onload = function() {
-			alert('Le contenu du fichier "' + document.querySelector('#chargerfichierXML').files[0].name + '" est :\n\n' + reader.result);
-		};
-	reader.readAsText(document.querySelector('#chargerfichierXML').files[0]);
-	// ajouter un bouton de submit ?? du type : <input type="button" name="ajoutFichier" value="Ajouter" alt="Ajouter fichier" onclick="javascript:document.f_message.action.value='ajouterPj';document.f_message.submit();return false;">
-	document.getElementById("fondPageEntrerTexte").style.display = 'none';
-	document.getElementById("chargerfichierXML").style.display= 'none';
+document.getElementById("importTreeHere").addEventListener('click', function() {
+	hideContextMenu();
+	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
+	document.getElementById("frameOfFileLoader").style.display = 'block';
+}, false);
+
+document.getElementById("cancelLoadFile").addEventListener('click', function() {
+	document.getElementById("greyLayerOnFrameOfTree").style.display = 'none';
+	document.getElementById("frameOfFileLoader").style.display = 'none';
+	resetColorTreeItem();
+	pathFocused = null;
+}, false);
+
+document.getElementById("loadDataTreeJSON").addEventListener('change', function() {
+	var reader = new FileReader();
+	reader.onload = function() {
+		alert('Le contenu du fichier "' + document.querySelector('#loadDataTreeJSON').files[0].name + '" est :\n\n' + reader.result);
+	
 	};
+	reader.readAsText(document.querySelector('#loadDataTreeJSON').files[0]);
+	document.getElementById("greyLayerOnContainerOfTree").style.display = 'none';
 }, false);
 
 document.getElementById("exportTreeFromHere").addEventListener('click', function () {

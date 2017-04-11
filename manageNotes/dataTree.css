@@ -279,15 +279,24 @@ textarea#zoneFormulaireEntrerNote
 }
 
 /*-------------------------API files--------------------*/
-#chargerfichierXML
+
+#frameOfFileLoader
 {
 	position: absolute;
-	left: 50%;
+	z-index: 1;
+	left: 20%;
 	top: 50%;
-	z-index: 2;
-	display: none; 
+	background-color: rgba(0,0,0,0.3);
+	color: white;
+	display: none;
 }
 
+#cancelLoadFile
+{
+	background-color: red;
+}
+
+/*-------------------------Layer for phone--------------------*/
 @media screen and (max-width: 480px) {
 	#containerOfTree
 	{

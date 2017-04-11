@@ -138,11 +138,17 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 					<button id="DisplayContentFolder" class="contextMenu isRoot isFolder">Afficher l'arbre contenu dedans</button>
 					<button id="changeCategoryIntoNote" class="contextMenu isFolder">Transformer catégorie en note</button>							
 					<button id="changeNoteIntoCategory" class="contextMenu isNote">Transformer note en catégorie</button>
+					<button id="importTreeHere" class="contextMenu isRoot isFolder">Importer ici une branche en JSON</button>
 					<button id="exportTreeFromHere" class="contextMenu isRoot isFolder">exporter d'ici en JSON</button>
 					<button id="getOutFromHere" class="contextMenu isPastingHere isCancel">Sortir d'ici</button>
 					<button id="cancel" class="contextMenu isRoot isFolder isNote isPastingHere isCancel">Annuler</button>
 				</div>	
 			</div>
+			<div id="frameOfFileLoader">
+				Charger le fichier (ou glisser-déposer) :<Br><Br>
+				<input id="loadDataTreeJSON" type="file" /><Br><Br>
+				<button id="cancelLoadFile">annuler</button>
+			</div>	
 		</div>
 		<br/>
 		
@@ -157,8 +163,6 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 			<button id="annulerEntrerNote">Annuler</button>
 		</div>
 		
-		
-		<input id="chargerfichierXML" type="file" />
 		
 		<script>
 			<?php
