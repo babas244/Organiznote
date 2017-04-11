@@ -117,8 +117,6 @@ div.note:active {background-color: #ff3300 !important;}
 div.note:hover {background-color: #aaffaa !important;}
 /*div#frameOfTree div {white-space: pre;} : pb ceci entraine que les textes sortent des div*/
 
-
-
 /*----------------------------------contextMenu-------------------------------*/
 div#fondMenuCategorie
 {
@@ -132,37 +130,53 @@ div#fondMenuCategorie
 	display: none; 
 }
 
+div#frameContextMenuTree
+{
+	position: relative;
+	top: 10%;
+	left: 30%;
+	width: 100%;
+}
+
 .contextMenu
 {
-	position: absolute;
-	left: 30%;
 	/*z-index: 1; */
-	background-color: #ff11ff; 
 	color: black;
-	height: 5%;
+	text-align: left;
 	width: 40%;
 	border: 2px black solid; 
 	display: none;
+	word-wrap: break-word;
+	white-space: pre-wrap;
 }
 
-.contextMenu:hover
-{
-	background-color: #ff66ff; 	
-}
+#insertNewNote {background-color: #ffffff;} 
+#deleteNote {background-color: #d56161;}
+#deleteFolder {background-color: #d56161;}
+#pasteHereTreeItem {background-color: #52f05f;}
+#insertNewFolder {background-color: #ffff00;}
+#editNote {background-color: #32bdd4;}
+#archiveNote {background-color: #b97eb6;}
+#getOutFromHere {background-color: #6e83f9;}
+#moveTreeItem {background-color: #e0bd5a;}
+#DisplayContentFolder {background-color: #42ce75;}
+#changeCategoryIntoNote {background-color: #dddddd;}
+#changeNoteIntoCategory {background-color: #ffff00;}
+#cancel {background-color: red;}
 
-#insertNewNote {top: 10%;}
-#deleteNote {top: 15%;}
-#deleteFolder {top: 15%;}
-#pasteHereTreeItem{top: 15%;}
-#insertNewFolder{top: 20%;}
-#editNote{top: 25%;}
-#archiveNote{top: 30%;}
-#getOutFromHere{top: 30%;}
-#moveTreeItem{top: 35%;}
-#DisplayContentFolder{top: 40%;}
-#changeCategoryIntoNote{top: 45%;}
-#changeNoteIntoCategory{top: 50%;}
-#cancel{top: 55%;} /* mettre plutôt une taille de l'ordre de 22px comme les fonts ?*/
+#insertNewNote:hover {background-color: #d7d5d5;} 
+#deleteNote:hover {background-color: #f67676;}
+#deleteFolder:hover {background-color: #f67676;}
+#pasteHereTreeItem:hover {background-color: #09fb1d;}
+#insertNewFolder:hover {background-color: #e3e323;}
+#getOutFromHere:hover {background-color: #1639fc;}
+#editNote:hover {background-color: #3adffb;}
+#archiveNote:hover {background-color: #e4a0e1;}
+#moveTreeItem:hover {background-color: #fed76a;}
+#DisplayContentFolder:hover {background-color: #2be76f;}
+#changeCategoryIntoNote:hover {background-color: #fcfcfc;}
+#changeNoteIntoCategory:hover {background-color: #e9e94d;}
+#cancel:hover {background-color: #fc5757;}
 
 
 /*-------------------------Form--------------------*/

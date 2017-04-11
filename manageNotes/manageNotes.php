@@ -126,19 +126,21 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 				</div>
 			</div>
 			<div id="fondMenuCategorie">
-				<div id="insertNewFolder" class="contextMenu isRoot isFolder">Nouvelle catégorie fille</div>		
-				<div id="insertNewNote" class="contextMenu isRoot isFolder">Nouvelle note</div>
-				<div id="editNote" class="contextMenu isFolder isNote">Editer</div>	
-				<div id="deleteFolder" class="contextMenu isFolder">Effacer catégorie</div>
-				<div id="deleteNote" class="contextMenu isNote">Effacer note</div>
-				<div id="archiveNote" class="contextMenu isFolder isNote">Archiver(maintenant/date (choisie))</div>
-				<div id="moveTreeItem" class="contextMenu isFolder isNote">Déplacer</div>
-				<div id="pasteHereTreeItem" class="contextMenu isPastingHere">Coller ici</div>
-				<div id="DisplayContentFolder" class="contextMenu isRoot isFolder">Afficher l'arbre contenu dedans</div>
-				<div id="changeCategoryIntoNote" class="contextMenu isFolder">Transformer catégorie en note</div>							
-				<div id="changeNoteIntoCategory" class="contextMenu isNote">Transformer note en catégorie</div>
-				<div id="getOutFromHere" class="contextMenu isPastingHere isCancel">Sortir d'ici</div>
-				<div id="cancel" class="contextMenu isRoot isFolder isNote isPastingHere isCancel">Annuler</div>
+				<div id="frameContextMenuTree">
+					<button id="insertNewFolder" class="contextMenu isRoot isFolder">Nouvelle catégorie fille</button>		
+					<button id="insertNewNote" class="contextMenu isRoot isFolder">Nouvelle note</button>
+					<button id="editNote" class="contextMenu isFolder isNote">Editer</button>	
+					<button id="deleteFolder" class="contextMenu isFolder">Effacer catégorie</button>
+					<button id="deleteNote" class="contextMenu isNote">Effacer note</button>
+					<button id="archiveNote" class="contextMenu isFolder isNote">Archiver(maintenant/date (choisie))</button>
+					<button id="moveTreeItem" class="contextMenu isFolder isNote">Déplacer</button>
+					<button id="pasteHereTreeItem" class="contextMenu isPastingHere">Coller ici</button>
+					<button id="DisplayContentFolder" class="contextMenu isRoot isFolder">Afficher l'arbre contenu dedans</button>
+					<button id="changeCategoryIntoNote" class="contextMenu isFolder">Transformer catégorie en note</button>							
+					<button id="changeNoteIntoCategory" class="contextMenu isNote">Transformer note en catégorie</button>
+					<button id="getOutFromHere" class="contextMenu isPastingHere isCancel">Sortir d'ici</button>
+					<button id="cancel" class="contextMenu isRoot isFolder isNote isPastingHere isCancel">Annuler</button>
+				</div>	
 			</div>
 		</div>
 		<br/>

@@ -61,6 +61,7 @@ function displayContextMenu(path) {
 
 	openContextMenu = document.getElementById("fondMenuCategorie");
 	openContextMenu.style.display = 'block';
+	document.getElementById("frameContextMenuTree").style.display = 'block';
 	var aElementsToDisplay;
 	
 	if (path === "01") {
@@ -95,7 +96,7 @@ function displayContextMenu(path) {
 function hideContextMenu() {
 	openContextMenu = document.getElementById("fondMenuCategorie");
 	openContextMenu.style.display = 'none';
-	aElementsToHide = openContextMenu.children;
+	aElementsToHide = document.getElementById("frameContextMenuTree").children;
 	for (var i = 0 ; i < aElementsToHide.length ; i++ ) { // plutot mettre chaque groupes d'item d'un menu selon sa classe cmme enfants dans une div?
 		//alert (aElementsToHide[i]);
 		aElementsToHide[i].style.display = 'none';
