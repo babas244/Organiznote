@@ -37,17 +37,23 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sParentPat
 		'startWithPathParent' => $sParentPathOfTreeToExport.'%',
 		'pathParent' => $sParentPathOfTreeToExport)) or die(print_r($reqRetrieveTree->errorInfo()));
 		
-		$stringJSON = '{';
+		$stringJSON = '[';
 		
 		$lengthOfsParentPathOfTreeToExport = strlen($sParentPathOfTreeToExport);
 		
 		while ($donnees = $reqRetrieveTree->fetch()) {
-			$stringJSON .='"'.substr($donnees['idNote'],$lengthOfsParentPathOfTreeToExport).'":["'.$donnees['content'].'","'.$donnees['dateCreation'].'"],';
+			$stringJSON .='{"'.substr($donnees['idNote'],$lengthOfsParentPathOfTreeToExport).'":["'.$donnees['content'].'","'.$donnees['dateCreation'].'"]},';
 		}
 		
+		if ($reqRetrieveTree->rowCount() == 0) {
+			header('Content-Disposition: attachment; filename="exportDataTree_ERREUR EXPORT (voir message erreur dedans).json"');
+			echo '{"error":"le fichier est vide, car le dossier sélectionné pour l\'exportation n\'a pas de descendants."}'; 
+			exit;
+		}
+
 	$reqRetrieveTree->closeCursor();		
 	
-	$stringJSON = substr($stringJSON,0,-1).'}';
+	$stringJSON = substr($stringJSON,0,-1).']';
 	header('Content-Disposition: attachment; filename="exportDataTree_'. $_SESSION['user'] .'_'. $_SESSION['topic'] .'_'. $contentParent .'_('. $sParentPathOfTreeToExport . ').json"');
 	echo $stringJSON;
 }

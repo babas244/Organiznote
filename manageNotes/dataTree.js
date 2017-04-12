@@ -629,10 +629,6 @@ function CategorieAbstraite(id, sContent, niveauDeCategorie, nbOfFolders, nbOfNo
 
 // document.getElementById("NouvelleNote").addEventListener('click', insertNewNote, false); // insert depuis le menu html, att! pas encore implémenté
 
-document.getElementById("displayAllTree").addEventListener('click', function () {
-	displayTreeInNewWindow("01");
-}, false);
-
 function displayTreeInNewWindow(sOriginPathTreeToDisplay) {
 	window.open('displayTreeInNewWindow/displayTreeInNewWindow?idTopic='+idTopic+'&sOriginPathTreeToDisplay='+sOriginPathTreeToDisplay);
 }

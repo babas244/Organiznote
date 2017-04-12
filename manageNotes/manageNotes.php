@@ -79,37 +79,10 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 				<div id="menu">
 					<ul class="Niveau1">
 						<li>
-							<button>Nouveau</button>
-							<ul class="Niveau2">
-									<li><button>à faire</button></li>
-									<li><button>catégorie à faire</button></li>
-									<li><button id="NouvelleNote">Référence</button></li>
-									<li><button>catégorie référence</button></li>
-							</ul>
-						</li>
-						<li>
-							<button>Recherche</button>
-							<ul class="Niveau2">
-								<li><button>référence</button></li>
-								<li><button>catégorie</button></li>
-								<li><button>référence +catégorie</button></li>
-							</ul>	
-						</li>
-						<li>
 							<button>Affichage</button>
 							<ul class="Niveau2">
-								<li><button id="displayAllTree">tout</button></li>
-								<li><button>fait</button></li>
 								<li><button>arborescence</button></li>
 								<li><button>archives</button></li>
-							</ul>	
-						</li>
-						<li>
-							<button>Naviguer</button>
-							<ul class="Niveau2">
-								<li><button>déplacer des blocs</button></li>
-								<li><button id="importerXML">importer xml</button></li>
-								<li><button>exporter en xml</button></li>
 							</ul>	
 						</li>
 						<li>
