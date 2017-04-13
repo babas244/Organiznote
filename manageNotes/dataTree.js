@@ -704,7 +704,3 @@ document.getElementById("exportTreeFromHere").addEventListener('click', function
 function exportTreeFromHere(sParentPathOfTreeToExport) {
 	window.open('exports/downloadDataTreeJSON?idTopic='+idTopic+'&sParentPathOfTreeToExport='+sParentPathOfTreeToExport);	
 }
-
-function XX(integer) {
-	return integer>9 ? ""+integer : "0"+integer;
-}

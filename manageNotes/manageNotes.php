@@ -145,6 +145,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 			?>
 		</script>
 		
+		<script src="commonFunctions (dataTree and toDoList).js"></script>
 		<script src="superFormModale.js"></script>
 		<script src="toDoList.js"></script>
 		<script src="dataTree.js"></script>	
