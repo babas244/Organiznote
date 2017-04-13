@@ -203,18 +203,22 @@ function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
 }
 
 
-function instancierArborescenceRecuperee ( sCategoriesRecuperees , sCategoriePere ) { // rajouter un booleen isVisible
+function instancierArborescenceRecuperee ( sTreeItems , sCategoriePere ) { // instanciateRetrievedTree
 	//alert ("sCategoriePere = " + sCategoriePere);
-	//alert ("sCategoriesRecuperees =" + sCategoriesRecuperees);
-	var aCategorieParsee = sCategoriesRecuperees == "" ? "" : JSON.parse(sCategoriesRecuperees); 
-	var nbdItemsDansCategorieParsee = aCategorieParsee.length; 
+	//alert ("sTreeItems =" + sTreeItems);
+var aTreeItems = sTreeItems == "" ? "" : JSON.parse(sTreeItems); // [{"sPathParent+(a/b)"}:[["content1","dateCreation1"],["content2,"dateCreation2"]]},
 	
-	var nbOfFoldersAddedInPathParent = 0;
-	var nbOfNotesAddedInPathParent = 0;
 	
-	for (i = 0 ; i < nbdItemsDansCategorieParsee-1; i = i + 2) {
-		var sIdCategorie = aCategorieParsee[i];
-		var sContent = aCategorieParsee[i+1].replace(/&lt;br&gt;/gi, "\n");
+	for (var i = 0 ; i < aTreeItems.length; i++) {
+		
+		for (pathParentaORb in aTreeItems[i]) {
+			
+		} 	
+		
+		var nbOfFoldersAddedInPathParent = 0;
+		var nbOfNotesAddedInPathParent = 0;
+		var sIdCategorie = aTreeItems[i][pathParentaORb][;
+		var sContent = aTreeItems[i+1].replace(/&lt;br&gt;/gi, "\n");
 		var nNiveauDeCategorie = ((sIdCategorie.length+1)/3)-1; // ou ToutesCategories[sCategoriePere].niveauDeCategorie + 1 ? 
 		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, nNiveauDeCategorie, 0,0);		
 		var oCategorieAffichageDOM = document.createElement("div"); // plutôt un button en fait ??
