@@ -650,11 +650,47 @@ document.getElementById("cancelLoadFile").addEventListener('click', function() {
 document.getElementById("loadDataTreeJSON").addEventListener('change', function() {
 	var reader = new FileReader();
 	reader.onload = function() {
-		alert('Le contenu du fichier "' + document.querySelector('#loadDataTreeJSON').files[0].name + '" est :\n\n' + reader.result);
-	
-	};
+		var sErrorMessage = 'Le contenu du fichier "' + document.querySelector('#loadDataTreeJSON').files[0].name + '" n\'est pas valide : ';  
+		var isJSONError = false;
+		try {
+			JSON.parse(reader.result);
+		}
+		catch(e) {
+			alert (sErrorMessage+'\n\nError '+e.message);
+			isJSONError = true;
+		}
+		finally {
+			if (!isJSONError) {			
+				var aTreeItems = JSON.parse(reader.result);
+				
+				//if (aTreeItems[0].error == undefined) {
+				//	alert (sErrorMessage + aTreeItems[0].error);		
+				//} 
+				
+				//else { //le fichier peut donc être parsé 
+					nbOfNotesInPathFocused = ToutesCategories[pathFocused].nbOfNotes;
+					nbOfFoldersInPathFocused = ToutesCategories[pathFocused].nbOfFolders;
+					ShouldBePathStart = "a01";
+					for (var i=0; i < aTreeItems.length; i++) {
+						for (path in aTreeItems[i]) {
+							if (/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(aTreeItems[i][path][1])) {// vérification du format de dateCreation
+								if (aTreeItems[i][path].susbtr(0,3) === ShouldBePathStart) {
+									aTreeItems[i][path]
+									//alert(aTreeItems[i][path][0]); 
+								}
+							}
+							else {
+								// export ok écrire mais dates non correctes
+							}
+						}
+					}
+				alert ("parsé !");
+				//}
+			}
+		}
+	}
 	reader.readAsText(document.querySelector('#loadDataTreeJSON').files[0]);
-	document.getElementById("greyLayerOnContainerOfTree").style.display = 'none';
+	//document.getElementById("greyLayerOnFrameOfTree").style.display = 'none';
 }, false);
 
 document.getElementById("exportTreeFromHere").addEventListener('click', function () {
