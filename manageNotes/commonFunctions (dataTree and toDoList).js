@@ -15,3 +15,7 @@ function ajaxCall(sPathPhp, fCallBack, parameter1, parameter2, parameter3) {
 		}
 	}
 }
+
+function checkResponseAjax(sJSONString, nameOfFunctionCalling) {
+	alert(sJSONString + " dans " + nameOfFunctionCalling);
+}

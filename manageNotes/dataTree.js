@@ -1,6 +1,6 @@
 var iRetraitAffichagedUneCategorie= 10;
-ToutesCategories = {};
-var pathFocused = null; 
+ToutesCategories = {}; // Ã  effacer
+var pathFocused = null; // inutile de mettre Ã  null
 var ongoingAction = null;
 var pathToPaste = null;
 var TreezIndex = -1;
@@ -10,41 +10,40 @@ document.getElementById("displayAndHideTree").addEventListener('click', function
 	document.getElementById("containerOfTree").style.zIndex = TreezIndex;
 }, false);
 
-document.getElementById("greyLayerOnFrameOfTree").style.display = "block";
-fInstantiateRoot();
 
-function fInstantiateRoot() {
-	var xhr = new XMLHttpRequest(); 
-	xhr.open ('GET', 'ajax/InstantiateRoot.php?idTopic=' + idTopic);
-	xhr.send(null);
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4 && xhr.status == 200) {
-			//alert (xhr.responseText);
-			var response = JSON.parse(xhr.responseText);
-			document.getElementById("01").innerHTML = response.topic;
-			ToutesCategories["01"] = new CategorieAbstraite("01", null, 0, 0, 0);
-			//alert (response.nNbDeComposants);
-			arborescenceNotes = new ArborescenceReduiteAffichee("01");					
-			queryXhrGetChildren(instancierArborescenceRecuperee, "01");
-			document.getElementById("01").style.border = '2px black solid';
-			
-			document.getElementById("01").addEventListener('click', function(e) {
-				arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id);
-			}, false);					
-			
-			document.getElementById("01").addEventListener('contextmenu', function(e) {
-				e.preventDefault();
-				pathFocused = e.target.id;				
-				displayContextMenu("01");
-			}, false);
-		document.getElementById("greyLayerOnFrameOfTree").style.display = "none";
-		}
-		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-			alert('L\'initialisation de la page n\'a pas eu lieu correctement. Veuillez recharger la page. \n\nCode d\'erreur:' + xhr.status + '\nTexte: ' + xhr.statusText);
-		}
-	}
-}	
+ajaxCall('ajax/InstantiateRoot.php?idTopic=' + idTopic, instantiateRoot)
 
+function instantiateRoot(topic) {
+	//checkResponseAjax(topic,"instantiateRoot");
+	document.getElementById("greyLayerOnFrameOfTree").style.display = "block";
+	oDOMRoot = document.getElementById("01")
+	oDOMRoot.innerHTML = topic;   //textContent?
+	oDOMRoot.nbOfFolders = 0;
+	oDOMRoot.nbOfNotes = 0; // className is Root ? 
+	oTreeNotes = new SimpleTree("01");					
+	oDOMRoot.addEventListener('click', function(e) {
+		ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + e.target.id, prepareInstantiateFolder, moveInTree, e.target.id);
+	}, false);					
+	addContextMenuDataTree(oDOMRoot);
+	pathFocused = "01";
+	ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=01' , prepareInstantiateFolder, displayRoot)
+	
+	//		alert('L\'initialisation de la page n\'a pas eu lieu correctement. Veuillez recharger la page. \n\nCode d\'erreur:' + xhr.status + '\nTexte: ' + xhr.statusText);
+}
+
+function moveInTree(requestedFolder) {
+	oTreeNotes.moveInSimpleTree(requestedFolder);
+}
+
+function prepareInstantiateFolder(sTreeItemsWithoutPathParent, fCallback, path) {
+	//checkResponseAjax(sTreeItemsWithoutPathParent,"prepareInstantiateFolder");
+	instantiateRetrievedTree('[{"' + pathFocused + '":' + sTreeItemsWithoutPathParent + '}]', fCallback(path));
+}
+
+function displayRoot() {
+	oTreeNotes.displaySimpleTree("01");
+	document.getElementById("greyLayerOnFrameOfTree").style.display = "none";	
+}
 
 function displayContextMenu(path) {
 	//alert (typeof(path));
@@ -103,168 +102,145 @@ function hideContextMenu() {
 	}
 }
 	
-function ArborescenceReduiteAffichee(derniereCategorieDepliee) {
-	this.derniereCategorieDepliee = derniereCategorieDepliee;
+function SimpleTree(openedFolder) {
+	this.openedFolder = openedFolder;
 
-	this.afficherArborescenceReduite = function () { // marche ou pas ? 
-		var tableauArborescenceDecoupee = this.derniereCategorieDepliee.split('a');
-		var c = tableauArborescenceDecoupee.length;
-		var categorieAafficher = ""; 
-		for (var i = 0; i < c ; i++) { 
-			categorieAafficher += tableauArborescenceDecoupee[i]; //verifier si en fin de boucle existence ok
-			alert(categorieAafficher);			
-			document.getElementById(categorieAafficher).style.display = 'block';
-			categorieAafficher += 'a';
+	this.displaySimpleTree = function (requestedFolder) { // dÃ©pliÃ© depuis Root seule affichÃ©e
+
+		var intermediatePathToDisplay = "";
+		var i = 0;
+		
+		if (requestedFolder !=="01") {
+			do { // afficher les intermÃ©daires
+				intermediatePathToDisplay = requestedFolder.substr(0,6 + 3*i);
+				alert (intermediatePathToDisplay);
+				document.getElementById(intermediatePathToDisplay).style.display = 'block';
+				i+= 1;
+			} while (intermediatePathToDisplay !== requestedFolder);
 		}
-		if (ToutesCategories[this.derniereCategorieDepliee].nbOfFolders = null) {
-			ToutesCategories[this.derniereCategorieDepliee].chargerContenuCategorie();
-		} else {
-			for (var j = 0 ; j < ToutesCategories[this.derniereCategorieDepliee].nbOfFolders; j++) {
-				document.getElementById(categorieAafficher+(j+1)).style.display = 'block';
-			}
+		
+		for (var j = 0 ; j < document.getElementById(requestedFolder).nbOfFolders; j++) { // afficher les folders dans requestedFolder
+			document.getElementById(requestedFolder+'a'+XX(j+1)).style.display = 'block';
 		}
-	}	
 	
-	this.seDeplacerDanslArborescenceReduite = function (idCategorieaDeplier) {
-		//alert ("dans seDeplacerDanslArborescenceReduite ! \n\n idCategorieaDeplier = "+idCategorieaDeplier+" et this.derniereCategorieDepliee = "+this.derniereCategorieDepliee);
-		if (idCategorieaDeplier !== this.derniereCategorieDepliee) { // on enlève le cas ou rien de nouveau n'est demandé
+		for (var m = 0 ; m < document.getElementById(requestedFolder).nbOfNotes; m++) { // afficher les notes dans requestedFolder
+			document.getElementById(requestedFolder+'b'+XX(m+1)).style.display = 'block';
+		}
+	}
+		
+	this.moveInSimpleTree = function (requestedFolder) {
+		if (requestedFolder !== this.openedFolder) { // on enlÃ¨ve le cas ou rien de nouveau n'est demandÃ©
 
-			if (idCategorieaDeplier.length < this.derniereCategorieDepliee.length) { // si aDeplier est une categorie ancetre de derniereCategorieDepliee
+			document.getElementById(this.openedFolder).style.border = '1px black solid';
+			for (var i = 0 ; i < document.getElementById(this.openedFolder).nbOfNotes; i++) { // d'abord replier les Notes filles de openedFolder
+				document.getElementById(this.openedFolder+'b'+XX(i+1)).style.display = 'none';					
+			}
+			
 
-				document.getElementById(this.derniereCategorieDepliee).style.border = '1px black solid';
-
-				for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbOfNotes; i++) { // d'abord replier les Notes filles de derniereCategorieDepliee
-					//alert(this.derniereCategorieDepliee+'b'+XX(i+1));
-					document.getElementById(this.derniereCategorieDepliee+'b'+XX(i+1)).style.display = 'none';					
-				}
-				
-				for (var k = 0 ; k < ToutesCategories[this.derniereCategorieDepliee].nbOfFolders; k++) { // Replier aussi les folders enfants de derniereCategorieDepliee
-					//console.log(this.derniereCategorieDepliee+'a'+XX(k+1));
-					document.getElementById(this.derniereCategorieDepliee+'a'+XX(k+1)).style.display = 'none';
-				}
-				var categorieAeffacer = this.derniereCategorieDepliee;
+			if (requestedFolder.length < this.openedFolder.length) { // si requestedFolder est une categorie ancetre de openedFolder
 					
-				while (categorieAeffacer !== idCategorieaDeplier) { // puis effacer les intermédaires
-					document.getElementById(categorieAeffacer).style.display = 'none';
-						categorieAeffacer = categorieAeffacer.slice(0,-3);
+				for (var k = 0 ; k < document.getElementById(this.openedFolder).nbOfFolders; k++) { // Replier tous les folders enfants de openedFolder
+					//console.log(this.openedFolder+'a'+XX(k+1));
+					document.getElementById(this.openedFolder+'a'+XX(k+1)).style.display = 'none';
 				}
-				
-				document.getElementById(idCategorieaDeplier).style.border = '2px black solid';
+				var intermediatePathToDisplay = this.openedFolder;
 					
-				var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01') || document.getElementById(idCategorieaDeplier+'b01'); // puis déplier le nouveau derniereCategorieDepliee
-				//console.log("idCategorieaDeplier+'a'+1 = "+idCategorieaDeplier+'a01'+"\n\et alreadyLoadedInDOM = "+alreadyLoadedInDOM);
-				if (alreadyLoadedInDOM === null) { // s'ils ne sont pas dans le DOM, i faut aller les chercher en ajax
-					queryXhrGetChildren(instancierArborescenceRecuperee, idCategorieaDeplier);;
+				while (intermediatePathToDisplay !== requestedFolder) { // effacer les intermÃ©daires
+					document.getElementById(intermediatePathToDisplay).style.display = 'none';
+						intermediatePathToDisplay = intermediatePathToDisplay.slice(0,-3);
 				}
-				else { // sinon on a juste à les afficher
-					for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbOfFolders; j++) { // afficher les folders
-						//console.log("!! idCategorieaDeplier+'a'+(j+1) = "+idCategorieaDeplier+'a'+XX(j+1));
-						document.getElementById(idCategorieaDeplier+'a'+XX(j+1)).style.display = 'block';
-					}
 				
-					for (var m = 0 ; m < ToutesCategories[idCategorieaDeplier].nbOfNotes; m++) { // afficher les notes
-						document.getElementById(idCategorieaDeplier+'b'+XX(m+1)).style.display = 'block';
-					}
-				}			
+						
 			}						
-			else { // on vient donc de cliquer sur une catégorie descendante de derniereCategorieDepliee
-				document.getElementById(this.derniereCategorieDepliee).style.border = '1px black solid';
-
-				for (var m = 0 ; m < ToutesCategories[this.derniereCategorieDepliee].nbOfNotes; m++) { // d'abord replier les Notes filles de derniereCategorieDepliee
-					//alert (this.derniereCategorieDepliee+'b'+XX(m+1));
-					document.getElementById(this.derniereCategorieDepliee+'b'+XX(m+1)).style.display = 'none';					
-				}				
-				for (var i = 0 ; i < ToutesCategories[this.derniereCategorieDepliee].nbOfFolders; i++) { // Replier aussi les folders enfants de derniereCategorieDepliee // Vaut mieux le faire dans l'ordre décroissant puisqu'on déplie, non ?
-					if (this.derniereCategorieDepliee+'a'+XX(i+1) !== idCategorieaDeplier) {
-						document.getElementById(this.derniereCategorieDepliee+'a'+XX(i+1)).style.display = 'none';
+			else { // on vient donc de cliquer sur une catÃ©gorie descendante de openedFolder	
+				for (var i = 0 ; i < document.getElementById(requestedFolder).nbOfFolders; i++) { // Replier les folders enfants de openedFolder, sauf requestedFolder
+					if (requestedFolder+'a'+XX(i+1) !== requestedFolder) {
+						document.getElementById(requestedFolder+'a'+XX(i+1)).style.display = 'none';
 					}				  
 				}
-
-				document.getElementById(idCategorieaDeplier).style.border = '2px black solid';
-
-				var alreadyLoadedInDOM = document.getElementById(idCategorieaDeplier+'a01') || document.getElementById(idCategorieaDeplier+'b01'); // puis déplier les filles de aDeplier
-				if (alreadyLoadedInDOM === null) {
-					queryXhrGetChildren(instancierArborescenceRecuperee, idCategorieaDeplier);;
-				}
-				else {
-					for (var j = 0 ; j < ToutesCategories[idCategorieaDeplier].nbOfFolders; j++) {  // afficher les folders 
-						document.getElementById(idCategorieaDeplier+'a'+XX(j+1)).style.display = 'block';
-					}
-					for (var k = 0 ; k < ToutesCategories[idCategorieaDeplier].nbOfNotes; k++) { // afficher les notes
-						document.getElementById(idCategorieaDeplier+'b'+XX(k+1)).style.display = 'block';
-					}
-					
-				}
 			}
-		arborescenceNotes.derniereCategorieDepliee = idCategorieaDeplier;  
-		//alert("en fin de function, arborescenceNotes.derniereCategorieDepliee = " + arborescenceNotes.derniereCategorieDepliee);
+			
+			document.getElementById(requestedFolder).style.border = '2px black solid';
+			
+			for (var j = 0 ; j < document.getElementById(requestedFolder).nbOfFolders; j++) { // afficher les folders dans requestedFolder
+				document.getElementById(requestedFolder+'a'+XX(j+1)).style.display = 'block';
+			}
+		
+			for (var m = 0 ; m < document.getElementById(requestedFolder).nbOfNotes; m++) { // afficher les notes dans requestedFolder
+				document.getElementById(requestedFolder+'b'+XX(m+1)).style.display = 'block';
+			}
+		this.openedFolder = requestedFolder;  
+		//alert("en fin de function, arborescenceNotes.openedFolder = " + arborescenceNotes.openedFolder);
 		}	
 	}		
 }
 
-
-function instancierArborescenceRecuperee ( sTreeItems , sCategoriePere ) { // instanciateRetrievedTree
-	//alert ("sCategoriePere = " + sCategoriePere);
+function instantiateRetrievedTree ( sTreeItems , fCallback ) {
 	//alert ("sTreeItems =" + sTreeItems);
-var aTreeItems = sTreeItems == "" ? "" : JSON.parse(sTreeItems); // [{"sPathParent+(a/b)"}:[["content1","dateCreation1"],["content2,"dateCreation2"]]},
-	
+	var aTreeItems = sTreeItems == "" ? "" : JSON.parse(sTreeItems); // [{"sPathParent":{"a":[["content1","dateCreation1"],["content2,"dateCreation2"]]},...]
+	var i,j,k;
+	var nbOfFoldersAddedInPathParent;
+	var nbOfNotesAddedInPathParent;
 	
 	for (var i = 0 ; i < aTreeItems.length; i++) {
-		
-		for (pathParentaORb in aTreeItems[i]) {
-			
-		} 	
-		
-		var nbOfFoldersAddedInPathParent = 0;
-		var nbOfNotesAddedInPathParent = 0;
-		var sIdCategorie = aTreeItems[i][pathParentaORb][;
-		var sContent = aTreeItems[i+1].replace(/&lt;br&gt;/gi, "\n");
-		var nNiveauDeCategorie = ((sIdCategorie.length+1)/3)-1; // ou ToutesCategories[sCategoriePere].niveauDeCategorie + 1 ? 
-		ToutesCategories[sIdCategorie] = new CategorieAbstraite(sIdCategorie, sContent, nNiveauDeCategorie, 0,0);		
-		var oCategorieAffichageDOM = document.createElement("div"); // plutôt un button en fait ??
-		oCategorieAffichageDOM.id = sIdCategorie;
-
-		oCategorieAffichageDOM.addEventListener('contextmenu', function(e) {
-			e.preventDefault();
-			pathFocused = e.target.id;
-			displayContextMenu(pathFocused);
-		}, false);
-		
-		oCategorieAffichageDOM.style.marginLeft = iRetraitAffichagedUneCategorie*(nNiveauDeCategorie) + 'px'; // mettre la marge en fonction du niveau de la catégorie
-		oCategorieAffichageDOM.innerHTML = sContent; 
-
-		if (sIdCategorie.substr(-3,1)==="a") {// si path contient un "a" à 3 rangs de la fin c'est un folder et pas une note
-			nbOfFoldersAddedInPathParent += 1;
-			oCategorieAffichageDOM.className = "folder";
-			oCategorieAffichageDOM.addEventListener('click', function(e) {
-				arborescenceNotes.seDeplacerDanslArborescenceReduite(e.target.id)
-			}, false);
-			var noteAlreadyLoadedInDOM = document.getElementById(sCategoriePere+'b01');
-			if (noteAlreadyLoadedInDOM === null) {// si il n'y pas une seule note
-				document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM);
-			} else { // si il y a au déjà moins une note
-				document.getElementById("frameOfTree").insertBefore(oCategorieAffichageDOM , noteAlreadyLoadedInDOM );				
-			}
-		}	
-		else { // sinon c'est une note
-			nbOfNotesAddedInPathParent += 1;
-			oCategorieAffichageDOM.className = "note";			
-			document.getElementById("frameOfTree").appendChild(oCategorieAffichageDOM);
-		}
-		
-		// if (!isVisible) {oCategorieAffichageDOM.style.display = 'none';}
-	}
-	//alert(nbOfNotesAddedInPathParent);
-	//alert("sCategoriePere ="+sCategoriePere);
-	//alert("av.ToutesCategories[sCategoriePere].nbOfNotes =" + ToutesCategories[sCategoriePere].nbOfNotes);
-	//alert("avant ToutesCategories[sCategoriePere].nbOfFolders = "+ ToutesCategories[sCategoriePere].nbOfFolders) ;	
-	ToutesCategories[sCategoriePere].nbOfFolders += nbOfFoldersAddedInPathParent ;	
-	ToutesCategories[sCategoriePere].nbOfNotes += nbOfNotesAddedInPathParent;		
-	//alert("après ToutesCategories[sCategoriePere].nbOfFolders = "+ ToutesCategories[sCategoriePere].nbOfFolders) ;	
 	
-	//alert("AP.ToutesCategories[sCategoriePere].nbOfNotes =" + ToutesCategories[sCategoriePere].nbOfNotes);
-	//alert(typeof(ToutesCategories[sCategoriePere].nbOfNotes) +" et " + typeof(nbOfNotesAddedInPathParent));	
+		for (pathParent in aTreeItems[i]) { // il n'y a qu'1 seul pathParent, mais on ne connait pas sa valeur
+			
+			oDOMParent = document.getElementById(pathParent);
+			nbOfFoldersOfParent = oDOMParent.nbOfFolders;
+			nbOfNotesOfParent = oDOMParent.nbOfNotes;
+			nbOfFoldersAddedToParent = aTreeItems[i][pathParent].a == undefined ? 0 : aTreeItems[i][pathParent].a.length;
+			nbOfNotesAddedToParent = aTreeItems[i][pathParent].b == undefined ? 0 : aTreeItems[i][pathParent].b.length;
+			
+			for (j = 0 ; j < nbOfFoldersAddedToParent ; j++) {
+				var oDOMFolder = document.createElement("div");
+				oDOMFolder.id  = pathParent + "a" + XX(nbOfFoldersOfParent+j+1);
+				//alert (aTreeItems[i][pathParent].a[j][0])
+				oDOMFolder.content = aTreeItems[i][pathParent].a[j][0].replace(/&lt;br&gt;/gi, "\n");
+				oDOMFolder.innerHTML = oDOMFolder.content;
+				oDOMFolder.style.display = 'none';
+				oDOMFolder.className = "folder";
+				addContextMenuDataTree(oDOMFolder);
+				oDOMFolder.addEventListener('click', function(e) {
+					ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + e.target.id, prepareInstantiateFolder, moveInTree, e.target.id);
+				}, false);				
+				var iLevelinTree = ((pathParent.length+4)/3)-1;
+				oDOMFolder.style.marginLeft = iRetraitAffichagedUneCategorie*(iLevelinTree) + 'px'; // mettre la marge en fonction du niveau de la catégorie
+				if (oDOMParent.nbOfNotes === 0) {// si il n'y pas une seule note
+					document.getElementById("frameOfTree").appendChild(oDOMFolder);
+				}
+				else { // si il y a au dÃ©jÃ  au moins une note
+					document.getElementById("frameOfTree").insertBefore(oDOMFolder , document.getElementById(pathParent+"b01")); // +"b00"		
+				}
+			}
+			oDOMParent.nbOfFolders += nbOfFoldersAddedToParent;
+			
+			for (k = 0 ; k < nbOfNotesAddedToParent ; k++) {
+				var oDOMNote = document.createElement("div");
+				oDOMNote.id  = pathParent + "b" + XX(nbOfNotesOfParent+k+1);
+				oDOMNote.content = aTreeItems[i][pathParent].b[0].replace(/&lt;br&gt;/gi, "\n");
+				oDOMNote.innerHTML = oDOMNote.content;
+				oDOMNote.style.display = 'none';
+				oDOM.className = "note";
+				addContextMenuDataTree(oDOMFolder);		
+				var iLevelinTree = ((pathParent.length+1)/3)-1; // parent ? Ou .length+4 ??
+				oDOMNote.style.marginLeft = iRetraitAffichagedUneCategorie*(iLevelinTree) + 'px'; // mettre la marge en fonction du niveau de la catê¨¯rie
+				document.getElementById("frameOfTree").appendChild(oDOMNote);
+			}
+			oDOMParent.nbOfNotes += nbOfNotesAddedToParent;
+		}	
+	fCallback();
+	}
 }
+
+function addContextMenuDataTree(oDOMTreeItem) {
+	oDOMTreeItem.addEventListener('contextmenu', function(e) {
+		e.preventDefault();
+		pathFocused = e.target.id;
+		displayContextMenuDataTree(pathFocused);
+	}, false);
+}
+
 
 document.getElementById("insertNewNote").addEventListener('click', function() {
 	hideContextMenu();
@@ -544,7 +520,7 @@ function queryXhrDeleteFolder(sCategoryToDelete) {
 
 	document.getElementById(sCategoryToDelete).style.backgroundColor = '#cccccc'; // on grise la categorie a effacer
 
-	arborescenceNotes.seDeplacerDanslArborescenceReduite(sCategoryOfDad); // l'arborescente réduite s'affiche avec categorie pere est derniereCategorieDepliee
+	arborescenceNotes.seDeplacerDanslArborescenceReduite(sCategoryOfDad); // l'arborescente réduite s'affiche avec categorie pere est openedFolder
 
 	for (var k = 0 ; k < ToutesCategories[sCategoryOfDad].nbOfFolders ; k++ ) {	// on efface les folders enfants du père
 		document.getElementById(sCategoryOfDad+'a'+XX(k+1)).style.display = 'none';		

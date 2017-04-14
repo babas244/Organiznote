@@ -4,7 +4,7 @@ header("Content-Type: application/json; charset=UTF-8");
 
 session_start();
 
-if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sPathParent"])) { //changer en sPathParent 
+if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sPathParent"])) {
 
 	if (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sPathParent"])) {
 	
@@ -22,6 +22,8 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sPathParen
 		'toFind' => '^'.$sPathParent.'([a-b][0-9]{2}$)',
 		'pathParent' => $sPathParent));
 
+		//echo $reqRetrieveChildren->rowCount();
+		
 		$isFirstRowOfFolderFetched = false;
 		$isFirstRowOfNoteFetched = false;
 		$sTreeItemsFetched = "";
@@ -29,11 +31,11 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sPathParen
 		while ($data = $reqRetrieveChildren->fetch()) {
 			$sTreeItemsTypeFetched = substr($data['idNote'], -3, 1);
 			if ($sTreeItemsTypeFetched === "a" and !$isFirstRowOfFolderFetched) {
-				$sTreeItemsFetched = '{"a"}:[["'.$data['content'].'","'.$data['dateCreation'].'"],';
+				$sTreeItemsFetched = '{"a":[["'.$data['content'].'","'.$data['dateCreation'].'"],';
 				$isFirstRowOfFolderFetched = true;
 			}
 			else if ($sTreeItemsTypeFetched === "b" and !$isFirstRowOfNoteFetched) {
-				$sTreeItemsFetched = (!$isFirstRowOfFolderFetched ? "" : substr($sTreeItemsFetched, 0, -1).'],').'{"b"}:[["'.$data['content'].'","'.$data['dateCreation'].'"],';
+			$sTreeItemsFetched = (!$isFirstRowOfFolderFetched ? "" : substr($sTreeItemsFetched, 0, -1).']},').'{"b":[["'.$data['content'].'","'.$data['dateCreation'].'"],';
 				$isFirstRowOfNoteFetched = true;
 			}
 			else {
@@ -41,7 +43,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sPathParen
 			}
 		}
 
-	echo $sTreeItemsFetched == "" ? "" : '{'.substr($sTreeItemsFetched,0,-1)."]}"; //il faut enlever le dernier ","
+	echo $sTreeItemsFetched == "" ? "" : substr($sTreeItemsFetched,0,-1)."]}"; //il faut enlever le dernier ","
 
 		$reqRetrieveChildren->closeCursor();	
 	}

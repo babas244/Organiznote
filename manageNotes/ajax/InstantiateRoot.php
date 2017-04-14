@@ -1,7 +1,8 @@
 <?php
 //header("Access-Control-Allow-Origin: *"); ??? C'est quoi ???
 
-header("Content-Type: application/json; charset=UTF-8");
+header("Content-Type: text/plain");
+//header("Content-Type: application/json; charset=UTF-8");
 
 session_start();
 
@@ -19,7 +20,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		'idTopic' => $idTopic));
 		
 		$resultat = $reqGetTopic -> fetch();
-		echo '{"topic":"'.$resultat['topic'].'"}';
+		echo $resultat['topic'];
 	$reqGetTopic -> closeCursor();
 }
 
