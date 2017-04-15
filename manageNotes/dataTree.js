@@ -17,18 +17,22 @@ function instantiateRoot(topic) {
 	//checkResponseAjax(topic,"instantiateRoot");
 	document.getElementById("greyLayerOnFrameOfTree").style.display = "block";
 	oDOMRoot = document.getElementById("01")
-	oDOMRoot.innerHTML = topic;   //textContent?
-	oDOMRoot.nbOfFolders = 0;
-	oDOMRoot.nbOfNotes = 0; // className is Root ? 
+	oDOMRoot.innerHTML = topic;   //textContent? 
+	oDOMRoot.style.border = '2px black solid'  // className is Root ?
 	oTreeNotes = new SimpleTree("01");					
 	oDOMRoot.addEventListener('click', function(e) {
-		ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + e.target.id, prepareInstantiateFolder, moveInTree, e.target.id);
+		pathFocused = e.target.id;
+		oDOMFocused = document.getElementById(pathFocused);
+		if (oDOMFocused.nbOfFolders===undefined) { // impossible en fait, car on l'a déjà chargée à l'ouverture de la page
+			ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + pathFocused, prepareInstantiateFolder, moveInTree, pathFocused);			
+		}
+		else {
+			oTreeNotes.moveInSimpleTree(pathFocused);
+		}
 	}, false);					
 	addContextMenuDataTree(oDOMRoot);
 	pathFocused = "01";
-	ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=01' , prepareInstantiateFolder, displayRoot)
-	
-	//		alert('L\'initialisation de la page n\'a pas eu lieu correctement. Veuillez recharger la page. \n\nCode d\'erreur:' + xhr.status + '\nTexte: ' + xhr.statusText);
+	ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=01' , prepareInstantiateFolder, displayRoot);
 }
 
 function moveInTree(requestedFolder) {
@@ -37,15 +41,23 @@ function moveInTree(requestedFolder) {
 
 function prepareInstantiateFolder(sTreeItemsWithoutPathParent, fCallback, path) {
 	//checkResponseAjax(sTreeItemsWithoutPathParent,"prepareInstantiateFolder");
-	instantiateRetrievedTree('[{"' + pathFocused + '":' + sTreeItemsWithoutPathParent + '}]', fCallback(path));
+	if (sTreeItemsWithoutPathParent !=="") {
+		instantiateRetrievedTree('[{"' + pathFocused + '":' + sTreeItemsWithoutPathParent + '}]', fCallback, path);
+	}
+	else {
+		oDOMFocused.nbOfFolders = 0;
+		oDOMFocused.nbOfNotes = 0;
+		fCallback(path);
+	}
 }
 
 function displayRoot() {
 	oTreeNotes.displaySimpleTree("01");
+	pathFocused = null;
 	document.getElementById("greyLayerOnFrameOfTree").style.display = "none";	
 }
 
-function displayContextMenu(path) {
+function displayContextMenuDataTree(path) {
 	//alert (typeof(path));
 /* 	var sColorOfDivTreeItemFocused;
 	if (pathFocused === "01" || pathFocused.substr(-3,1)==="a") {
@@ -113,7 +125,7 @@ function SimpleTree(openedFolder) {
 		if (requestedFolder !=="01") {
 			do { // afficher les intermédaires
 				intermediatePathToDisplay = requestedFolder.substr(0,6 + 3*i);
-				alert (intermediatePathToDisplay);
+				//alert (intermediatePathToDisplay);
 				document.getElementById(intermediatePathToDisplay).style.display = 'block';
 				i+= 1;
 			} while (intermediatePathToDisplay !== requestedFolder);
@@ -132,7 +144,9 @@ function SimpleTree(openedFolder) {
 		if (requestedFolder !== this.openedFolder) { // on enlève le cas ou rien de nouveau n'est demandé
 
 			document.getElementById(this.openedFolder).style.border = '1px black solid';
+
 			for (var i = 0 ; i < document.getElementById(this.openedFolder).nbOfNotes; i++) { // d'abord replier les Notes filles de openedFolder
+				//alert (this.openedFolder+'b'+XX(i+1));
 				document.getElementById(this.openedFolder+'b'+XX(i+1)).style.display = 'none';					
 			}
 			
@@ -152,10 +166,11 @@ function SimpleTree(openedFolder) {
 				
 						
 			}						
-			else { // on vient donc de cliquer sur une catégorie descendante de openedFolder	
-				for (var i = 0 ; i < document.getElementById(requestedFolder).nbOfFolders; i++) { // Replier les folders enfants de openedFolder, sauf requestedFolder
-					if (requestedFolder+'a'+XX(i+1) !== requestedFolder) {
-						document.getElementById(requestedFolder+'a'+XX(i+1)).style.display = 'none';
+			else { // on vient donc de cliquer sur un des folders de openedFolder	
+				for (var i = 0 ; i < document.getElementById(this.openedFolder).nbOfFolders; i++) { // Replier les folders enfants de openedFolder, sauf requestedFolder
+					if (this.openedFolder+'a'+XX(i+1) !== requestedFolder) {
+						//alert (this.openedFolder+'a'+XX(i+1))
+						document.getElementById(this.openedFolder+'a'+XX(i+1)).style.display = 'none';
 					}				  
 				}
 			}
@@ -170,14 +185,15 @@ function SimpleTree(openedFolder) {
 				document.getElementById(requestedFolder+'b'+XX(m+1)).style.display = 'block';
 			}
 		this.openedFolder = requestedFolder;  
-		//alert("en fin de function, arborescenceNotes.openedFolder = " + arborescenceNotes.openedFolder);
+		//alert("en fin de function, this.openedFolder = " + this.openedFolder);
 		}	
+	document.getElementById("greyLayerOnFrameOfTree").style.display = "none";
 	}		
 }
 
-function instantiateRetrievedTree ( sTreeItems , fCallback ) {
-	//alert ("sTreeItems =" + sTreeItems);
-	var aTreeItems = sTreeItems == "" ? "" : JSON.parse(sTreeItems); // [{"sPathParent":{"a":[["content1","dateCreation1"],["content2,"dateCreation2"]]},...]
+function instantiateRetrievedTree ( sTreeItems , fCallback, path ) { // path = paramater1OfCallback ?
+	console.log ("In instantiateRetrievedTree with fCallback = " + fCallback.name + ", and sTreeItems =" + sTreeItems);
+	var aTreeItems = sTreeItems == "" ? "" : JSON.parse(sTreeItems);
 	var i,j,k;
 	var nbOfFoldersAddedInPathParent;
 	var nbOfNotesAddedInPathParent;
@@ -187,14 +203,14 @@ function instantiateRetrievedTree ( sTreeItems , fCallback ) {
 		for (pathParent in aTreeItems[i]) { // il n'y a qu'1 seul pathParent, mais on ne connait pas sa valeur
 			
 			oDOMParent = document.getElementById(pathParent);
-			nbOfFoldersOfParent = oDOMParent.nbOfFolders;
-			nbOfNotesOfParent = oDOMParent.nbOfNotes;
+			oDOMParent.nbOfFolders = oDOMParent.nbOfFolders===undefined ? 0 : oDOMParent.nbOfFolders;
+			oDOMParent.nbOfNotes = oDOMParent.nbOfNotes===undefined ? 0 : oDOMParent.nbOfNotes;
 			nbOfFoldersAddedToParent = aTreeItems[i][pathParent].a == undefined ? 0 : aTreeItems[i][pathParent].a.length;
 			nbOfNotesAddedToParent = aTreeItems[i][pathParent].b == undefined ? 0 : aTreeItems[i][pathParent].b.length;
 			
 			for (j = 0 ; j < nbOfFoldersAddedToParent ; j++) {
 				var oDOMFolder = document.createElement("div");
-				oDOMFolder.id  = pathParent + "a" + XX(nbOfFoldersOfParent+j+1);
+				oDOMFolder.id  = pathParent + "a" + XX(oDOMParent.nbOfFolders+j+1);
 				//alert (aTreeItems[i][pathParent].a[j][0])
 				oDOMFolder.content = aTreeItems[i][pathParent].a[j][0].replace(/&lt;br&gt;/gi, "\n");
 				oDOMFolder.innerHTML = oDOMFolder.content;
@@ -202,7 +218,15 @@ function instantiateRetrievedTree ( sTreeItems , fCallback ) {
 				oDOMFolder.className = "folder";
 				addContextMenuDataTree(oDOMFolder);
 				oDOMFolder.addEventListener('click', function(e) {
-					ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + e.target.id, prepareInstantiateFolder, moveInTree, e.target.id);
+					document.getElementById("greyLayerOnFrameOfTree").style.display = "block";
+					pathFocused = e.target.id;
+					oDOMFocused = document.getElementById(pathFocused);
+					if (oDOMFocused.nbOfFolders===undefined) {
+						ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + pathFocused, prepareInstantiateFolder, moveInTree, pathFocused);			
+					}
+					else {
+						oTreeNotes.moveInSimpleTree(pathFocused);
+					}
 				}, false);				
 				var iLevelinTree = ((pathParent.length+4)/3)-1;
 				oDOMFolder.style.marginLeft = iRetraitAffichagedUneCategorie*(iLevelinTree) + 'px'; // mettre la marge en fonction du niveau de la cat�gorie
@@ -217,19 +241,19 @@ function instantiateRetrievedTree ( sTreeItems , fCallback ) {
 			
 			for (k = 0 ; k < nbOfNotesAddedToParent ; k++) {
 				var oDOMNote = document.createElement("div");
-				oDOMNote.id  = pathParent + "b" + XX(nbOfNotesOfParent+k+1);
-				oDOMNote.content = aTreeItems[i][pathParent].b[0].replace(/&lt;br&gt;/gi, "\n");
+				oDOMNote.id  = pathParent + "b" + XX(oDOMParent.nbOfNotes+k+1);
+				oDOMNote.content = aTreeItems[i][pathParent].b[k][0].replace(/&lt;br&gt;/gi, "\n");
 				oDOMNote.innerHTML = oDOMNote.content;
 				oDOMNote.style.display = 'none';
-				oDOM.className = "note";
-				addContextMenuDataTree(oDOMFolder);		
-				var iLevelinTree = ((pathParent.length+1)/3)-1; // parent ? Ou .length+4 ??
+				oDOMNote.className = "note";
+				addContextMenuDataTree(oDOMNote);		
+				var iLevelinTree = ((pathParent.length+4)/3)-1;
 				oDOMNote.style.marginLeft = iRetraitAffichagedUneCategorie*(iLevelinTree) + 'px'; // mettre la marge en fonction du niveau de la catꨯrie
 				document.getElementById("frameOfTree").appendChild(oDOMNote);
 			}
 			oDOMParent.nbOfNotes += nbOfNotesAddedToParent;
 		}	
-	fCallback();
+	fCallback(path);
 	}
 }
 
