@@ -1,6 +1,8 @@
 <?php
 
-header("Content-Type: application/json; charset=UTF-8");
+//header("Content-Type: application/json; charset=UTF-8");
+header("Content-Type: text/plain");
+
 
 session_start();
 
@@ -35,7 +37,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sPathParen
 				$isFirstRowOfFolderFetched = true;
 			}
 			else if ($sTreeItemsTypeFetched === "b" and !$isFirstRowOfNoteFetched) {
-			$sTreeItemsFetched = (!$isFirstRowOfFolderFetched ? "" : substr($sTreeItemsFetched, 0, -1).']},').'{"b":[["'.$data['content'].'","'.$data['dateCreation'].'"],';
+			$sTreeItemsFetched = (!$isFirstRowOfFolderFetched ? "{" : substr($sTreeItemsFetched, 0, -1).'],').'"b":[["'.$data['content'].'","'.$data['dateCreation'].'"],';
 				$isFirstRowOfNoteFetched = true;
 			}
 			else {
