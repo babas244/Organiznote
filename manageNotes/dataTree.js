@@ -4,6 +4,7 @@ var pathFocused = null; // inutile de mettre à null
 var ongoingAction = null;
 var pathToPaste = null;
 var TreezIndex = -1;
+var emailAddressSiteAdmin = "postmaster@";
 
 document.getElementById("displayAndHideTree").addEventListener('click', function () {
 	TreezIndex = TreezIndex === -1 ? 1 : -1; 
@@ -11,7 +12,7 @@ document.getElementById("displayAndHideTree").addEventListener('click', function
 }, false);
 
 
-ajaxCall('ajax/InstantiateRoot.php?idTopic=' + idTopic, instantiateRoot)
+ajaxCall('ajax/InstantiateRoot.php?idTopic=' + idTopic, instantiateRootFailed, instantiateRoot)
 
 function instantiateRoot(topic) {
 	//checkResponseAjax(topic,"instantiateRoot");
@@ -24,7 +25,7 @@ function instantiateRoot(topic) {
 		pathFocused = e.target.id;
 		oDOMFocused = document.getElementById(pathFocused);
 		if (oDOMFocused.nbOfFolders===undefined) { // impossible en fait, car on l'a déjà chargée à l'ouverture de la page
-			ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + pathFocused, prepareInstantiateFolder, moveInTree, pathFocused);			
+			ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + pathFocused, prepareInstantiateFolderFailed, prepareInstantiateFolder, moveInTree, pathFocused);			
 		}
 		else {
 			oTreeNotes.moveInSimpleTree(pathFocused);
@@ -32,7 +33,16 @@ function instantiateRoot(topic) {
 	}, false);					
 	addContextMenuDataTree(oDOMRoot);
 	pathFocused = "01";
-	ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=01' , prepareInstantiateFolder, displayRoot);
+	ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=01' , instantiateRootFailed, prepareInstantiateFolder, displayRoot);
+}
+
+function instantiateRootFailed(errorMessage) {
+	alert ("Le chargement de l'aborescence n'a pas fonctionné, veuillez recharger la page (touche F5)." + errorMessage);
+}
+
+function prepareInstantiateFolderFailed(errorMessage) {
+	alert("La catégorie ne peut pas être chargée depuis le serveur, vérifiez votre connexion Internet et recommencez." + errorMessage);
+	resetDataTreeReadyForEvent();
 }
 
 function moveInTree(requestedFolder) {
@@ -222,7 +232,7 @@ function instantiateRetrievedTree ( sTreeItems , fCallback, path ) { // path = p
 					pathFocused = e.target.id;
 					oDOMFocused = document.getElementById(pathFocused);
 					if (oDOMFocused.nbOfFolders===undefined) {
-						ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + pathFocused, prepareInstantiateFolder, moveInTree, pathFocused);			
+						ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + pathFocused, prepareInstantiateFolderFailed, prepareInstantiateFolder, moveInTree, pathFocused);			
 					}
 					else {
 						oTreeNotes.moveInSimpleTree(pathFocused);
@@ -635,6 +645,12 @@ function CategorieAbstraite(id, sContent, niveauDeCategorie, nbOfFolders, nbOfNo
 
 function displayTreeInNewWindow(sOriginPathTreeToDisplay) {
 	window.open('displayTreeInNewWindow/displayTreeInNewWindow?idTopic='+idTopic+'&sOriginPathTreeToDisplay='+sOriginPathTreeToDisplay);
+}
+
+function resetDataTreeReadyForEvent() {
+	resetColorTreeItem();
+	pathFocused = null;
+	document.getElementById("greyLayerOnFrameOfTree").style.display = "none";	
 }
 
 
