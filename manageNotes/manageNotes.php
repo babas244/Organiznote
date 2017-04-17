@@ -46,6 +46,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		</div>
 		
 		<div id="containerOfToDo">
+		<div id="transparentLayerOnContainerOfToDo"><p id="ajaxLoadingImageContainerOfToDo"><img src="ajaxLoading_box.gif" alt="Loading..." /></p></div>
 			<div id="frameOfToDo">
 				<div id="noScroll">
 					<div id="greyLayerOnNoScroll">

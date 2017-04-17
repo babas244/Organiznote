@@ -12,10 +12,10 @@ function ajaxCall(sPathPhp, fCallbackFailed, fCallback, parameter1, parameter2, 
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) {
 			var errorMessage = "\n\n(Si le problème persiste, contacter l'administrateur du site à " 
-								+ emailAddressSiteAdmin + " avec les infomations suivantes :\n function : "
+								+ emailAddressSiteAdmin + " avec les infomations suivantes :\nCalling function : "
 								+ fCallback.name + ", status :" 
 								+ xhr.status + ", statusText: " 
-								+ (xhr.statusText==undefined ? "-" : xhr.statusText) + ")";
+								+ (xhr.statusText==undefined||"" ? "-" : xhr.statusText) + ")";
 			fCallbackFailed(errorMessage);
 		}
 	}

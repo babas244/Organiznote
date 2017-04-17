@@ -16,7 +16,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sLabels"])
 		$sLabels = htmlspecialchars($_GET["sLabels"]); 
 		$aLabels = str_split($sLabels);
 		$position = htmlspecialchars($_GET["position"]);
-		echo $sLabels."   ".$position;
+		//echo $sLabels."   ".$position;
 	
 		// effacer la toDo
 		$reqDeleteToDo = $bdd -> prepare('DELETE FROM todolists 
@@ -29,7 +29,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sLabels"])
 			'label2' => $aLabels[2],
 			'label3' => $aLabels[3],
 			'NoteRank'=> $position)) or die(print_r($reqDeleteToDo->errorInfo()));
-		echo ('<br>'.$reqDeleteToDo->rowCount().' rangs affectés');
+		//echo ('<br>'.$reqDeleteToDo->rowCount().' rangs affectés');
 		$reqDeleteToDo -> closeCursor();	
 
 		// mettre à jour les positions
@@ -49,6 +49,6 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sLabels"])
 }
 
 else {
-	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	
+	echo 'error inattendue dans deleteToDo.php : Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	
 }
 ?>

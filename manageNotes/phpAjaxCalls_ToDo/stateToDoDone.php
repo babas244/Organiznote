@@ -29,7 +29,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["dateArchiv
 			'label2' => $aLabels[2],
 			'label3' => $aLabels[3],
 			'NoteRank'=> $position)) or die(print_r($reqArchiveToDo->errorInfo()));
-		echo ('<br>'.$reqArchiveToDo->rowCount().' rangs affectés');
+		//echo ('<br>'.$reqArchiveToDo->rowCount().' rangs affectés');
 		$reqArchiveToDo -> closeCursor();	
 
 		// mettre à jour les positions

@@ -8,6 +8,23 @@
 	background-color: #ffffff;
 }
 
+#transparentLayerOnContainerOfToDo
+{
+	position: absolute;
+	z-index: 1;
+	background-color: rgba(0,0,0,0.4); 
+	height: 100%;
+	width: 100%;
+	display: none; 
+}
+
+#ajaxLoadingImageContainerOfToDo
+{
+	position: relative;
+	left: 35%;
+	top: 35%;
+}
+
 #frameOfToDo
 {
 	position: relative;

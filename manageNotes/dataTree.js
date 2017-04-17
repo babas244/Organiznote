@@ -37,7 +37,7 @@ function instantiateRoot(topic) {
 }
 
 function instantiateRootFailed(errorMessage) {
-	alert ("Le chargement de l'aborescence n'a pas fonctionné, veuillez recharger la page (touche F5)." + errorMessage);
+	alert ("Le chargement de l'aborescence n'a pas fonctionné. Veuillez recharger la page (touche F5)." + errorMessage);
 }
 
 function prepareInstantiateFolderFailed(errorMessage) {
