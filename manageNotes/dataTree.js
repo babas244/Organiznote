@@ -276,29 +276,27 @@ function addContextMenuDataTree(oDOMTreeItem) {
 	}, false);
 }
 
+document.getElementById("insertNewNote").addEventListener('click', insertNewNoteInitialize, false);
+document.getElementById("insertNewFolder").addEventListener('click', insertNewFolderInitialize, false);
 
-document.getElementById("insertNewNote").addEventListener('click', function() {
+function insertNewNoteInitialize() {
 	hideContextMenu();
 	if ((oDOMFocused.nbOfNotes) <= 98) {
-		ongoingAction = 'insertNewNote';
-		initializeFormEnterNote();		
+		var sForm = '[{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700"}, "label" : "Entrez le nom de la nouvelle catégorie :"}]';
+		superFormModale(sForm, "Nouvelle catégorie", insertNewNoteInDbb, "array", fCheckFormInsertNewItem);	
 	}
 	else {
 		alert("Pas possible d'insérer une nouvelle note dans cette catégorie.\n\nVous avez atteint la limite prévue des 99 notes !\n\nIl serait utile de mieux réorganiser les catégories.")
 		resetColorTreeItem();
 		pathFocused = null;
-	}
-	
-}, false);
-
-
-document.getElementById("insertNewFolder").addEventListener('click', insertNewFolderInitialize, false);
+	}	
+}
 
 function insertNewFolderInitialize() {
 	hideContextMenu();
 	if ((oDOMFocused.nbOfFolders) <= 98) {
 		var sForm = '[{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700"}, "label" : "Entrez le nom de la nouvelle catégorie :"}]';
-		superFormModale(sForm, "Nouvelle catégorie", insertNewFolderInDbb, "array", fCheckFormInsertNewFolder);	
+		superFormModale(sForm, "Nouvelle catégorie", insertNewFolderInDbb, "array", fCheckFormInsertNewItem);	
 	}
 	else {
 		alert("Pas possible d'insérer une nouvelle catégorie.\n\nVous avez atteint la limite prévue des 99 sous-catégories !\n\nIl serait utile de mieux réorganiser les catégories.")
@@ -307,7 +305,7 @@ function insertNewFolderInitialize() {
 	}
 }
 
-function fCheckFormInsertNewFolder(){
+function fCheckFormInsertNewItem(){
 	if (oForm[0].value ==="") {
 		alert('La note est vide, il faut la remplir.')
 		return 'content';
@@ -317,11 +315,19 @@ function fCheckFormInsertNewFolder(){
 	}
 }
 
+function insertNewNoteInDbb(ResponseForm) {
+	var sNewNote = ResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
+	var sPathTreeItemToInsert = pathFocused + "b" + XX(parseInt(oDOMFocused.nbOfNotes)+1);
+	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
+	ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + sNewNote
+			+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, insertNewTreeItemFailed, insertNewTreeItem, sNewNote, "b");
+} 
+
 function insertNewFolderInDbb(ResponseForm) {
 	var sNewNote = ResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
 	var sPathTreeItemToInsert = pathFocused + "a" + XX(parseInt(oDOMFocused.nbOfFolders)+1);
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-	ajaxCall('ajax/insertNewNote.php?idTopic=' + idTopic + '&newNote=' + sNewNote
+	ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + sNewNote
 			+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, insertNewTreeItemFailed, insertNewTreeItem, sNewNote, "a");
 } 
 
