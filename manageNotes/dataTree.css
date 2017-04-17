@@ -98,6 +98,13 @@ li button:hover, li:hover
 	display: none; 
 }
 
+#ajaxLoadingImageFrameOfTree
+{
+	position: relative;
+	left: 45%;
+	top: 35%;
+}
+
 #01
 {
 	width: 250px;

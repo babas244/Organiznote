@@ -33,6 +33,7 @@ function instantiateRoot(topic) {
 	}, false);					
 	addContextMenuDataTree(oDOMRoot);
 	pathFocused = "01";
+	oDOMFocused = document.getElementById("01");
 	ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=01' , instantiateRootFailed, prepareInstantiateFolder, displayRoot);
 }
 

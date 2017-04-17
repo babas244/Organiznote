@@ -22,5 +22,5 @@ function ajaxCall(sPathPhp, fCallbackFailed, fCallback, parameter1, parameter2, 
 }
 
 function checkResponseAjax(sJSONString, nameOfFunctionCalling) {
-	alert(sJSONString + " dans " + nameOfFunctionCalling);
+	alert("La string JSON est : " + sJSONString + ", appelée par : " + nameOfFunctionCalling);
 }

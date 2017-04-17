@@ -39,7 +39,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 					$reqGetTopic -> closeCursor();
 					$userNameDisplayed = strlen($_SESSION['user']) < 16 ? $_SESSION['user'] : substr($_SESSION['user'], 0,15)."...";
 					$topicDisplayed = strlen($_SESSION['topic']) < 16 ? $_SESSION['topic'] : substr($_SESSION['topic'], 0,15)."...";					
-					echo "Bonjour <strong>".$userNameDisplayed."</strong>, vous êtes connecté sur le topic <strong>".$topicDisplayed."</strong>";
+					echo "Bonjour <strong>".$userNameDisplayed."</strong>, vous êtes connecté sur le topic <strong>".$topicDisplayed."</strong>. ";
 				?>
 			</div>
 			<div id="frameOfSwitchToTreeForMobile">
@@ -77,7 +77,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		
 		<div id="containerOfTree">
 			<div id="frameOfTree">
-				<div id="greyLayerOnFrameOfTree"></div>
+				<div id="greyLayerOnFrameOfTree"><p id="ajaxLoadingImageFrameOfTree"><img src="ajaxLoadingDataTree_spiral.gif" alt="Loading..." /></p></div>
 				<div id="01" class="folder">   <!--div "racine", à mettre dans dataTree.js ?--> 
 				</div>
 				<div id="menu">
