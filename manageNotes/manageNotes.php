@@ -24,21 +24,24 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
     <body>
 		<!-- -->
 		<div id="header">
-			<?php
-				$reqGetTopic = $bdd -> prepare('SELECT topic FROM topics WHERE idUser=:idUser AND id=:idTopic');
-					$reqGetTopic -> execute(array(
-					'idUser' => $_SESSION['id'],
-					'idTopic' => $idTopic));
-					$resultat = $reqGetTopic -> fetch();
-				$_SESSION['topic'] = $resultat['topic'];
-				if ($reqGetTopic->rowCount() == 0) {
-					header("Location: ../logout.php");
-				}
-			$reqGetTopic -> closeCursor();
-
-				echo "Bonjour <strong>".$_SESSION['user']."</strong>, vous êtes connecté sur le topic : ".$_SESSION['topic'];
-			?>
-			<a href="../logout.php">(se déconnecter)</a>.
+			<div id="referencesUser">
+				<a href="../logout.php" id="disconnectUser">Déconnexion</a>
+				<?php
+					$reqGetTopic = $bdd -> prepare('SELECT topic FROM topics WHERE idUser=:idUser AND id=:idTopic');
+						$reqGetTopic -> execute(array(
+						'idUser' => $_SESSION['id'],
+						'idTopic' => $idTopic));
+						$resultat = $reqGetTopic -> fetch();
+						$_SESSION['topic'] = $resultat['topic'];
+						if ($reqGetTopic->rowCount() == 0) {
+							header("Location: ../logout.php");
+						}
+					$reqGetTopic -> closeCursor();
+					$userNameDisplayed = strlen($_SESSION['user']) < 16 ? $_SESSION['user'] : substr($_SESSION['user'], 0,15)."...";
+					$topicDisplayed = strlen($_SESSION['topic']) < 16 ? $_SESSION['topic'] : substr($_SESSION['topic'], 0,15)."...";					
+					echo "Bonjour <strong>".$userNameDisplayed."</strong>, vous êtes connecté sur le topic <strong>".$topicDisplayed."</strong>";
+				?>
+			</div>
 			<div id="frameOfSwitchToTreeForMobile">
 				<button id="displayAndHideTree">V
 				</button>

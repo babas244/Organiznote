@@ -12,7 +12,7 @@
 {
 	position: absolute;
 	z-index: 1;
-	background-color: rgba(0,0,0,0.4); 
+	background-color: rgba(0,0,0,0.1); 
 	height: 100%;
 	width: 100%;
 	display: none; 
@@ -32,7 +32,7 @@
 	overflow: scroll;
 	/* pour le tel il faudra probablement mettre a position : fixed;*/
 	max-height: 80%;
-	font-size: 1.5em;
+	font-size: 1.2em;
 }
 
 #addToDoButton
