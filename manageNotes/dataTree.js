@@ -203,7 +203,7 @@ function SimpleTree(openedFolder) {
 }
 
 function instantiateRetrievedTree ( sTreeItems , fCallback, path ) { // path = paramater1OfCallback ?
-	console.log ("In instantiateRetrievedTree with fCallback = " + fCallback.name + ", and sTreeItems =" + sTreeItems);
+	console.log ("In instantiateRetrievedTree with fCallback = " + (fCallback !== undefined ? fCallback.name : "-") + ", and sTreeItems =" + sTreeItems);
 	var aTreeItems = sTreeItems == "" ? "" : JSON.parse(sTreeItems);
 	var i,j,k;
 	var nbOfFoldersAddedInPathParent;
@@ -222,17 +222,17 @@ function instantiateRetrievedTree ( sTreeItems , fCallback, path ) { // path = p
 			for (j = 0 ; j < nbOfFoldersAddedToParent ; j++) {
 				var oDOMFolder = document.createElement("div");
 				oDOMFolder.id  = pathParent + "a" + XX(oDOMParent.nbOfFolders+j+1);
-				//alert (aTreeItems[i][pathParent].a[j][0])
+				//alert ("i = " + i + "pathParent =" +pathParent +  "aTreeItems[i][pathParent].a[j][0] =" + aTreeItems[i][pathParent].a[j][0])
 				oDOMFolder.content = aTreeItems[i][pathParent].a[j][0].replace(/&lt;br&gt;/gi, "\n");
 				oDOMFolder.innerHTML = oDOMFolder.content;
 				oDOMFolder.style.display = 'none';
 				oDOMFolder.className = "folder";
 				addContextMenuDataTree(oDOMFolder);
 				oDOMFolder.addEventListener('click', function(e) {
-					document.getElementById("greyLayerOnFrameOfTree").style.display = "block";
 					pathFocused = e.target.id;
 					oDOMFocused = document.getElementById(pathFocused);
 					if (oDOMFocused.nbOfFolders===undefined) {
+						document.getElementById("greyLayerOnFrameOfTree").style.display = "block"; 
 						ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + pathFocused, prepareInstantiateFolderFailed, prepareInstantiateFolder, moveInTree, pathFocused);			
 					}
 					else {
@@ -264,7 +264,7 @@ function instantiateRetrievedTree ( sTreeItems , fCallback, path ) { // path = p
 			}
 			oDOMParent.nbOfNotes += nbOfNotesAddedToParent;
 		}	
-	fCallback(path);
+	if (fCallback !==undefined) {fCallback(path);}
 	}
 }
 
@@ -279,7 +279,7 @@ function addContextMenuDataTree(oDOMTreeItem) {
 
 document.getElementById("insertNewNote").addEventListener('click', function() {
 	hideContextMenu();
-	if ((ToutesCategories[pathFocused].nbOfNotes) <= 98) {
+	if ((oDOMFocused.nbOfNotes) <= 98) {
 		ongoingAction = 'insertNewNote';
 		initializeFormEnterNote();		
 	}
@@ -292,18 +292,70 @@ document.getElementById("insertNewNote").addEventListener('click', function() {
 }, false);
 
 
-document.getElementById("insertNewFolder").addEventListener('click', function() {
+document.getElementById("insertNewFolder").addEventListener('click', insertNewFolderInitialize, false);
+
+function insertNewFolderInitialize() {
 	hideContextMenu();
-	if ((ToutesCategories[pathFocused].nbOfFolders) <= 98) {
-		ongoingAction = 'insertNewFolder';
-		initializeFormEnterNote();		
+	if ((oDOMFocused.nbOfFolders) <= 98) {
+		var sForm = '[{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700"}, "label" : "Entrez le nom de la nouvelle catégorie :"}]';
+		superFormModale(sForm, "Nouvelle catégorie", insertNewFolderInDbb, "array", fCheckFormInsertNewFolder);	
 	}
 	else {
 		alert("Pas possible d'insérer une nouvelle catégorie.\n\nVous avez atteint la limite prévue des 99 sous-catégories !\n\nIl serait utile de mieux réorganiser les catégories.")
 		resetColorTreeItem();
 		pathFocused = null;
 	}
-}, false);
+}
+
+function fCheckFormInsertNewFolder(){
+	if (oForm[0].value ==="") {
+		alert('La note est vide, il faut la remplir.')
+		return 'content';
+	}
+	else {
+		return "ok";
+	}
+}
+
+function insertNewFolderInDbb(ResponseForm) {
+	var sNewNote = ResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
+	var sPathTreeItemToInsert = pathFocused + "a" + XX(parseInt(oDOMFocused.nbOfFolders)+1);
+	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
+	ajaxCall('ajax/insertNewNote.php?idTopic=' + idTopic + '&newNote=' + sNewNote
+			+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, insertNewTreeItemFailed, insertNewTreeItem, sNewNote, "a");
+} 
+
+function insertNewTreeItemFailed(errorMessage) {
+	alert ("Impossible d'insérer la catégorie sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
+	hideContextMenu();
+	resetDataTreeReadyForEvent();
+}
+
+function insertNewTreeItem(errorMessageFromServer, sNewNote, aORb) {
+	if (errorMessageFromServer==="") {
+		if (pathFocused === oTreeNotes.openedFolder) {
+			sNewNote = sNewNote.replace(/"/g, '\\"');
+			var sTreeItems = '[{"' + pathFocused + '":{"'+ aORb +'":[["' + sNewNote + '"]]}}]'
+			instantiateRetrievedTree(sTreeItems);
+			var sNbOfItems = aORb ==="a" ? "nbOfFolders" : "nbOfNotes"; 
+			//alert (pathFocused + aORb + XX(oDOMFocused.nbOfFolders));
+			document.getElementById(pathFocused + aORb + XX(oDOMFocused[sNbOfItems])).style.display = 'block';				
+		}
+		resetDataTreeReadyForEvent();
+	}
+	else {
+		alert ("Erreur inattendue lors de l'insertion dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
+	}
+}
+
+
+
+
+
+
+
+
+
 
 document.getElementById("deleteFolder").addEventListener('click', function() {
 	hideContextMenu();
@@ -461,26 +513,6 @@ function resetColorTreeItem() {
 	document.getElementById(pathFocused).style.backgroundColor = sOriginalColorOfDivTreeItem;
 }
 
-function queryXhrInsertNewNote(sNewNote, sPathTreeItemToInsert) {
-	//alert (typeof(sNewNote));
-	sNewNote = sNewNote.replace(/\r\n|\r|\n/g,'<br>');
-	var xhr = new XMLHttpRequest(); 
-	xhr.open ('GET', 'ajax/insertNewNote.php?idTopic=' + idTopic + '&newNote=' + sNewNote + '&sPathTreeItemToInsert=' + sPathTreeItemToInsert);
-	xhr.send(null);
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4 && xhr.status == 200) {
-			sNewNote = sNewNote.replace(/"/g, '\\"'); // à fusionner avec l'autre replace 5 lignes plus haut ?
-			var sInstanciationCategorieInseree = '["'+sPathTreeItemToInsert+'","'+sNewNote+'"]';
-			var pathParent = sPathTreeItemToInsert.slice(0,-3);
-			instancierArborescenceRecuperee ( sInstanciationCategorieInseree , pathParent )
-			arborescenceNotes.seDeplacerDanslArborescenceReduite(pathParent);
-			document.getElementById("fondPageEntrerTexte").style.display = 'none';
-		} 
-		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-				alert('Une erreur est survenue dans queryXhrInsertNewNote !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
-		}
-	}
-}
 
 function queryXhrEditTreeItem(sNewNote, sIdCategoryToEdit) {
 	sNewNoteToSendToDbb = sNewNote.replace(/\r\n|\r|\n/g,'<br>');
