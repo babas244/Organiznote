@@ -1,21 +1,19 @@
 <?php
 
-header("Content-Type: text/plain");
+header("Content-Type: text/plain; charset=UTF-8");
 
 session_start();
 
-//echo '$_SESSION["id"] = '.$_SESSION['id'];
-
-if (isset($_SESSION['id'])&& isset($_GET["idTopic"]) && isset($_GET["sIdCategoryToEdit"]) && isset($_GET["sNewNote"])) {
+if (isset($_SESSION['id'])&& isset($_GET["idTopic"]) && isset($_GET["sPathToEdit"]) && isset($_GET["sNewNote"])) {
 	
-	if (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sIdCategoryToEdit"])) {
+	if (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sPathToEdit"])) {
 
 		require '../../log_in_bdd.php';
 
 		require '../../isIdTopicSafeAndMatchUser.php';
 		
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
-		$sIdCategoryToEdit =  htmlspecialchars($_GET["sIdCategoryToEdit"]);
+		$sPathToEdit =  htmlspecialchars($_GET["sPathToEdit"]);
 		$sNewNote = htmlspecialchars($_GET["sNewNote"]);
 		
 		$reqUpdateContent = $bdd -> prepare('UPDATE notes SET content=:content WHERE idUser=:idUser AND idTopic=:idTopic AND idNote=:idNote'); // changer la date aussi ??
@@ -23,7 +21,11 @@ if (isset($_SESSION['id'])&& isset($_GET["idTopic"]) && isset($_GET["sIdCategory
 			'content' => $sNewNote,
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $idTopic, 
-			'idNote' => $sIdCategoryToEdit));
+			'idNote' => $sPathToEdit));
+			$nbOfRowsAffected = $reqUpdateContent->rowCount(); 
+			if ($nbOfRowsAffected!==1) {
+				echo "error : ". $nbOfRowsAffected. " rows affected, while there should be only 1.";
+			}
 		$reqUpdateContent -> closeCursor();	
 	}
 }

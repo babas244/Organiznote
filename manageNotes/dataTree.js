@@ -277,6 +277,7 @@ function addContextMenuDataTree(oDOMTreeItem) {
 document.getElementById("insertNewNote").addEventListener('click', insertNewNoteInitialize, false);
 document.getElementById("insertNewFolder").addEventListener('click', insertNewFolderInitialize, false);
 document.getElementById("editTreeItem").addEventListener('click', editTreeItemLaunch, false);
+document.getElementById("deleteFolder").addEventListener('click', deleteFolderLaunch, false);
 
 function insertNewNoteInitialize() {
 	hideContextMenu();
@@ -362,10 +363,8 @@ function editTreeItemLaunch() {
 
 function editTreeItemInDbb(aResponseForm) {
 	var sNewNote = aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
-	alert (sNewNote)
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-	ajaxCall('ajax/editNote.php?idTopic=' + idTopic + '&sIdCategoryToEdit=' + pathFocused + '&sNewNote=' + sNewNote, editTreeItemFailed, editTreeItemUpdateClient, sNewNote);
-	
+	ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic + '&sPathToEdit=' + pathFocused + '&sNewNote=' + sNewNote, editTreeItemFailed, editTreeItemUpdateClient, sNewNote);
 }
 
 function editTreeItemFailed(errorMessage) {
@@ -386,16 +385,75 @@ function editTreeItemUpdateClient(errorMessageFromServer, sNewContent) {
 	}
 }
 
-document.getElementById("deleteFolder").addEventListener('click', function() {
+function deleteFolderLaunch() {
 	hideContextMenu();
 	if (confirm("Êtes-vous sûr de bien vouloir effacer cette catégorie ?") == true) {
-		queryXhrDeleteFolder(pathFocused);		
+		deleteFolderInDbb();		
 	}
 	else {
 		resetColorTreeItem();
 		pathFocused = null;
 	}
-}, false);
+}
+
+function deleteFolderInDbb() {
+	var pathParent = pathFocused.slice(0,-3);
+	oTreeNotes.moveInSimpleTree(pathParent); // si le folder à effacer est un ancêtre de openedFolder ou openedFolder lui même, on fait un moveInSimpleTree où openedFolder est le père de pathFocused 
+	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
+	ajaxCall('ajax/deleteFolder.php?idTopic=' + idTopic + '&sCategoryToDelete=' + pathFocused, deleteFolderInDbbFailed, deleteFolderUpdateClient)
+}
+
+function deleteFolderInDbbFailed(errorMessage) {
+	alert ("Impossible d'effacer l'élément sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
+	hideContextMenu();
+	resetDataTreeReadyForEvent();
+}
+
+/* pathFocused = "01a01";
+deleteFolderUpdateClient("");
+ */
+function deleteFolderUpdateClient(errorMessageFromServer) {
+	if (errorMessageFromServer==="") {
+		aoDOMToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+pathFocused+'a'+'"]');
+		for (var i=0 ; i < aoDOMToDelete.length ; i++ ) {
+			document.getElementById("frameOfTree").removeChild(aoDOMToDelete[i]);
+		}
+		
+		aoDOMToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+pathFocused+'b'+'"]'); 
+		for (var j=0 ; j < aoDOMToDelete.length ; j++ ) {
+			document.getElementById("frameOfTree").removeChild(aoDOMToDelete[j]);
+		}			
+		
+		var rankOfToDoDeleted = parseInt(pathFocused.substr(-2,2));
+		//alert (rankOfToDoDeleted)
+		var pathParent = pathFocused.slice(0,-3);
+		//alert (pathParent);
+		var oDOMParent = document.getElementById(pathParent);
+	
+		aoDOMIdToUpdate = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+pathParent+'a'+'"]'); // on renumérote les ids des folders
+		//alert(aoDOMIdToUpdate.length)
+		var m = 0;
+		while (m < aoDOMIdToUpdate.length) {
+			idOfElement = aoDOMIdToUpdate[m].id;
+			//alert ("idOfElement à updater = "+idOfElement)
+			rankInsideElement = parseInt(idOfElement.substr(pathParent.length+1,2));
+			if (rankInsideElement > rankOfToDoDeleted) {
+				idOfElementNew = pathParent+ "a"+ XX(rankInsideElement-1) + idOfElement.substr(pathParent.length+3);
+				aoDOMIdToUpdate[m].id = idOfElementNew; // faire une seule ligne des deux précédentes
+				//alert (idOfElement + " devient " + pathParent+ "a"+ XX(rankInsideElement-1) + idOfElement.substr(pathParent.length+3));
+			}
+			m +=1;
+		}
+		document.getElementById("frameOfTree").removeChild(oDOMFocused); // on efface le folder en jeu
+		oDOMParent.nbOfFolders -=1;
+		resetDataTreeReadyForEvent();
+	}
+	else {
+		alert ("Erreur inattendue lors de l'effacement dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
+	}
+}
+
+
 
 document.getElementById("deleteNote").addEventListener('click', function() {
 	hideContextMenu();
@@ -409,6 +467,18 @@ document.getElementById("deleteNote").addEventListener('click', function() {
 	
 }, false);
 
+		
+/* 		aoDOMIdToUpdateNotes = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+pathParent+'b'+'"]'); // on renumérote les ids des 
+		
+		var n = 0;
+		while (n < aoDOMIdToUpdateNotes.length) {
+			idOfElement = aoDOMIdToUpdateNotes[n].id;
+			rankInsideElement = parseInt(idOfElement.substr(pathParent.length+1,2));
+			if (rankInsideElement > rankOfToDoDeleted) {
+				idOfElement = pathParent+ "a"+ XX(rankInsideElement-1) + idOfElement.substr(pathParent.length+3);
+			}
+		}
+ */		
 
 
 document.getElementById("DisplayContentFolder").addEventListener('click', function() {
@@ -475,14 +545,16 @@ document.getElementById("cancel").addEventListener('click', function () {
 }, false);
 
 function resetColorTreeItem() {
-	var sOriginalColorOfDivTreeItem;
-	if (pathFocused === "01" || pathFocused.substr(-3,1)==="a") {
-		sOriginalColorOfDivTreeItem = '#ffff00';
+	if (oDOMFocused !== undefined) {
+		var sOriginalColorOfDivTreeItem;
+		if (pathFocused === "01" || pathFocused.substr(-3,1)==="a") {
+			sOriginalColorOfDivTreeItem = '#ffff00';
+		}
+		else {
+			sOriginalColorOfDivTreeItem = '#ffffff';
+		}
+		oDOMFocused.style.backgroundColor = sOriginalColorOfDivTreeItem;
 	}
-	else {
-		sOriginalColorOfDivTreeItem = '#ffffff';
-	}
-	document.getElementById(pathFocused).style.backgroundColor = sOriginalColorOfDivTreeItem;
 }
 
 function queryXhrDeleteNote(sCategoryToDelete) {
@@ -519,48 +591,8 @@ function queryXhrDeleteNote(sCategoryToDelete) {
 	} 
 }
 
-function queryXhrDeleteFolder(sCategoryToDelete) {
-	var sCategoryOfDad = sCategoryToDelete.slice(0,-3);// on d�termine la cat�gorie p�re
-	//alert("Etes vous s�r de vouloir effacer " + sCategoryToDelete +"?\n\navec CategoryOfDad = " + sCategoryOfDad);
 
-	document.getElementById(sCategoryToDelete).style.backgroundColor = '#cccccc'; // on grise la categorie a effacer
 
-	arborescenceNotes.seDeplacerDanslArborescenceReduite(sCategoryOfDad); // l'arborescente r�duite s'affiche avec categorie pere est openedFolder
-
-	for (var k = 0 ; k < ToutesCategories[sCategoryOfDad].nbOfFolders ; k++ ) {	// on efface les folders enfants du p�re
-		document.getElementById(sCategoryOfDad+'a'+XX(k+1)).style.display = 'none';		
-	}
-	for (var i = 0 ; i < ToutesCategories[sCategoryOfDad].nbOfNotes ; i++ ) {	// on efface les Notes enfants du p�re
-		document.getElementById(sCategoryOfDad+'b'+XX(i+1)).style.display = 'none';		
-	}	
-	
-	// ici on doit griser l'ensemble de l'arborescence 
-
-	var xhr = new XMLHttpRequest();
-	xhr.open ('GET', 'ajax/deleteFolder.php?idTopic=' + idTopic + '&sCategoryToDelete=' + sCategoryToDelete);
-	xhr.send(null);
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4 && xhr.status == 200) {
-			ePathsToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+sCategoryOfDad+'a'+'"]');
-			for (var i=0 ; i < ePathsToDelete.length ; i++ ) {
-				document.getElementById("frameOfTree").removeChild(ePathsToDelete[i]);
-			}
-			ToutesCategories[sCategoryOfDad].nbOfFolders =0;
-			
-			ePathsToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+sCategoryOfDad+'b'+'"]'); 
-			for (var j=0 ; j < ePathsToDelete.length ; j++ ) {
-				document.getElementById("frameOfTree").removeChild(ePathsToDelete[j]);
-			}			
-			ToutesCategories[sCategoryOfDad].nbOfNotes =0;
-			
-			queryXhrGetChildren(instancierArborescenceRecuperee, sCategoryOfDad);
-			// ici on doit d�griser l'ensemble de l'arborescence
-		} 
-		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-				alert('Une erreur est survenue dans queryXhrDeleteFolder !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
-		}
-	}
-}
 
 function queryXHRMoveItem(sCutPath, sPathWhereToPaste) {
 	var sNbItemType = sCutPath.substr(-3,1) === "a" ? "nbOfFolders" : "nbOfNotes"; 
@@ -576,15 +608,15 @@ function queryXHRMoveItem(sCutPath, sPathWhereToPaste) {
 		
 		// effacer toutes les div des treeItem dans le folder parent de CutPath (mais pas le folder parent lui-même)
 		sPathParentOfCutPath = sCutPath.slice(0,-3);
-		ePathsToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+sPathParentOfCutPath+'a'+'"]');
-		for (var i=0 ; i < ePathsToDelete.length ; i++ ) {
-			document.getElementById("frameOfTree").removeChild(ePathsToDelete[i]);
+		aoDOMToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+sPathParentOfCutPath+'a'+'"]');
+		for (var i=0 ; i < aoDOMToDelete.length ; i++ ) {
+			document.getElementById("frameOfTree").removeChild(aoDOMToDelete[i]);
 		}
 		ToutesCategories[sPathParentOfCutPath].nbOfFolders =0;
 		
-		ePathsToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+sPathParentOfCutPath+'b'+'"]'); 
-		for (var j=0 ; j < ePathsToDelete.length ; j++ ) {
-			document.getElementById("frameOfTree").removeChild(ePathsToDelete[j]);
+		aoDOMToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+sPathParentOfCutPath+'b'+'"]'); 
+		for (var j=0 ; j < aoDOMToDelete.length ; j++ ) {
+			document.getElementById("frameOfTree").removeChild(aoDOMToDelete[j]);
 		}			
 		ToutesCategories[sPathParentOfCutPath].nbOfNotes =0;
 		
