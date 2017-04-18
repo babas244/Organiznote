@@ -45,7 +45,7 @@ function moveInTree(requestedFolder) {
 
 function prepareInstantiateFolder(sTreeItemsWithoutPathParent, pathParent, fCallback, path) {
 	//checkResponseAjax(sTreeItemsWithoutPathParent,"prepareInstantiateFolder");
-	console.log("....In prepareInstantiateFolder, pathParent = "+pathParent);
+	//console.log("....In prepareInstantiateFolder, pathParent = "+pathParent);
 	if (sTreeItemsWithoutPathParent !=="") {
 		instantiateRetrievedTree('[{"' + pathParent + '":' + sTreeItemsWithoutPathParent + '}]', fCallback, path);
 	}
@@ -268,6 +268,7 @@ function moveInSimpleTreeLaunch(pathRequested) {
 function addContextMenuDataTree(oDOMTreeItem) {
 	oDOMTreeItem.addEventListener('contextmenu', function(e) {
 		e.preventDefault();
+		oDOMFocused = e.target;
 		pathFocused = e.target.id;
 		displayContextMenuDataTree(pathFocused);
 	}, false);
@@ -313,29 +314,29 @@ function fCheckFormInsertOnlyTextarea(){
 	}
 }
 
-function insertNewNoteInDbb(ResponseForm) {
-	var sNewNote = ResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
+function insertNewNoteInDbb(aResponseForm) {
+	var sNewNote = aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
 	var sPathTreeItemToInsert = pathFocused + "b" + XX(parseInt(oDOMFocused.nbOfNotes)+1);
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
 	ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + sNewNote
-			+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, insertNewTreeItemFailed, insertNewTreeItem, sNewNote, "b");
-} 
+			+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "b");
+}
 
-function insertNewFolderInDbb(ResponseForm) {
-	var sNewNote = ResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
+function insertNewFolderInDbb(aResponseForm) {
+	var sNewNote = aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
 	var sPathTreeItemToInsert = pathFocused + "a" + XX(parseInt(oDOMFocused.nbOfFolders)+1);
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
 	ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + sNewNote
-			+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, insertNewTreeItemFailed, insertNewTreeItem, sNewNote, "a");
-} 
+			+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "a");
+}
 
-function insertNewTreeItemFailed(errorMessage) {
+function insertNewTreeItemInDbbFailed(errorMessage) {
 	alert ("Impossible d'insérer la catégorie sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
 	hideContextMenu();
 	resetDataTreeReadyForEvent();
 }
 
-function insertNewTreeItem(errorMessageFromServer, sNewNote, aORb) {
+function insertNewTreeItemUpdateClient(errorMessageFromServer, sNewNote, aORb) {
 	if (errorMessageFromServer==="") {
 		if (pathFocused === oTreeNotes.openedFolder) {
 			sNewNote = sNewNote.replace(/"/g, '\\"');
@@ -359,31 +360,31 @@ function editTreeItemLaunch() {
 	superFormModale(sForm, "Editer", editTreeItemInDbb, "array", fCheckFormInsertOnlyTextarea);	
 }
 
-function editTreeItemInDbb() {
+function editTreeItemInDbb(aResponseForm) {
+	var sNewNote = aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
+	alert (sNewNote)
+	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
+	ajaxCall('ajax/editNote.php?idTopic=' + idTopic + '&sIdCategoryToEdit=' + pathFocused + '&sNewNote=' + sNewNote, editTreeItemFailed, editTreeItemUpdateClient, sNewNote);
 	
 }
-//queryXhrEditTreeItem(inputUserInForm, pathFocused);
 
-
-function queryXhrEditTreeItem(sNewNote, sIdCategoryToEdit) {
-	sNewNoteToSendToDbb = sNewNote.replace(/\r\n|\r|\n/g,'<br>');
-	var xhr = new XMLHttpRequest(); 
-	xhr.open ('GET', 'ajax/editNote.php?idTopic=' + idTopic + '&sIdCategoryToEdit=' + sIdCategoryToEdit + '&sNewNote=' + sNewNoteToSendToDbb);
-	xhr.send(null);
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4 && xhr.status == 200) {	
-		//alert("Dans queryXhrEditTreeItem, sIdCategoryToEdit = "+sIdCategoryToEdit);
-		ToutesCategories[sIdCategoryToEdit].sContent = sNewNote;
-		document.getElementById(sIdCategoryToEdit).innerHTML = sNewNote;
-		document.getElementById("fondPageEntrerTexte").style.display = 'none';
-		//document.getElementById(sIdCategoryToEdit).style.backgroundColor = "#ffff00"; // 衠sert ࡱuoi, ࡤꨲiser ?? Mais pb 衠semble ꤲaser le comportement du hover
-		} 
-		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-				alert('Une erreur est survenue dans queryXhrEditTreeItem !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
-		}
-	}
+function editTreeItemFailed(errorMessage) {
+	alert ("Impossible d'accéder à l'élément sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
+	hideContextMenu();
+	resetDataTreeReadyForEvent();
 }
 
+function editTreeItemUpdateClient(errorMessageFromServer, sNewContent) {
+	if (errorMessageFromServer==="") {
+		oDOMFocused.content = sNewContent.replace(/&lt;br&gt;/gi, "\n");
+		oDOMFocused.innerHTML = oDOMFocused.content;
+		document.getElementById("greyLayerOnFrameOfTree").style.display = 'none';
+		resetDataTreeReadyForEvent();
+	}
+	else {
+		alert ("Erreur inattendue lors de l'insertion dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
+	}
+}
 
 document.getElementById("deleteFolder").addEventListener('click', function() {
 	hideContextMenu();
