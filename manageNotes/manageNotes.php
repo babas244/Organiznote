@@ -106,7 +106,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 				<div id="frameContextMenuTree">
 					<button id="insertNewFolder" class="contextMenu isRoot isFolder">Nouvelle catégorie fille</button>		
 					<button id="insertNewNote" class="contextMenu isRoot isFolder">Nouvelle note</button>
-					<button id="editNote" class="contextMenu isFolder isNote">Editer</button>	
+					<button id="editTreeItem" class="contextMenu isFolder isNote">Editer</button>	
 					<button id="deleteFolder" class="contextMenu isFolder">Effacer catégorie</button>
 					<button id="deleteNote" class="contextMenu isNote">Effacer note</button>
 					<button id="archiveNote" class="contextMenu isFolder isNote">Archiver(maintenant/date (choisie))</button>

@@ -12,7 +12,7 @@ function ajaxCall(sPathPhp, fCallbackFailed, fCallback, parameter1, parameter2, 
 		} 
 		else if (xhr.readyState == 4 && xhr.status != 200) {
 			var errorMessage = "\n\n(Si le problème persiste, contacter l'administrateur du site à " 
-								+ emailAddressSiteAdmin + " avec les infomations suivantes :\nCalling function : "
+								+ emailAddressSiteAdmin + " avec les infomations suivantes :\nCalled function : "
 								+ fCallback.name + ", status :" 
 								+ xhr.status + ", statusText: " 
 								+ (xhr.statusText==undefined||"" ? "-" : xhr.statusText) + ")";
@@ -22,5 +22,5 @@ function ajaxCall(sPathPhp, fCallbackFailed, fCallback, parameter1, parameter2, 
 }
 
 function checkResponseAjax(sJSONString, nameOfFunctionCalling) {
-	alert("La string JSON est : " + sJSONString + ", appelée par : " + nameOfFunctionCalling);
+	alert("La string JSON est : " + sJSONString + ", arrivée dans la fonction : " + nameOfFunctionCalling);
 }

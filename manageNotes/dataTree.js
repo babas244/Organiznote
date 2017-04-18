@@ -1,6 +1,6 @@
 var iRetraitAffichagedUneCategorie= 10;
 ToutesCategories = {}; // à effacer
-var pathFocused = null; // inutile de mettre à null
+var pathFocused = null;
 var ongoingAction = null;
 var pathToPaste = null;
 var TreezIndex = -1;
@@ -22,19 +22,12 @@ function instantiateRoot(topic) {
 	oDOMRoot.style.border = '2px black solid'  // className is Root ?
 	oTreeNotes = new SimpleTree("01");					
 	oDOMRoot.addEventListener('click', function(e) {
-		pathFocused = e.target.id;
-		oDOMFocused = document.getElementById(pathFocused);
-		if (oDOMFocused.nbOfFolders===undefined) { // impossible en fait, car on l'a déjà chargée à l'ouverture de la page
-			ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + pathFocused, prepareInstantiateFolderFailed, prepareInstantiateFolder, moveInTree, pathFocused);			
-		}
-		else {
-			oTreeNotes.moveInSimpleTree(pathFocused);
-		}
+		oTreeNotes.moveInSimpleTree(e.target.id);
 	}, false);					
 	addContextMenuDataTree(oDOMRoot);
 	pathFocused = "01";
 	oDOMFocused = document.getElementById("01");
-	ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=01' , instantiateRootFailed, prepareInstantiateFolder, displayRoot);
+	ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=01' , instantiateRootFailed, prepareInstantiateFolder, "01", displayRoot);
 }
 
 function instantiateRootFailed(errorMessage) {
@@ -50,21 +43,22 @@ function moveInTree(requestedFolder) {
 	oTreeNotes.moveInSimpleTree(requestedFolder);
 }
 
-function prepareInstantiateFolder(sTreeItemsWithoutPathParent, fCallback, path) {
+function prepareInstantiateFolder(sTreeItemsWithoutPathParent, pathParent, fCallback, path) {
 	//checkResponseAjax(sTreeItemsWithoutPathParent,"prepareInstantiateFolder");
+	console.log("....In prepareInstantiateFolder, pathParent = "+pathParent);
 	if (sTreeItemsWithoutPathParent !=="") {
-		instantiateRetrievedTree('[{"' + pathFocused + '":' + sTreeItemsWithoutPathParent + '}]', fCallback, path);
+		instantiateRetrievedTree('[{"' + pathParent + '":' + sTreeItemsWithoutPathParent + '}]', fCallback, path);
 	}
 	else {
-		oDOMFocused.nbOfFolders = 0;
-		oDOMFocused.nbOfNotes = 0;
+		oDOMParent = document.getElementById(pathParent);
+		oDOMParent.nbOfFolders = 0;
+		oDOMParent.nbOfNotes = 0;
 		fCallback(path);
 	}
 }
 
 function displayRoot() {
 	oTreeNotes.displaySimpleTree("01");
-	pathFocused = null;
 	document.getElementById("greyLayerOnFrameOfTree").style.display = "none";	
 }
 
@@ -229,15 +223,7 @@ function instantiateRetrievedTree ( sTreeItems , fCallback, path ) { // path = p
 				oDOMFolder.className = "folder";
 				addContextMenuDataTree(oDOMFolder);
 				oDOMFolder.addEventListener('click', function(e) {
-					pathFocused = e.target.id;
-					oDOMFocused = document.getElementById(pathFocused);
-					if (oDOMFocused.nbOfFolders===undefined) {
-						document.getElementById("greyLayerOnFrameOfTree").style.display = "block"; 
-						ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + pathFocused, prepareInstantiateFolderFailed, prepareInstantiateFolder, moveInTree, pathFocused);			
-					}
-					else {
-						oTreeNotes.moveInSimpleTree(pathFocused);
-					}
+					moveInSimpleTreeLaunch(e.target.id);
 				}, false);				
 				var iLevelinTree = ((pathParent.length+4)/3)-1;
 				oDOMFolder.style.marginLeft = iRetraitAffichagedUneCategorie*(iLevelinTree) + 'px'; // mettre la marge en fonction du niveau de la cat�gorie
@@ -268,6 +254,17 @@ function instantiateRetrievedTree ( sTreeItems , fCallback, path ) { // path = p
 	}
 }
 
+function moveInSimpleTreeLaunch(pathRequested) {
+	oDOMRequested = document.getElementById(pathRequested);
+	if (oDOMRequested.nbOfFolders===undefined) {
+		document.getElementById("greyLayerOnFrameOfTree").style.display = "block"; 
+		ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + pathRequested, prepareInstantiateFolderFailed, prepareInstantiateFolder, pathRequested, moveInTree, pathRequested);			
+	}
+	else {
+		oTreeNotes.moveInSimpleTree(pathRequested);
+	}	
+}
+
 function addContextMenuDataTree(oDOMTreeItem) {
 	oDOMTreeItem.addEventListener('contextmenu', function(e) {
 		e.preventDefault();
@@ -278,12 +275,13 @@ function addContextMenuDataTree(oDOMTreeItem) {
 
 document.getElementById("insertNewNote").addEventListener('click', insertNewNoteInitialize, false);
 document.getElementById("insertNewFolder").addEventListener('click', insertNewFolderInitialize, false);
+document.getElementById("editTreeItem").addEventListener('click', editTreeItemLaunch, false);
 
 function insertNewNoteInitialize() {
 	hideContextMenu();
 	if ((oDOMFocused.nbOfNotes) <= 98) {
-		var sForm = '[{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700"}, "label" : "Entrez le nom de la nouvelle catégorie :"}]';
-		superFormModale(sForm, "Nouvelle catégorie", insertNewNoteInDbb, "array", fCheckFormInsertNewItem);	
+		var sForm = '[{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700"}, "label" : "Entrez le nom de la nouvelle note :"}]';
+		superFormModale(sForm, "Nouvelle catégorie", insertNewNoteInDbb, "array", fCheckFormInsertOnlyTextarea);	
 	}
 	else {
 		alert("Pas possible d'insérer une nouvelle note dans cette catégorie.\n\nVous avez atteint la limite prévue des 99 notes !\n\nIl serait utile de mieux réorganiser les catégories.")
@@ -296,7 +294,7 @@ function insertNewFolderInitialize() {
 	hideContextMenu();
 	if ((oDOMFocused.nbOfFolders) <= 98) {
 		var sForm = '[{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700"}, "label" : "Entrez le nom de la nouvelle catégorie :"}]';
-		superFormModale(sForm, "Nouvelle catégorie", insertNewFolderInDbb, "array", fCheckFormInsertNewItem);	
+		superFormModale(sForm, "Nouvelle catégorie", insertNewFolderInDbb, "array", fCheckFormInsertOnlyTextarea);	
 	}
 	else {
 		alert("Pas possible d'insérer une nouvelle catégorie.\n\nVous avez atteint la limite prévue des 99 sous-catégories !\n\nIl serait utile de mieux réorganiser les catégories.")
@@ -305,7 +303,7 @@ function insertNewFolderInitialize() {
 	}
 }
 
-function fCheckFormInsertNewItem(){
+function fCheckFormInsertOnlyTextarea(){
 	if (oForm[0].value ==="") {
 		alert('La note est vide, il faut la remplir.')
 		return 'content';
@@ -354,13 +352,37 @@ function insertNewTreeItem(errorMessageFromServer, sNewNote, aORb) {
 	}
 }
 
+function editTreeItemLaunch() {
+	hideContextMenu();
+	var sForm = '[{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700", "value" : "' 
+	+ oDOMFocused.content.replace(/<br>/g,'\\n') + '" }, "label" : "Entrée à modifier :"}]';
+	superFormModale(sForm, "Editer", editTreeItemInDbb, "array", fCheckFormInsertOnlyTextarea);	
+}
+
+function editTreeItemInDbb() {
+	
+}
+//queryXhrEditTreeItem(inputUserInForm, pathFocused);
 
 
-
-
-
-
-
+function queryXhrEditTreeItem(sNewNote, sIdCategoryToEdit) {
+	sNewNoteToSendToDbb = sNewNote.replace(/\r\n|\r|\n/g,'<br>');
+	var xhr = new XMLHttpRequest(); 
+	xhr.open ('GET', 'ajax/editNote.php?idTopic=' + idTopic + '&sIdCategoryToEdit=' + sIdCategoryToEdit + '&sNewNote=' + sNewNoteToSendToDbb);
+	xhr.send(null);
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4 && xhr.status == 200) {	
+		//alert("Dans queryXhrEditTreeItem, sIdCategoryToEdit = "+sIdCategoryToEdit);
+		ToutesCategories[sIdCategoryToEdit].sContent = sNewNote;
+		document.getElementById(sIdCategoryToEdit).innerHTML = sNewNote;
+		document.getElementById("fondPageEntrerTexte").style.display = 'none';
+		//document.getElementById(sIdCategoryToEdit).style.backgroundColor = "#ffff00"; // 衠sert ࡱuoi, ࡤꨲiser ?? Mais pb 衠semble ꤲaser le comportement du hover
+		} 
+		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
+				alert('Une erreur est survenue dans queryXhrEditTreeItem !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
+		}
+	}
+}
 
 
 document.getElementById("deleteFolder").addEventListener('click', function() {
@@ -386,12 +408,7 @@ document.getElementById("deleteNote").addEventListener('click', function() {
 	
 }, false);
 
-document.getElementById("editNote").addEventListener('click', function() {
-	hideContextMenu();
-	ongoingAction = 'editNote';
-	initializeFormEnterNote();
-	document.getElementById("zoneFormulaireEntrerNote").value = ToutesCategories[pathFocused].sContent.replace(/<br>/g,'\\n');
-}, false);
+
 
 document.getElementById("DisplayContentFolder").addEventListener('click', function() {
 	hideContextMenu();
@@ -435,7 +452,7 @@ document.getElementById("pasteHereTreeItem").addEventListener('click', function(
 				queryXHRMoveItem(pathToPaste, pathFocused);							
 			}
 			else {
-				alert("Pas possible de déplacer la catégorie ici.\n\nVous avez atteint la limite prévue des 99 notes !\n\nIl serait utile de mieux réorganiser les notes.")
+				alert("Pas possible de déplacer la note ici.\n\nVous avez atteint la limite prévue des 99 notes !\n\nIl serait utile de mieux réorganiser les notes.")
 				resetColorTreeItem();
 				pathFocused = null;
 			}
@@ -455,58 +472,6 @@ document.getElementById("cancel").addEventListener('click', function () {
 	pathToPaste = null;
 	ongoingAction = null;
 }, false);
-		
-document.getElementById("reinitialiserFormulaireEntrerNote").addEventListener('click', function reinitialiserFormulaireEntrerNote() {
-	document.getElementById("formulaireEntrerNote").reset();
-	document.getElementById("zoneFormulaireEntrerNote").focus();
-}, false);
-
-document.getElementById("annulerEntrerNote").addEventListener('click', function() {
-	actionWithForm("");
-}, false);
-
-document.getElementById("enregistrerNouvelleNote").addEventListener('click', function() {
-	actionWithForm(returnFormContent());
-}, false);
-
-function returnFormContent(){
-	return document.getElementById("zoneFormulaireEntrerNote").value; 
-}
-
-function initializeFormEnterNote() {
-	document.getElementById("fondPageEntrerTexte").style.display = 'block';
-	document.getElementById("formulaireEntrerNote").reset();
-	document.getElementById("zoneFormulaireEntrerNote").focus();	
- 	/* document.getElementById("zoneFormulaireEntrerNote").addEventListener('keyup', function(e) { // � faire en snippet
-		if (e.keycode == 13) {ecrireNoteDsBdd()};
-		if (e.keycode == 27) {AnnulerEntrerNote()};
-		// mettre ici le test pour savoir si le caract�re pipe est utilis�
-	}, false);
-  */
-}
-
-function actionWithForm(inputUserInForm) {
-	if (ongoingAction === 'insertNewNote') {
-		if (inputUserInForm !=="") {
-			queryXhrInsertNewNote(inputUserInForm, pathFocused + "b" + XX(parseInt(ToutesCategories[pathFocused].nbOfNotes)+1));				
-		}
-	} 
-	if (ongoingAction === 'insertNewFolder') {
-		if (inputUserInForm !=="") {
-			queryXhrInsertNewNote(inputUserInForm, pathFocused + "a" + XX(parseInt(ToutesCategories[pathFocused].nbOfFolders)+1));					
-		}
-	} 
-	if (ongoingAction === 'editNote') {
-		if (inputUserInForm !=="") {
-			queryXhrEditTreeItem(inputUserInForm, pathFocused);
-		}
-	}
-	
-	document.getElementById("fondPageEntrerTexte").style.display = 'none';
-	resetColorTreeItem();
-	pathFocused = null;
-	ongoingAction = null;
-}
 
 function resetColorTreeItem() {
 	var sOriginalColorOfDivTreeItem;
@@ -517,40 +482,6 @@ function resetColorTreeItem() {
 		sOriginalColorOfDivTreeItem = '#ffffff';
 	}
 	document.getElementById(pathFocused).style.backgroundColor = sOriginalColorOfDivTreeItem;
-}
-
-
-function queryXhrEditTreeItem(sNewNote, sIdCategoryToEdit) {
-	sNewNoteToSendToDbb = sNewNote.replace(/\r\n|\r|\n/g,'<br>');
-	var xhr = new XMLHttpRequest(); 
-	xhr.open ('GET', 'ajax/editNote.php?idTopic=' + idTopic + '&sIdCategoryToEdit=' + sIdCategoryToEdit + '&sNewNote=' + sNewNoteToSendToDbb);
-	xhr.send(null);
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4 && xhr.status == 200) {	
-		//alert("Dans queryXhrEditTreeItem, sIdCategoryToEdit = "+sIdCategoryToEdit);
-		ToutesCategories[sIdCategoryToEdit].sContent = sNewNote;
-		document.getElementById(sIdCategoryToEdit).innerHTML = sNewNote;
-		document.getElementById("fondPageEntrerTexte").style.display = 'none';
-		//document.getElementById(sIdCategoryToEdit).style.backgroundColor = "#ffff00"; // �a sert � quoi, � d�griser ?? Mais pb �a semble �craser le comportement du hover
-		} 
-		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-				alert('Une erreur est survenue dans queryXhrEditTreeItem !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
-		}
-	}
-}
-
-function queryXhrGetChildren(fCallback, sCategoriePere) {
-	var xhr = new XMLHttpRequest(); 
-	xhr.open ('GET', 'ajax/getCategoryChild.php?idTopic=' + idTopic + '&sCategoriePere=' + sCategoriePere );
-	xhr.send(null);
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4 && xhr.status == 200) {
-			fCallback(xhr.responseText, sCategoriePere);
-		} 
-		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-				alert('Une erreur est survenue dans queryXhrGetChildren !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
-		}
-	}
 }
 
 function queryXhrDeleteNote(sCategoryToDelete) {

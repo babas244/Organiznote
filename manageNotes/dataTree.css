@@ -179,7 +179,7 @@ div#frameContextMenuTree
 #deleteFolder {background-color: #d56161;}
 #pasteHereTreeItem {background-color: #52f05f;}
 #insertNewFolder {background-color: #ffff00;}
-#editNote {background-color: #32bdd4;}
+#editTreeItem {background-color: #32bdd4;}
 #archiveNote {background-color: #b97eb6;}
 #getOutFromHere {background-color: #6e83f9;}
 #moveTreeItem {background-color: #e0bd5a;}
@@ -196,7 +196,7 @@ div#frameContextMenuTree
 #pasteHereTreeItem:hover {background-color: #09fb1d;}
 #insertNewFolder:hover {background-color: #e3e323;}
 #getOutFromHere:hover {background-color: #1639fc;}
-#editNote:hover {background-color: #3adffb;}
+#editTreeItem:hover {background-color: #3adffb;}
 #archiveNote:hover {background-color: #e4a0e1;}
 #moveTreeItem:hover {background-color: #fed76a;}
 #DisplayContentFolder:hover {background-color: #2be76f;}
