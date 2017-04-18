@@ -278,6 +278,7 @@ document.getElementById("insertNewNote").addEventListener('click', insertNewNote
 document.getElementById("insertNewFolder").addEventListener('click', insertNewFolderInitialize, false);
 document.getElementById("editTreeItem").addEventListener('click', editTreeItemLaunch, false);
 document.getElementById("deleteFolder").addEventListener('click', deleteFolderLaunch, false);
+document.getElementById("deleteNote").addEventListener('click', deleteNoteLaunch, false);
 
 function insertNewNoteInitialize() {
 	hideContextMenu();
@@ -400,7 +401,7 @@ function deleteFolderInDbb() {
 	var pathParent = pathFocused.slice(0,-3);
 	oTreeNotes.moveInSimpleTree(pathParent); // si le folder à effacer est un ancêtre de openedFolder ou openedFolder lui même, on fait un moveInSimpleTree où openedFolder est le père de pathFocused 
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-	ajaxCall('ajax/deleteFolder.php?idTopic=' + idTopic + '&sCategoryToDelete=' + pathFocused, deleteFolderInDbbFailed, deleteFolderUpdateClient)
+	ajaxCall('ajax/deleteFolder.php?idTopic=' + idTopic + '&sCategoryToDelete=' + pathFocused, deleteFolderInDbbFailed, deleteFolderUpdateClient);
 }
 
 function deleteFolderInDbbFailed(errorMessage) {
@@ -409,9 +410,6 @@ function deleteFolderInDbbFailed(errorMessage) {
 	resetDataTreeReadyForEvent();
 }
 
-/* pathFocused = "01a01";
-deleteFolderUpdateClient("");
- */
 function deleteFolderUpdateClient(errorMessageFromServer) {
 	if (errorMessageFromServer==="") {
 		aoDOMToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+pathFocused+'a'+'"]');
@@ -424,8 +422,8 @@ function deleteFolderUpdateClient(errorMessageFromServer) {
 			document.getElementById("frameOfTree").removeChild(aoDOMToDelete[j]);
 		}			
 		
-		var rankOfToDoDeleted = parseInt(pathFocused.substr(-2,2));
-		//alert (rankOfToDoDeleted)
+		var rankOfFolderDeleted = parseInt(pathFocused.substr(-2,2));
+		//alert (rankOfFolderDeleted)
 		var pathParent = pathFocused.slice(0,-3);
 		//alert (pathParent);
 		var oDOMParent = document.getElementById(pathParent);
@@ -437,7 +435,7 @@ function deleteFolderUpdateClient(errorMessageFromServer) {
 			idOfElement = aoDOMIdToUpdate[m].id;
 			//alert ("idOfElement à updater = "+idOfElement)
 			rankInsideElement = parseInt(idOfElement.substr(pathParent.length+1,2));
-			if (rankInsideElement > rankOfToDoDeleted) {
+			if (rankInsideElement > rankOfFolderDeleted) {
 				idOfElementNew = pathParent+ "a"+ XX(rankInsideElement-1) + idOfElement.substr(pathParent.length+3);
 				aoDOMIdToUpdate[m].id = idOfElementNew; // faire une seule ligne des deux précédentes
 				//alert (idOfElement + " devient " + pathParent+ "a"+ XX(rankInsideElement-1) + idOfElement.substr(pathParent.length+3));
@@ -453,32 +451,58 @@ function deleteFolderUpdateClient(errorMessageFromServer) {
 	}
 }
 
-
-
-document.getElementById("deleteNote").addEventListener('click', function() {
+function deleteNoteLaunch() {
 	hideContextMenu();
 	if (confirm("Êtes-vous sûr de bien vouloir effacer cette note ?") == true) {
-		queryXhrDeleteNote(pathFocused);	
+		deleteNoteInDbb();	
 	}
 	else {
 		resetColorTreeItem();
 		pathFocused = null;
 	}
 	
-}, false);
+}
 
+function deleteNoteInDbb() {
+	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
+	ajaxCall('ajax/deleteNote.php?idTopic=' + idTopic + '&sCategoryToDelete=' + pathFocused, deleteNoteInDbbFailed, deleteNoteUpdateClient);
+}
+
+function deleteNoteInDbbFailed(errorMessage) {
+	alert ("Impossible d'effacer l'élément sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
+	hideContextMenu();
+	resetDataTreeReadyForEvent();
+}
+
+ function deleteNoteUpdateClient(errorMessageFromServer) {
+	if (errorMessageFromServer==="") {
+			
+		var rankOfNoteDeleted = parseInt(pathFocused.substr(-2,2));
+		//alert (rankOfNoteDeleted)
+		var pathParent = pathFocused.slice(0,-3);
+		//alert (pathParent);
+		var oDOMParent = document.getElementById(pathParent);
+	
+		aoDOMNotesIdToUpdate = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+pathParent+'b'+'"]'); // on renumérote les ids des notes
+		//alert(aoDOMIdToUpdate.length)
 		
-/* 		aoDOMIdToUpdateNotes = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+pathParent+'b'+'"]'); // on renumérote les ids des 
-		
-		var n = 0;
-		while (n < aoDOMIdToUpdateNotes.length) {
-			idOfElement = aoDOMIdToUpdateNotes[n].id;
-			rankInsideElement = parseInt(idOfElement.substr(pathParent.length+1,2));
-			if (rankInsideElement > rankOfToDoDeleted) {
-				idOfElement = pathParent+ "a"+ XX(rankInsideElement-1) + idOfElement.substr(pathParent.length+3);
+		for (var m = 0 ; m < aoDOMNotesIdToUpdate.length ; m++) {
+			idOfElement = aoDOMNotesIdToUpdate[m].id;
+			//alert ("idOfElement à updater = "+idOfElement)
+			rankOfCurrentNote = parseInt(idOfElement.substr(pathParent.length+1,2));
+			if (rankOfCurrentNote > rankOfNoteDeleted) {
+				aoDOMNotesIdToUpdate[m].id = pathParent+ "b"+ XX(rankOfCurrentNote-1)
 			}
 		}
- */		
+		document.getElementById("frameOfTree").removeChild(oDOMFocused); // on efface la note en jeu
+		oDOMParent.nbOfNotes -=1;
+		resetDataTreeReadyForEvent();
+	}
+	else {
+		alert ("Erreur inattendue lors de l'effacement dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
+	}
+}
+		
 
 
 document.getElementById("DisplayContentFolder").addEventListener('click', function() {
@@ -556,41 +580,6 @@ function resetColorTreeItem() {
 		oDOMFocused.style.backgroundColor = sOriginalColorOfDivTreeItem;
 	}
 }
-
-function queryXhrDeleteNote(sCategoryToDelete) {
-	var sCategoryOfDad = sCategoryToDelete.slice(0,-3);// on d�termine la cat�gorie p�re
-	
-	var nRankDeleted = parseInt(sCategoryToDelete.substr(-2,2)); // on extrait le num�ro de la note
-	
-	eDOMNoteToDelete = document.getElementById(sCategoryToDelete);
-	
-	eDOMNoteToDelete.style.backgroundColor = '#cccccc'; // on grise la Note a effacer
-	
-	// ici on doit griser l'ensemble de l'arborescence 
-
-	var xhr = new XMLHttpRequest();
-	xhr.open ('GET', 'ajax/deleteNote.php?idTopic=' + idTopic + '&sCategoryToDelete=' + sCategoryToDelete);
-	xhr.send(null);
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4 && xhr.status == 200) {
-			document.getElementById("frameOfTree").removeChild(eDOMNoteToDelete); // on supprime  la note		
-			
-			ePathsNotes = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+sCategoryOfDad+'b'+'"]'); // on soustrait 1 au rang des notes sup�rieures
-			var nRankOfNote;	
-			for (var i = 0; i < ePathsNotes.length ; i++ ) {
-				nRankOfNote = parseInt(ePathsNotes[i].id.substr(-2,2));
-				if (nRankOfNote > nRankDeleted) {
-					ePathsNotes[i].id = sCategoryOfDad + 'b' + XX(nRankOfNote - 1);
-				}
-			}
-		ToutesCategories[sCategoryOfDad].nbOfNotes -= 1 ;
-		}
-		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-			alert('Une erreur est survenue dans queryXhrDeleteNote !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
-		}
-	} 
-}
-
 
 
 

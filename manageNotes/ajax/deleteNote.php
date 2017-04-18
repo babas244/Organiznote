@@ -1,7 +1,7 @@
 <?php
 //header("Access-Control-Allow-Origin: *"); ??? C'est quoi ???
 
-header("Content-Type: text/plain");
+header("Content-Type: text/plain; charset=UTF-8");
 
 //header("Content-Type: application/json; charset=UTF-8");
 
@@ -15,6 +15,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryT
 
 		require '../../isIdTopicSafeAndMatchUser.php';
 		
+		$idTopic = htmlspecialchars($_GET["idTopic"]);
 		$sCategoryToDelete = htmlspecialchars($_GET["sCategoryToDelete"]);
 		$sCategoryOfDad = substr($sCategoryToDelete,0,-3);
 		

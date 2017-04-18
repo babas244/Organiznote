@@ -1,7 +1,7 @@
 <?php
 //header("Access-Control-Allow-Origin: *"); ??? C'est quoi ???
 
-header("Content-Type: text/plain");
+header("Content-Type: text/plain; charset=UTF-8");
 
 //header("Content-Type: application/json; charset=UTF-8");
 
