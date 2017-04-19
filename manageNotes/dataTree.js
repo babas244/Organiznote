@@ -1,5 +1,4 @@
 var iRetraitAffichagedUneCategorie= 10;
-ToutesCategories = {}; // à effacer
 var pathFocused = null;
 var ongoingAction = null;
 var pathToPaste = null;
@@ -274,33 +273,47 @@ function addContextMenuDataTree(oDOMTreeItem) {
 	}, false);
 }
 
-document.getElementById("insertNewNote").addEventListener('click', insertNewNoteInitialize, false);
-document.getElementById("insertNewFolder").addEventListener('click', insertNewFolderInitialize, false);
+document.getElementById("insertNewNote").addEventListener('click', insertNewNoteLaunch, false);
+document.getElementById("insertNewFolder").addEventListener('click', insertNewFolderLaunch, false);
 document.getElementById("editTreeItem").addEventListener('click', editTreeItemLaunch, false);
 document.getElementById("deleteFolder").addEventListener('click', deleteFolderLaunch, false);
 document.getElementById("deleteNote").addEventListener('click', deleteNoteLaunch, false);
 
-function insertNewNoteInitialize() {
+function insertNewNoteLaunch() {
 	hideContextMenu();
-	if ((oDOMFocused.nbOfNotes) <= 98) {
-		var sForm = '[{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700"}, "label" : "Entrez le nom de la nouvelle note :"}]';
-		superFormModale(sForm, "Nouvelle catégorie", insertNewNoteInDbb, "array", fCheckFormInsertOnlyTextarea);	
+	if (oDOMFocused.nbOfFolders !== undefined) {
+		if (oDOMFocused.nbOfNotes <= 98) {
+			var sForm = '[{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700"}, "label" : "Entrez le nom de la nouvelle note :"}]';
+			superFormModale(sForm, "Nouvelle catégorie", insertNewNoteInDbb, "array", fCheckFormInsertOnlyTextarea);	
+		}
+		else {
+			alert("Pas possible d'insérer une nouvelle note dans cette catégorie.\n\nVous avez atteint la limite prévue des 99 notes !\n\nIl serait utile de mieux réorganiser les catégories.")
+			resetColorTreeItem();
+			pathFocused = null;
+		}	
 	}
 	else {
-		alert("Pas possible d'insérer une nouvelle note dans cette catégorie.\n\nVous avez atteint la limite prévue des 99 notes !\n\nIl serait utile de mieux réorganiser les catégories.")
+		alert("Pour insérer votre nouvelle note, cliquer d'abord sur cette catégorie (celle dans laquelle vous voulez insérer) pour l'ouvrir car elle n'est pas encore chargée depuis le serveur. Puis insérez.");
 		resetColorTreeItem();
 		pathFocused = null;
-	}	
+	}
 }
 
-function insertNewFolderInitialize() {
+function insertNewFolderLaunch() {
 	hideContextMenu();
-	if ((oDOMFocused.nbOfFolders) <= 98) {
-		var sForm = '[{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700"}, "label" : "Entrez le nom de la nouvelle catégorie :"}]';
-		superFormModale(sForm, "Nouvelle catégorie", insertNewFolderInDbb, "array", fCheckFormInsertOnlyTextarea);	
+	if (oDOMFocused.nbOfFolders !== undefined) {
+		if (oDOMFocused.nbOfFolders <= 98) {
+			var sForm = '[{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700"}, "label" : "Entrez le nom de la nouvelle catégorie :"}]';
+			superFormModale(sForm, "Nouvelle catégorie", insertNewFolderInDbb, "array", fCheckFormInsertOnlyTextarea);	
+		}
+		else {
+			alert("Pas possible d'insérer une nouvelle catégorie.\n\nVous avez atteint la limite prévue des 99 sous-catégories !\n\nIl serait utile de mieux réorganiser les catégories.")
+			resetColorTreeItem();
+			pathFocused = null;
+		}
 	}
 	else {
-		alert("Pas possible d'insérer une nouvelle catégorie.\n\nVous avez atteint la limite prévue des 99 sous-catégories !\n\nIl serait utile de mieux réorganiser les catégories.")
+		alert("Pour insérer votre nouvelle catégorie, cliquer d'abord sur cette catégorie (celle dans laquelle vous voulez insérer) pour l'ouvrir car elle n'est pas encore chargée depuis le serveur. Puis insérez.");
 		resetColorTreeItem();
 		pathFocused = null;
 	}
@@ -317,19 +330,29 @@ function fCheckFormInsertOnlyTextarea(){
 }
 
 function insertNewNoteInDbb(aResponseForm) {
-	var sNewNote = aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
-	var sPathTreeItemToInsert = pathFocused + "b" + XX(parseInt(oDOMFocused.nbOfNotes)+1);
-	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-	ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + sNewNote
-			+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "b");
+	if (aResponseForm!=="") {
+		var sNewNote = aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
+		var sPathTreeItemToInsert = pathFocused + "b" + XX(parseInt(oDOMFocused.nbOfNotes)+1);
+		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
+		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + sNewNote
+				+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "b");
+	}
+	else {
+		resetDataTreeReadyForEvent();	
+	}
 }
 
 function insertNewFolderInDbb(aResponseForm) {
-	var sNewNote = aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
-	var sPathTreeItemToInsert = pathFocused + "a" + XX(parseInt(oDOMFocused.nbOfFolders)+1);
-	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-	ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + sNewNote
-			+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "a");
+	if (aResponseForm!=="") {
+		var sNewNote = aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
+		var sPathTreeItemToInsert = pathFocused + "a" + XX(parseInt(oDOMFocused.nbOfFolders)+1);
+		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
+		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + sNewNote
+				+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "a");
+	}
+	else {
+		resetDataTreeReadyForEvent();	
+	}
 }
 
 function insertNewTreeItemInDbbFailed(errorMessage) {
@@ -340,13 +363,16 @@ function insertNewTreeItemInDbbFailed(errorMessage) {
 
 function insertNewTreeItemUpdateClient(errorMessageFromServer, sNewNote, aORb) {
 	if (errorMessageFromServer==="") {
+		sNewNote = sNewNote.replace(/"/g, '\\"');
+		var sTreeItems = '[{"' + pathFocused + '":{"'+ aORb +'":[["' + sNewNote + '"]]}}]';
+		instantiateRetrievedTree(sTreeItems);			
 		if (pathFocused === oTreeNotes.openedFolder) {
-			sNewNote = sNewNote.replace(/"/g, '\\"');
-			var sTreeItems = '[{"' + pathFocused + '":{"'+ aORb +'":[["' + sNewNote + '"]]}}]'
-			instantiateRetrievedTree(sTreeItems);
 			var sNbOfItems = aORb ==="a" ? "nbOfFolders" : "nbOfNotes"; 
 			//alert (pathFocused + aORb + XX(oDOMFocused.nbOfFolders));
 			document.getElementById(pathFocused + aORb + XX(oDOMFocused[sNbOfItems])).style.display = 'block';				
+		}
+		else {
+			oTreeNotes.moveInSimpleTree(pathFocused);
 		}
 		resetDataTreeReadyForEvent();
 	}
@@ -363,9 +389,14 @@ function editTreeItemLaunch() {
 }
 
 function editTreeItemInDbb(aResponseForm) {
-	var sNewNote = aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
-	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-	ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic + '&sPathToEdit=' + pathFocused + '&sNewNote=' + sNewNote, editTreeItemFailed, editTreeItemUpdateClient, sNewNote);
+	if (aResponseForm!=="") {
+		var sNewNote = aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
+		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
+		ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic + '&sPathToEdit=' + pathFocused + '&sNewNote=' + sNewNote, editTreeItemFailed, editTreeItemUpdateClient, sNewNote);		
+	}
+	else {
+		resetDataTreeReadyForEvent();	
+	}
 }
 
 function editTreeItemFailed(errorMessage) {
@@ -623,14 +654,6 @@ function queryXHRMoveItem(sCutPath, sPathWhereToPaste) {
 				alert('Une erreur est survenue dans queryXHRMoveItem !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
 		}
 	}
-}
-
-function CategorieAbstraite(id, sContent, niveauDeCategorie, nbOfFolders, nbOfNotes) {
-	this.id = id;
-	this.sContent = sContent; 
-	this.niveauDeCategorie = niveauDeCategorie;
-	this.nbOfFolders = nbOfFolders;
-	this.nbOfNotes = nbOfNotes;
 }
 
 // document.getElementById("NouvelleNote").addEventListener('click', insertNewNote, false); // insert depuis le menu html, att! pas encore impl�ment�
