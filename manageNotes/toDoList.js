@@ -38,6 +38,7 @@ document.getElementById("deleteToDo").addEventListener('click', deleteToDo, fals
 document.getElementById("StatedToDoDone").addEventListener('click', stateToDoDone, false);
 document.getElementById("editToDo").addEventListener('click', editToDo, false);
 document.getElementById("cancelContextMenu").addEventListener('click', hideContextMenuToDo, false);
+document.getElementById("exportToDoList").addEventListener('click', exportToDoList, false);
 
 document.getElementById("noScroll").addEventListener('touchmove', function(event) {
 	event.preventDefault();
@@ -373,6 +374,11 @@ function hideFormEnterToDo() {
 
 function resetFormToDo() {
 	document.getElementById("addToDoForm").reset();	
+}
+
+function exportToDoList() {
+	window.open('exports/downloadToDoListJSON.php?idTopic='+idTopic);	
+	alert("Le fichier à télécharger a été créé.");
 }
 
 function displayContextMenuToDo() {

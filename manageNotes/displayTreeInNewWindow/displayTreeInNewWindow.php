@@ -1,5 +1,5 @@
 <?php
-header("Content-Type: text/html");
+header("Content-Type: text/html; charset=UTF-8");
 session_start();
 require '../../log_in_bdd.php';
 require '../../isIdTopicSafeAndMatchUser.php';

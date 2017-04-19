@@ -1,6 +1,6 @@
 <?php
 session_start();
-header('Content-type: txt/json');
+header('Content-type: txt/json; charset=UTF-8');
 require '../../log_in_bdd.php';
 require '../../isIdTopicSafeAndMatchUser.php';
 $idTopic = htmlspecialchars($_GET["idTopic"]);

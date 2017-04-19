@@ -742,5 +742,5 @@ document.getElementById("exportTreeFromHere").addEventListener('click', function
 }, false);
 	
 function exportTreeFromHere(sParentPathOfTreeToExport) {
-	window.open('exports/downloadDataTreeJSON?idTopic='+idTopic+'&sParentPathOfTreeToExport='+sParentPathOfTreeToExport);	
+	window.open('exports/downloadDataTreeJSON.php?idTopic='+idTopic+'&sParentPathOfTreeToExport='+sParentPathOfTreeToExport);	
 }

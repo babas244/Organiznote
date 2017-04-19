@@ -1,19 +1,18 @@
 <?php
-header("Content-Type: application/json; charset=UTF-8");
-
 session_start();
+header('Content-type: txt/json; charset=UTF-8');
+require '../../log_in_bdd.php';
+require '../../isIdTopicSafeAndMatchUser.php';
+$idTopic = htmlspecialchars($_GET["idTopic"]);
+ 
+if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 
-if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["label0"]) && isset($_GET["label1"]) && isset($_GET["label2"]) && isset($_GET["label3"])) {
-
-	if (preg_match("#^[0-9]{1,4}$#", $_GET["label0"]) && preg_match("#^[0-9]{1,4}$#", $_GET["label1"]) && preg_match("#^[0-9]{1,4}$#", $_GET["label3"]) && preg_match("#^[0-9]{1,4}$#", $_GET["label3"])) {		
-		
-		$idTopic = htmlspecialchars($_GET["idTopic"]);
 		$aLabels = array();
-		$aLabels[0] = htmlspecialchars($_GET["label0"]); // utile ??
-		$aLabels[1] = htmlspecialchars($_GET["label1"]);
-		$aLabels[2] = htmlspecialchars($_GET["label2"]);
-		$aLabels[3] = htmlspecialchars($_GET["label3"]);
-		
+		$aLabels[0] = "01234";
+		$aLabels[1] = "012";
+		$aLabels[2] = "012";
+		$aLabels[3] = "012";
+
 		$aExecuteReq = array();
 		array_push($aExecuteReq,$_SESSION['id'],$idTopic);	
 		$aQuestionsMarks = array();
@@ -26,11 +25,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["label0"]) 
 			}
 			$questionMarks[$i] = substr($questionMarks[$i], 0, -1).')';
 		}
-	
-		require '../../log_in_bdd.php';		
-		
-		require '../../isIdTopicSafeAndMatchUser.php';
-	
+
 		$reqDisplayToDoList = $bdd -> prepare("SELECT content, dateCreation, dateExpired, label0, label1, label2, label3 
 												FROM todolists 
 	WHERE idUser=? AND idTopic=? AND label0 IN $questionMarks[0] AND label1 IN $questionMarks[1] AND label2 IN $questionMarks[2] AND label3 IN $questionMarks[3] AND dateArchive IS NULL
@@ -54,13 +49,13 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["label0"]) 
 				$i+=1;
 			}
 		$reqDisplayToDoList -> closeCursor();	
-			
+					
+		header('Content-Disposition: attachment; filename="exportToDoList_'. $_SESSION['user'] .'_'. $_SESSION['topic'] .'.json"');
 		echo $toDoFetched == "" ? "" : '{'.substr(substr($toDoFetched, 0, -1),2)."]}"; //il faut enlever le dernier ","
-		
-	}
 }
 
 else {
 	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
 }
+	
 ?>
