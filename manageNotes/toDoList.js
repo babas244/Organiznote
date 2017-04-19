@@ -100,13 +100,13 @@ function displayLabelsCheckboxes(sLabelsJSON) {
 				displayToDoList(e.target.labelTitleRank, e.target.labelRank, e.target.checked);
 				// faut-il mettre ici à jour aLabelsChecked ?
 			}, false);
-			document.getElementById("containerOfToDo").appendChild(oDOMLabelCheckbox);
+			document.getElementById("containerOfLabelsCheckBoxes").appendChild(oDOMLabelCheckbox);
 			var oDOMDivLabel = document.createElement("span");
 			oDOMDivLabel.innerHTML = oLabels.content[labelTitleRank][labelRank];
-			document.getElementById("containerOfToDo").appendChild(oDOMDivLabel);				
+			document.getElementById("containerOfLabelsCheckBoxes").appendChild(oDOMDivLabel);				
 		}	
 		oDOMElementBr = document.createElement("Br");
-		document.getElementById("containerOfToDo").appendChild(oDOMElementBr);
+		document.getElementById("containerOfLabelsCheckBoxes").appendChild(oDOMElementBr);
 	}
 	updateCheckboxes();
 	resetToDoReadyForEvent();
@@ -232,7 +232,7 @@ function deleteToDoAndHideContextMenu(errorMessageFromServer,idDOMToDelete) {
 		alert ("Erreur inattendue lors de la mise à jour dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);
 	}
 	hideContextMenuToDo();
-	document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'none';
+	resetToDoReadyForEvent();
 }
 
 function fCheckFormDateArchive() {
@@ -377,6 +377,7 @@ function resetFormToDo() {
 
 function displayContextMenuToDo() {
 	document.getElementById(toDoFocused[0].id).style.backgroundColor = '#777777';
+	document.getElementById("containerOfLabelsCheckBoxes").style.display = 'none';
 	document.getElementById('greyLayerOnNoScroll').style.display = 'block';
 	document.getElementById('cancelContextMenu').style.display = 'inline-block';
 	document.getElementById('deleteToDo').style.display = 'inline-block';
@@ -391,6 +392,7 @@ function hideContextMenuToDo () {
 	}
 	toDoFocused = [{id:null},{sLabels:null},{position:null}];
 	document.getElementById('greyLayerOnNoScroll').style.display = 'none';
+	document.getElementById("containerOfLabelsCheckBoxes").style.display = 'block';
 	document.getElementById('cancelContextMenu').style.display = 'none';
 	document.getElementById('deleteToDo').style.display = 'none';
 	document.getElementById('StatedToDoDone').style.display = 'none';

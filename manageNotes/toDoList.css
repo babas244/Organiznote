@@ -105,7 +105,9 @@ div[id^="separatorLabels"]
 #frameOfContextMenuToDo
 {
 	position: absolute;
-	top: 90%;
+	top: 28%;
+	left: 20%;
+	z-index: 1;
 }
 
 #cancelContextMenu

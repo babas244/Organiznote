@@ -67,6 +67,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 					<div id="lastAndInvisible">...</div>
 				</div>
 			</div>
+			<div id="containerOfLabelsCheckBoxes"></div>
 			<div id="frameOfContextMenuToDo">
 				<button id="cancelContextMenu">&lt;-</button>	
 				<button id="deleteToDo">X</button>

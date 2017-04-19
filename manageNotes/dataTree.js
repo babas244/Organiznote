@@ -544,12 +544,14 @@ document.getElementById("DisplayContentFolder").addEventListener('click', functi
 	pathFocused = null;
 }, false);
 
-document.getElementById("moveTreeItem").addEventListener('click', function() {
+//document.getElementById("moveTreeItem").addEventListener('click', moveTreetItemLaunch, false);
+
+function moveTreetItemLaunch() {
 	pathToPaste = pathFocused;
 	resetColorTreeItem();
 	hideContextMenu();
 	ongoingAction = 'moveTreeItem';
-}, false); 
+} 
 
 document.getElementById("pasteHereTreeItem").addEventListener('click', function() {
 	hideContextMenu();
@@ -669,11 +671,13 @@ function resetDataTreeReadyForEvent() {
 }
 
 
-document.getElementById("importTreeHere").addEventListener('click', function() {
+//document.getElementById("importTreeHere").addEventListener('click', importTreeLaunchfunction, false);
+
+function importTreeLaunch() {
 	hideContextMenu();
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
 	document.getElementById("frameOfFileLoader").style.display = 'block';
-}, false);
+}
 
 document.getElementById("cancelLoadFile").addEventListener('click', function() {
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'none';
@@ -682,7 +686,7 @@ document.getElementById("cancelLoadFile").addEventListener('click', function() {
 	pathFocused = null;
 }, false);
 
-document.getElementById("loadDataTreeJSON").addEventListener('change', function() {
+/* document.getElementById("loadDataTreeJSON").addEventListener('change', function() {
 	var reader = new FileReader();
 	reader.onload = function() {
 		var sErrorMessage = 'Le contenu du fichier "' + document.querySelector('#loadDataTreeJSON').files[0].name + '" n\'est pas valide : ';  
@@ -698,19 +702,20 @@ document.getElementById("loadDataTreeJSON").addEventListener('change', function(
 			if (!isJSONError) {			
 				var aTreeItems = JSON.parse(reader.result);
 				
-				//if (aTreeItems[0].error == undefined) {
-				//	alert (sErrorMessage + aTreeItems[0].error);		
-				//} 
-				
-				//else { //le fichier peut donc être parsé 
-					nbOfNotesInPathFocused = ToutesCategories[pathFocused].nbOfNotes;
-					nbOfFoldersInPathFocused = ToutesCategories[pathFocused].nbOfFolders;
-					ShouldBePathStart = "a01";
+				if (aTreeItems[0].hasOwnProperty('error')) {
+					alert (sErrorMessage + aTreeItems[0].error);		
+				} 
+				else { //le fichier peut donc être parsé 
+					nbOfNotesInPathFocused = oDOMFocused.nbOfNotes;
+					nbOfFoldersInPathFocused = oDOMFocused.nbOfFolders;
+					ShouldBePathStart = "a01";			
 					for (var i=0; i < aTreeItems.length; i++) {
-						for (path in aTreeItems[i]) {
-							if (/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(aTreeItems[i][path][1])) {// vérification du format de dateCreation
-								if (aTreeItems[i][path].susbtr(0,3) === ShouldBePathStart) {
-									aTreeItems[i][path]
+						for (endOfPath in aTreeItems[i]) {
+							if (/^[ab][0-9]{2}([ab][0-9]{2}$/.test(endOfPath)
+							
+							if (/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(aTreeItems[i][endOfPath][1])) {// vérification du format de dateCreation
+								if (aTreeItems[i][endOfPath].susbtr(0,3) === ShouldBePathStart) {
+									aTreeItems[i][endOfPath]
 									//alert(aTreeItems[i][path][0]); 
 								}
 							}
@@ -727,7 +732,7 @@ document.getElementById("loadDataTreeJSON").addEventListener('change', function(
 	reader.readAsText(document.querySelector('#loadDataTreeJSON').files[0]);
 	//document.getElementById("greyLayerOnFrameOfTree").style.display = 'none';
 }, false);
-
+ */
 document.getElementById("exportTreeFromHere").addEventListener('click', function () {
 	hideContextMenu();
 	exportTreeFromHere(pathFocused);
