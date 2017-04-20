@@ -3,6 +3,8 @@ var aNbOfLabels = [5,3,3,3]; // à charger depuis la bdd
 var isDisplayDateExpired = false;
 var aLabelsChecked =[[1,0,0,0,0],[1,1,1],[1,1,1],[1,1,1]]; // à fabriquer par une boucle après chargement de aNbOfLabels
 var aLabelNbItems = {}; 
+var toDoSendGeolocationLabels = null;
+var toDoSendGeolocationPosition = null;
 
 initializePageToDo();
 
@@ -358,6 +360,10 @@ function submitToDoQuick(){
 function submitToDoQuickCheckResponse(errorMessageFromServer, sToDoAddedJSON) {
 	if (errorMessageFromServer==="") {
 		insertToDoListBefore(sToDoAddedJSON, resetToDoReadyForEvent, "newNote");
+		toDoSendGeolocationLabels = "0000";
+		toDoSendGeolocationPosition = parseInt(aLabelNbItems["0000"]) - 1;
+		alert (toDoSendGeolocationPosition)
+		getGeolocation(insertGeolocationToDoInDbb);
 	}
 	else {
 		alert ("Erreur inattendue lors de l'update dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
@@ -365,6 +371,32 @@ function submitToDoQuickCheckResponse(errorMessageFromServer, sToDoAddedJSON) {
 	hideContextMenuToDo();
 }
 
+function insertGeolocationToDoInDbb(oPosition) {
+	if (oPosition==="not supported") {
+		getGeolocationToDoFailed("Warning : Geolocation is not supported by this browser.");
+	}
+	else {
+		ajaxCall('phpAjaxCalls_ToDo/insertToDoGeolocation.php?idTopic=' + idTopic + "&sLabels=" + toDoSendGeolocationLabels 
+																	+ "&position=" + toDoSendGeolocationPosition 
+																	+ "&latitude=" + oPosition.coords.latitude 
+																	+ "&longitude=" + oPosition.coords.longitude
+																	+ "&accuracyPosition=" + oPosition.coords.accuracy,
+																	getGeolocationToDoFailed, getLocationToDoUpdateClient);	
+	}
+	toDoSendGeolocationLabels = null;
+	toDoSendGeolocationPosition = null;
+}
+
+function getGeolocationToDoFailed(errorMessage) {
+	alert (errorMessage + "\nLa position n'a pas pu être insérée.");
+	//document.getElementById("noScroll").innerHTML += "la position n'a pas pu être insérée.";
+}
+
+function getLocationToDoUpdateClient(errorMessageFromServer) {
+	if (errorMessageFromServer!=="") {
+		alert ("Erreur inattendue lors de l'insertion dans le serveur de la geolocalisation. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
+	}
+}
 
 function hideFormEnterToDo() {
 	document.getElementById("addToDoForm").reset();

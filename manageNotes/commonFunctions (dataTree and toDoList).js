@@ -24,3 +24,12 @@ function ajaxCall(sPathPhp, fCallbackFailed, fCallback, parameter1, parameter2, 
 function checkResponseAjax(sJSONString, nameOfFunctionCalling) {
 	alert("La string JSON est : " + sJSONString + ", arrivée dans la fonction : " + nameOfFunctionCalling);
 }
+
+function getGeolocation(fCallback) {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(fCallback);
+	}
+	else { 
+        fCallback("not supported");
+    }
+}
