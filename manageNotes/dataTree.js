@@ -4,6 +4,7 @@ var ongoingAction = null;
 var pathToPaste = null;
 var TreezIndex = -1;
 var emailAddressSiteAdmin = "postmaster@";
+var pathSendGeolocation;
 
 document.getElementById("displayAndHideTree").addEventListener('click', function () {
 	TreezIndex = TreezIndex === -1 ? 1 : -1; 
@@ -374,12 +375,40 @@ function insertNewTreeItemUpdateClient(errorMessageFromServer, sNewNote, aORb) {
 		else {
 			oTreeNotes.moveInSimpleTree(pathFocused);
 		}
+		pathSendGeolocation = pathFocused + aORb + XX(oDOMFocused[sNbOfItems]);
+		getGeolocation(insertGeolocationTreeItemInDbb);
 		resetDataTreeReadyForEvent();
 	}
 	else {
 		alert ("Erreur inattendue lors de l'insertion dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
 	}
 }
+
+function insertGeolocationTreeItemInDbb(oPosition) {
+	if (oPosition==="not supported") {
+		getGeolocationTreeItemFailed("Warning : Geolocation is not supported by this browser.");
+	}
+	else {
+		ajaxCall('ajax/insertTreeItemGeolocation.php?idTopic=' + idTopic + "&pathToUpdateGeolocation=" + pathSendGeolocation 
+																	+ "&latitude=" + oPosition.coords.latitude 
+																	+ "&longitude=" + oPosition.coords.longitude
+																	+ "&accuracyPosition=" + oPosition.coords.accuracy,
+																	getGeolocationTreeItemFailed, getLocationTreeItemUpdateClient);	
+	}
+	toDoSendGeolocationPosition = null;
+}
+
+function getGeolocationTreeItemFailed(errorMessage) {
+	alert (errorMessage + "\nLa position n'a pas pu être insérée.");
+	//document.getElementById("noScroll").innerHTML += "la position n'a pas pu être insérée.";
+}
+
+function getLocationTreeItemUpdateClient(errorMessageFromServer) {
+	if (errorMessageFromServer!=="") {
+		alert ("Erreur inattendue lors de l'insertion dans le serveur de la geolocalisation. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
+	}
+}
+
 
 function editTreeItemLaunch() {
 	hideContextMenu();

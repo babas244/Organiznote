@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Dim 02 Avril 2017 à 13:09
+-- Généré le :  Jeu 20 Avril 2017 à 18:10
 -- Version du serveur :  5.7.11
 -- Version de PHP :  5.6.19
 
@@ -34,7 +34,10 @@ CREATE TABLE `notes` (
   `content` text NOT NULL,
   `dateCreation` datetime NOT NULL,
   `dateExpired` datetime DEFAULT NULL,
-  `dateArchive` datetime DEFAULT NULL
+  `dateArchive` datetime DEFAULT NULL,
+  `latitude` decimal(10,8) DEFAULT NULL,
+  `longitude` decimal(11,8) DEFAULT NULL,
+  `accuracyPosition` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -55,7 +58,10 @@ CREATE TABLE `todolists` (
   `label0` varchar(255) NOT NULL,
   `label1` varchar(255) NOT NULL,
   `label2` varchar(255) NOT NULL,
-  `label3` varchar(255) NOT NULL
+  `label3` varchar(255) NOT NULL,
+  `latitude` decimal(10,8) DEFAULT NULL,
+  `longitude` decimal(11,8) DEFAULT NULL,
+  `accuracyPosition` int(11) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -163,27 +169,27 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `notes`
 --
 ALTER TABLE `notes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=990;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1152;
 --
 -- AUTO_INCREMENT pour la table `todolists`
 --
 ALTER TABLE `todolists`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=218;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=288;
 --
 -- AUTO_INCREMENT pour la table `todo_userlabels`
 --
 ALTER TABLE `todo_userlabels`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
 --
 -- AUTO_INCREMENT pour la table `todo_userlabelstitles`
 --
 ALTER TABLE `todo_userlabelstitles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
 --
 -- AUTO_INCREMENT pour la table `topics`
 --
 ALTER TABLE `topics`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 --
 -- AUTO_INCREMENT pour la table `users`
 --

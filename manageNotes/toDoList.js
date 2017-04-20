@@ -362,7 +362,6 @@ function submitToDoQuickCheckResponse(errorMessageFromServer, sToDoAddedJSON) {
 		insertToDoListBefore(sToDoAddedJSON, resetToDoReadyForEvent, "newNote");
 		toDoSendGeolocationLabels = "0000";
 		toDoSendGeolocationPosition = parseInt(aLabelNbItems["0000"]) - 1;
-		alert (toDoSendGeolocationPosition)
 		getGeolocation(insertGeolocationToDoInDbb);
 	}
 	else {
