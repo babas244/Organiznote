@@ -15,8 +15,8 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sParentPat
 		'idTopic' => $idTopic,
 		'pathParent' => $sParentPathOfTreeToExport)) or die(print_r($reqRetrieveParentContent->errorInfo()));
 		
-		while ($donnees = $reqRetrieveParentContent->fetch()) {
-			$contentParent = $donnees['content'];
+		while ($data = $reqRetrieveParentContent->fetch()) {
+			$contentParent = $data['content'];
 		
 		}
 		
@@ -30,7 +30,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sParentPat
 	$reqRetrieveParentContent->closeCursor();		
 	
 	
-	$reqRetrieveTree = $bdd -> prepare('SELECT idNote, content, dateCreation  FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote LIKE :startWithPathParent AND idNote NOT LIKE :pathParent ORDER BY IdNote');
+	$reqRetrieveTree = $bdd -> prepare('SELECT idNote, content, dateCreation, latitude, longitude, accuracyPosition  FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote LIKE :startWithPathParent AND idNote NOT LIKE :pathParent ORDER BY IdNote');
 		$reqRetrieveTree -> execute(array(
 		'idUser' => $_SESSION['id'],
 		'idTopic' => $idTopic,
@@ -41,8 +41,8 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sParentPat
 		
 		$lengthOfsParentPathOfTreeToExport = strlen($sParentPathOfTreeToExport);
 		
-		while ($donnees = $reqRetrieveTree->fetch()) {
-			$stringJSON .='{"'.substr($donnees['idNote'],$lengthOfsParentPathOfTreeToExport).'":["'.$donnees['content'].'","'.$donnees['dateCreation'].'"]},';
+		while ($data = $reqRetrieveTree->fetch()) {
+			$stringJSON .='{"'.substr($data['idNote'],$lengthOfsParentPathOfTreeToExport).'":["'.$data['content'].'","'.$data['dateCreation'].'","'.$data['latitude'].'","'.$data['longitude'].'","'.$data['accuracyPosition'].'"]},';
 		}
 		
 		if ($reqRetrieveTree->rowCount() == 0) {
@@ -54,7 +54,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sParentPat
 	$reqRetrieveTree->closeCursor();		
 	
 	$stringJSON = substr($stringJSON,0,-1).']';
-	header('Content-Disposition: attachment; filename="exportDataTree_'. $_SESSION['user'] .'_'. $_SESSION['topic'] .'_'. $contentParent .'_('. $sParentPathOfTreeToExport . ').json"');
+	header('Content-Disposition: attachment; filename="exportDataTree_'. substr($_SESSION['user'],0,10) .'_'. substr($_SESSION['topic'],0,10) .'_'. substr($contentParent,0,10) .'_('. $sParentPathOfTreeToExport . ').json"');
 	echo $stringJSON;
 }
 

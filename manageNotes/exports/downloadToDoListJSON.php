@@ -26,7 +26,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 			$questionMarks[$i] = substr($questionMarks[$i], 0, -1).')';
 		}
 
-		$reqDisplayToDoList = $bdd -> prepare("SELECT content, dateCreation, dateExpired, label0, label1, label2, label3 
+		$reqDisplayToDoList = $bdd -> prepare("SELECT content, dateCreation, dateExpired, latitude, longitude, accuracyPosition, label0, label1, label2, label3 
 												FROM todolists 
 	WHERE idUser=? AND idTopic=? AND label0 IN $questionMarks[0] AND label1 IN $questionMarks[1] AND label2 IN $questionMarks[2] AND label3 IN $questionMarks[3] AND dateArchive IS NULL
 	ORDER BY label0, label1, label2, label3, noteRank");
@@ -40,17 +40,17 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 			while ($data = $reqDisplayToDoList->fetch()) {
 				$sLabelsFetchedNew = $data['label0'].$data['label1'].$data['label2'].$data['label3'];
 				if ($sLabelsFetchedNew !== $sLabelsFetched OR $i===0) {
-					$toDoFetched = substr($toDoFetched, 0, -1).'],"'.$sLabelsFetchedNew.'":[["'.$data['content'].'","'.$data['dateCreation'].'","'.$data['dateExpired'].'"],';
+					$toDoFetched = substr($toDoFetched, 0, -1).'],"'.$sLabelsFetchedNew.'":[["'.$data['content'].'","'.$data['dateCreation'].'","'.$data['dateExpired'].'","'.$data['latitude'].'","'.$data['longitude'].'","'.$data['accuracyPosition'].'"],';
 					$sLabelsFetched = $sLabelsFetchedNew;
 				}
 				else {
-					$toDoFetched .= '["'.$data['content'].'","'.$data['dateCreation'].'","'.$data['dateExpired'].'"],';
+					$toDoFetched .= '["'.$data['content'].'","'.$data['dateCreation'].'","'.$data['dateExpired'].'","'.$data['latitude'].'","'.$data['longitude'].'","'.$data['accuracyPosition'].'"],';
 				}
 				$i+=1;
 			}
 		$reqDisplayToDoList -> closeCursor();	
 					
-		header('Content-Disposition: attachment; filename="exportToDoList_'. $_SESSION['user'] .'_'. $_SESSION['topic'] .'.json"');
+		header('Content-Disposition: attachment; filename="exportToDoList_'. substr($_SESSION['user'],0,10) .'_'. substr($_SESSION['topic'],0,10) .'.json"');
 		echo $toDoFetched == "" ? "" : '{'.substr(substr($toDoFetched, 0, -1),2)."]}"; //il faut enlever le dernier ","
 }
 
