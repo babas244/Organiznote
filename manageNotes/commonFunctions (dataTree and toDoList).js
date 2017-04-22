@@ -21,8 +21,21 @@ function ajaxCall(sPathPhp, fCallbackFailed, fCallback, parameter1, parameter2, 
 	}
 }
 
-function checkResponseAjax(sJSONString, nameOfFunctionCalling) {
-	alert("La string JSON est : " + sJSONString + ", arrivée dans la fonction : " + nameOfFunctionCalling);
+function checkResponseAjaxIsJSON(sJSONString, nameOfFunctionCalling) {
+	//alert("La string JSON est : " + sJSONString + ", arrivée dans la fonction : " + nameOfFunctionCalling);
+	try {
+		JSON.parse(sJSONString);
+	}
+	catch(e) {
+		if (sJSONString === "disconnected") {
+			alert("Vous avez été déconnecté. Impossible de récupérer des données ou de faire des changements sur le serveur sans se reconnecter.");
+		}
+		else {
+			alert ("Erreur inattendue lors de l'accès au serveur. Contactez l'administrateur. Le message est :\n" + sJSONString);
+		}
+		return false;
+	}
+	return true;
 }
 
 function getGeolocation(fCallback) {

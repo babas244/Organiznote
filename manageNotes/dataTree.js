@@ -44,16 +44,19 @@ function moveInTree(requestedFolder) {
 }
 
 function prepareInstantiateFolder(sTreeItemsWithoutPathParent, pathParent, fCallback, path) {
-	//checkResponseAjax(sTreeItemsWithoutPathParent,"prepareInstantiateFolder");
 	//console.log("....In prepareInstantiateFolder, pathParent = "+pathParent);
-	if (sTreeItemsWithoutPathParent !=="") {
-		instantiateRetrievedTree('[{"' + pathParent + '":' + sTreeItemsWithoutPathParent + '}]', fCallback, path);
-	}
-	else {
+	if (sTreeItemsWithoutPathParent ==="") {
 		oDOMParent = document.getElementById(pathParent);
 		oDOMParent.nbOfFolders = 0;
 		oDOMParent.nbOfNotes = 0;
 		fCallback(path);
+	}
+	else if (checkResponseAjaxIsJSON(sTreeItemsWithoutPathParent,"prepareInstantiateFolder")) {	
+		instantiateRetrievedTree('[{"' + pathParent + '":' + sTreeItemsWithoutPathParent + '}]', fCallback, path);
+	} 
+	else {
+		pathFocused = null;
+		document.getElementById("greyLayerOnFrameOfTree").style.display = "none";	
 	}
 }
 

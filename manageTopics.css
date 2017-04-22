@@ -3,6 +3,7 @@
 	width: 250px;
 	border: 1px black solid;
 	border-radius: 5px;
+	word-wrap: break-word;
 }
 
 #apercu

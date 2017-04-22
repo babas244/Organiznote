@@ -8,7 +8,7 @@ if (isset($_COOKIE['user'])) {
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Index</title>
+        <title>Organiznote - log in</title>
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
 		<meta name="robots" content="noindex,nofollow">
 		<link rel="stylesheet" href="index.css" />

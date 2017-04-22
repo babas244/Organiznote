@@ -14,7 +14,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Organiznote</title>
+        <title>Organiznote - manage notes</title>
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
 		<meta name="robots" content="noindex,nofollow">
 		<link rel="stylesheet" href="dataTree.css" />
@@ -130,18 +130,6 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 			</div>	
 		</div>
 		<br/>
-		
-		<div id="fondPageEntrerTexte">
-			<div id="textBox">
-				<form id="formulaireEntrerNote">
-					<textarea name="zoneFormulaireEntrerNote" id="zoneFormulaireEntrerNote" placeholder="Ecrire ici"></textarea>
-				</form>
-			</div>
-			<button id="enregistrerNouvelleNote">Enregistrer</button>
-			<button id="reinitialiserFormulaireEntrerNote">Réinitialiser</button>
-			<button id="annulerEntrerNote">Annuler</button>
-		</div>
-		
 		
 		<script>
 			<?php

@@ -14,7 +14,7 @@ if (!isset($_SESSION['id'])) {
 		$req->closeCursor();
 	}
 	else {
-		header ('Location: index.php');		// att! Ce chemin va dépendre de où on inclut la page ??
+		header ('Location: '. $_SERVER["DOCUMENT_ROOT"].'/Organiznotes/index.php');
 		exit;
 	}
 }

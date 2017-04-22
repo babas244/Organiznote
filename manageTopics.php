@@ -35,8 +35,8 @@ if (!isset($_SESSION['id'])) {
 				$_SESSION['id'] = $resultat['id'];
 				$_SESSION['user'] = $user;
 				if (isset($_POST['stayConnected'])) {
-					setcookie('user',$user, time()+365*24*24*3600, null, null, false, true);
-					setcookie('hashPass', $hashPass, time()+365*24*24*3600, null, null, false, true);
+					setcookie('user',$user, time()+365*24*24*3600, '/', 'www.scholarsourcescqfd.ovh', false, true);
+					setcookie('hashPass', $hashPass, time()+365*24*24*3600, '/', 'www.scholarsourcescqfd.ovh', false, true);
 				}
 			}
 		}
@@ -52,7 +52,7 @@ if (!isset($_SESSION['id'])) {
 <!DOCTYPE html>
 <html>
     <head>
-        <title>manageTopics</title>
+        <title>Organiznotes - manage Topics</title>
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
 		<meta name="robots" content="noindex,nofollow">
 		<link rel="stylesheet" href="manageTopics.css" />
@@ -80,7 +80,7 @@ if (!isset($_SESSION['id'])) {
 				$topics = "<br><br>Vous possédez les <strong>ensembles de notes suivants</strong> :<br><br>" . $topics;
 			}
 			else {
-				$topics = "<br><br>Vous n'avez pas encore de Notes.";		
+				$topics = "<br><br>Vous n'avez pas encore de Notes. <Br>Créez un nouveau sujet ci-dessous et donnez lui des couleurs pour le rendre facilement identifiable.";		
 			}
 			
 			echo $topics;

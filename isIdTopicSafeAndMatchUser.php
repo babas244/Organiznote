@@ -12,6 +12,6 @@ if (preg_match("#^[0-9]+$#", $_GET["idTopic"])) {
 	$reqIsTopicMatching -> closeCursor();
 }
 else {
-	header("Location: ../../logout.php");
+	header('Location: '. $_SERVER["DOCUMENT_ROOT"].'/Organiznotes/logout.php');
 }
 ?>
