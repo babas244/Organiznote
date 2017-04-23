@@ -34,9 +34,10 @@ if (!isset($_SESSION['id'])) {
 			else { // Alors connexion car le mot de passe est correct
 				$_SESSION['id'] = $resultat['id'];
 				$_SESSION['user'] = $user;
+				//require_once 'define CONSTANT domain.php';
 				if (isset($_POST['stayConnected'])) {
-					setcookie('user',$user, time()+365*24*24*3600, '/', 'www.scholarsourcescqfd.ovh', false, true);
-					setcookie('hashPass', $hashPass, time()+365*24*24*3600, '/', 'www.scholarsourcescqfd.ovh', false, true);
+					setcookie('user',$user, time()+365*24*3600, null, null, false, true); //, '/', DOMAIN , false, true);
+					setcookie('hashPass', $hashPass, time()+365*24*3600, null, null, false, true); // , '/', DOMAIN , false, true);
 				}
 			}
 		}

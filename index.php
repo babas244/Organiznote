@@ -20,7 +20,7 @@ if (isset($_COOKIE['user'])) {
 				<legend>Connexion</legend>
 				Pseudo : <input type="text" name="user" maxlength="254" autofocus><br><br>
 				Mot de passe : <input type="password" name="pass" maxlength="254"><br><br>
-				<input type="checkbox" name="stayConnected"> Rester connecté<br>
+				<input type="checkbox" name="stayConnected" checked> Rester connecté<br>
 				<input type="submit" value="Se connecter">
 			</fieldset>
 		</form>
