@@ -12,6 +12,7 @@ if (preg_match("#^[0-9]+$#", $_GET["idTopic"])) {
 	$reqIsTopicMatching -> closeCursor();
 }
 else {
-	header('Location: '. $_SERVER["DOCUMENT_ROOT"].'/Organiznotes/logout.php');
+	require_once 'define CONSTANT domain.php';
+	header('Location: '. DOMAIN .'/Organiznotes/logout.php');
 }
 ?>
