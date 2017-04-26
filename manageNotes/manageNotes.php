@@ -8,13 +8,25 @@ require '../sessionAuthentication.php';
 if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 	require '../isIdTopicSafeAndMatchUser.php';
 	$idTopic = htmlspecialchars($_GET['idTopic']);	
+	$reqGetTopic = $bdd -> prepare('SELECT topic FROM topics WHERE idUser=:idUser AND id=:idTopic');
+		$reqGetTopic -> execute(array(
+		'idUser' => $_SESSION['id'],
+		'idTopic' => $idTopic));
+		$resultat = $reqGetTopic -> fetch();
+		$_SESSION['topic'] = $resultat['topic'];
+		if ($reqGetTopic->rowCount() == 0) {
+			header("Location: ../logout.php");
+		}
+	$reqGetTopic -> closeCursor();
+	$userNameDisplayed = strlen($_SESSION['user']) < 16 ? $_SESSION['user'] : substr($_SESSION['user'], 0,15)."...";
+	$topicDisplayed = strlen($_SESSION['topic']) < 16 ? $_SESSION['topic'] : substr($_SESSION['topic'], 0,15)."...";					
 ?>
 
 
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Organiznote - manage notes</title>
+        <title><?php echo $topicDisplayed;?></title>
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
 		<meta name="robots" content="noindex,nofollow">
 		<link rel="stylesheet" href="dataTree.css" />
@@ -27,18 +39,6 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 			<div id="referencesUser">
 				<a href="../logout.php" id="disconnectUser">Déconnexion</a>
 				<?php
-					$reqGetTopic = $bdd -> prepare('SELECT topic FROM topics WHERE idUser=:idUser AND id=:idTopic');
-						$reqGetTopic -> execute(array(
-						'idUser' => $_SESSION['id'],
-						'idTopic' => $idTopic));
-						$resultat = $reqGetTopic -> fetch();
-						$_SESSION['topic'] = $resultat['topic'];
-						if ($reqGetTopic->rowCount() == 0) {
-							header("Location: ../logout.php");
-						}
-					$reqGetTopic -> closeCursor();
-					$userNameDisplayed = strlen($_SESSION['user']) < 16 ? $_SESSION['user'] : substr($_SESSION['user'], 0,15)."...";
-					$topicDisplayed = strlen($_SESSION['topic']) < 16 ? $_SESSION['topic'] : substr($_SESSION['topic'], 0,15)."...";					
 					echo "Bonjour <strong>".$userNameDisplayed."</strong>, vous êtes connecté sur le topic <strong>".$topicDisplayed."</strong>. ";
 				?>
 			</div>
