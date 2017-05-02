@@ -94,6 +94,11 @@ function displayLabelsCheckboxes(sLabelsJSON) {
 	
 	for (var labelTitleRank = 0; labelTitleRank < oLabels.title.length; labelTitleRank ++) {
 		for (var labelRank = 0 ; labelRank < oLabels.content[labelTitleRank].length; labelRank++) {
+			var oDOMFrameCheckbox = document.createElement("span");
+			oDOMFrameCheckbox.className = 'frameCheckbox';
+			//alert ('h = ' + labelTitleRank/oLabels.title.length + '    s = ' + labelRank/oLabels.content[labelTitleRank].length);
+			oDOMFrameCheckbox.style.backgroundColor = HSVtoHex(labelTitleRank/oLabels.title.length,(labelRank)/oLabels.content[labelTitleRank].length, 1);
+			document.getElementById("containerOfLabelsCheckBoxes").appendChild(oDOMFrameCheckbox);
 			var oDOMLabelCheckbox = document.createElement("input");
 			oDOMLabelCheckbox.type = "checkbox";
 			oDOMLabelCheckbox.id = "checkboxLabel"+labelTitleRank+"a"+labelRank;
@@ -103,10 +108,11 @@ function displayLabelsCheckboxes(sLabelsJSON) {
 				displayToDoList(e.target.labelTitleRank, e.target.labelRank, e.target.checked);
 				// faut-il mettre ici à jour aLabelsChecked ?
 			}, false);
-			document.getElementById("containerOfLabelsCheckBoxes").appendChild(oDOMLabelCheckbox);
-			var oDOMDivLabel = document.createElement("span");
+			oDOMFrameCheckbox.appendChild(oDOMLabelCheckbox);
+			var oDOMDivLabel = document.createElement("label");
 			oDOMDivLabel.innerHTML = oLabels.content[labelTitleRank][labelRank];
-			document.getElementById("containerOfLabelsCheckBoxes").appendChild(oDOMDivLabel);				
+			oDOMDivLabel.htmlFor = oDOMLabelCheckbox.id;
+			oDOMFrameCheckbox.appendChild(oDOMDivLabel);				
 		}	
 		oDOMElementBr = document.createElement("Br");
 		document.getElementById("containerOfLabelsCheckBoxes").appendChild(oDOMElementBr);
@@ -488,7 +494,7 @@ function addEventsDragAndDropToLastAndInvisible(DOMElement) {
 }
 
 function addContextMenu(oDOMToDo) {
-	oDOMToDo.addEventListener('contextmenu', function(e) {
+	oDOMToDo.addEventListener('dblclick', function(e) {
 		e.preventDefault();
 		toDoFocused[0].id = e.target.id;
 		toDoFocused[0].sLabels = toDoFocused[0].id.substr(4,4);

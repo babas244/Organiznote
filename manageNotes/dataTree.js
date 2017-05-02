@@ -269,7 +269,7 @@ function moveInSimpleTreeLaunch(pathRequested) {
 }
 
 function addContextMenuDataTree(oDOMTreeItem) {
-	oDOMTreeItem.addEventListener('contextmenu', function(e) {
+	oDOMTreeItem.addEventListener('dblclick', function(e) {
 		e.preventDefault();
 		oDOMFocused = e.target;
 		pathFocused = e.target.id;
@@ -585,7 +585,7 @@ function moveTreetItemLaunch() {
 	ongoingAction = 'moveTreeItem';
 } 
 
-document.getElementById("pasteHereTreeItem").addEventListener('click', function() {
+/* document.getElementById("pasteHereTreeItem").addEventListener('click', function() {
 	hideContextMenu();
 	//alert ("pathFocused =" + pathFocused + "  pathToPaste =" + pathToPaste);
 	if (pathFocused === pathToPaste.slice(0,-3)) {
@@ -618,7 +618,7 @@ document.getElementById("pasteHereTreeItem").addEventListener('click', function(
 			}
 		}
 	}
-}, false);
+}, false); */
 
 document.getElementById("getOutFromHere").addEventListener('click', function() {
 	hideContextMenu();
@@ -659,13 +659,14 @@ function pasteHereTreeItemInDbb(sPathToMove, sPathWhereToPaste) {
 						sPathToMove, sPathWhereToPaste);
 }
 
-function pasteHereTreeItemInDbbFailed(errorMessage) {
+/* function pasteHereTreeItemInDbbFailed(errorMessage) {
 	alert ("Impossible de déplacer l'élément sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
 	hideContextMenu();
 	resetDataTreeReadyForEvent();
-}
+} */
 
 
+/*
 function pasteHereTreeItemUpdateClient(errorMessageFromServer, sPathToMove, sPathWhereToPaste) {
 	if (errorMessageFromServer==="") {
 		var oDOMToMove = document.getElementById(sPathToMove);
@@ -701,7 +702,7 @@ function pasteHereTreeItemUpdateClient(errorMessageFromServer, sPathToMove, sPat
 			}
 		} while (sPathToChange.indexOf(sPathToMove) === 0);
 		sTreeToMoveJSON .= substr(0,-1).'"}';
-	/* 	
+	 	
 	
 		// effacer toutes les div des treeItem dans le folder parent de sPathToMove (mais pas le folder parent lui-même)
 		sPathParentOfCutPath = sPathToMove.slice(0,-3);
@@ -716,13 +717,13 @@ function pasteHereTreeItemUpdateClient(errorMessageFromServer, sPathToMove, sPat
 			document.getElementById("frameOfTree").removeChild(aoDOMToDelete[j]);
 		}			
 		oDOMToMove.nbOfNotes =0;
-	 */}
+	 }
 	else {
 		alert ("Erreur inattendue lors du déplacement au niveau du serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
 	}
 }
 
-	/* 	
+ 	
 		
 		// insérer le folder déplacé dans sPathWhereToPaste
 		var sInstantiateFolderMoved = '["'+pathFocused+sPathToMove.substr(-3,1)+rowOfPasteItem+'","'+ToutesCategories[sPathToMove].sContent+'"]';
