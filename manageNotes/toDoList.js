@@ -183,7 +183,7 @@ function insertToDoListBefore(sToDoListJSON, fCallback, sIsNew) {
 				var oDOMToDo = document.createElement("div");
 				oDOMToDo.id = 'toDo'+sLabels+(parseInt(i)+parseInt(aLabelNbItems[sLabels]));
 				addContextMenu(oDOMToDo);
-				oDOMToDo.className = 'toDo toDo0a'+aLabels[0]+' toDo1a'+aLabels[1]+' toDo2a'+aLabels[2]+' toDo3a'+aLabels[3];
+				oDOMToDo.className = 'unselectable toDo toDo0a'+aLabels[0]+' toDo1a'+aLabels[1]+' toDo2a'+aLabels[2]+' toDo3a'+aLabels[3];
 				oDOMToDo.draggable = "true";
 				oDOMToDo.dateCreation = oToDoListJSONParsed[sLabels][i][1];
 				oDOMToDo.dateExpired = oToDoListJSONParsed[sLabels][i][2];

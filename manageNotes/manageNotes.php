@@ -29,6 +29,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
         <title><?php echo $topicDisplayed;?></title>
         <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
 		<meta name="robots" content="noindex,nofollow">
+		<link rel="stylesheet" href="manageNotes.css"/>
 		<link rel="stylesheet" href="dataTree.css" />
 		<link rel="stylesheet" href="toDoList.css" />
 		<link rel="stylesheet" href="superFormModale.css" />

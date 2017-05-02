@@ -223,7 +223,7 @@ function instantiateRetrievedTree ( sTreeItems , fCallback, path ) { // path = p
 				oDOMFolder.content = aTreeItems[i][pathParent].a[j][0].replace(/&lt;br&gt;/gi, "\n");
 				oDOMFolder.innerHTML = oDOMFolder.content;
 				oDOMFolder.style.display = 'none';
-				oDOMFolder.className = "folder";
+				oDOMFolder.className = "folder unselectable";
 				addContextMenuDataTree(oDOMFolder);
 				oDOMFolder.addEventListener('click', function(e) {
 					moveInSimpleTreeLaunch(e.target.id);
@@ -245,7 +245,7 @@ function instantiateRetrievedTree ( sTreeItems , fCallback, path ) { // path = p
 				oDOMNote.content = aTreeItems[i][pathParent].b[k][0].replace(/&lt;br&gt;/gi, "\n");
 				oDOMNote.innerHTML = oDOMNote.content;
 				oDOMNote.style.display = 'none';
-				oDOMNote.className = "note";
+				oDOMNote.className = "note unselectable";
 				addContextMenuDataTree(oDOMNote);		
 				var iLevelinTree = ((pathParent.length+4)/3)-1;
 				oDOMNote.style.marginLeft = iRetraitAffichagedUneCategorie*(iLevelinTree) + 'px'; // mettre la marge en fonction du niveau de la catꨯrie
