@@ -576,10 +576,10 @@ document.getElementById("DisplayContentFolder").addEventListener('click', functi
 	pathFocused = null;
 }, false);
 
-//document.getElementById("moveTreeItem").addEventListener('click', moveTreetItemLaunch, false);
+document.getElementById("moveTreeItem").addEventListener('click', moveTreetItemLaunch, false);
 
 function moveTreetItemLaunch() {
-	pathToPaste = pathFocused;
+	pathToPaste = pathFocused; // oDOMFocused ??
 	resetColorTreeItem();
 	hideContextMenu();
 	ongoingAction = 'moveTreeItem';
@@ -598,8 +598,8 @@ document.getElementById("pasteHereTreeItem").addEventListener('click', function(
 	}
 	else {
 		if (pathToPaste.substr(-3,1)==="a") {
-			if (ToutesCategories[pathFocused].nbOfFolders <= 98) {
-				queryXHRMoveItem(pathToPaste, pathFocused);							
+			if (oDOMFocused.nbOfFolders <= 98) {
+				pasteHereTreeItemInDbb(pathToPaste, pathFocused);							
 			}
 			else {
 				alert("Pas possible de déplacer la catégorie ici.\n\nVous avez atteint la limite prévue des 99 sous-catégories !\n\nIl serait utile de mieux réorganiser les catégories.")
@@ -608,8 +608,8 @@ document.getElementById("pasteHereTreeItem").addEventListener('click', function(
 			}
 		}
 		else if (pathToPaste.substr(-3,1)==="b"){
-			if (ToutesCategories[pathFocused].nbOfNotes <= 98) {
-				queryXHRMoveItem(pathToPaste, pathFocused);							
+			if (oDOMFocused.nbOfNotes <= 98) {
+				pasteHereTreeItemInDbb(pathToPaste, pathFocused);							
 			}
 			else {
 				alert("Pas possible de déplacer la note ici.\n\nVous avez atteint la limite prévue des 99 notes !\n\nIl serait utile de mieux réorganiser les notes.")
@@ -648,34 +648,84 @@ function resetColorTreeItem() {
 
 
 
-function queryXHRMoveItem(sCutPath, sPathWhereToPaste) {
-	var sNbItemType = sCutPath.substr(-3,1) === "a" ? "nbOfFolders" : "nbOfNotes"; 
+function pasteHereTreeItemInDbb(sPathToMove, sPathWhereToPaste) {
+	var sNbItemType = sPathToMove.substr(-3,1) === "a" ? "nbOfFolders" : "nbOfNotes"; 
 	var rowOfPasteItem = XX(parseInt(ToutesCategories[sPathWhereToPaste][sNbItemType])+1); // ou trouver ce nombre et le XX du cote serveur avec une requete dbb?
 	//alert (rowOfPasteItem);
-	arborescenceNotes.seDeplacerDanslArborescenceReduite(pathFocused);
-	var xhr = new XMLHttpRequest(); 
-	xhr.open ('GET', 'ajax/moveItem.php?idTopic=' + idTopic + '&sCutPath=' + sCutPath + '&sPathWhereToPaste=' + sPathWhereToPaste + '&sPathWhereToPaste=' + sPathWhereToPaste + '&rowOfPasteItem=' + rowOfPasteItem);
-	xhr.send(null);
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState == 4 && xhr.status == 200) {	
-		//alert("Dans queryXHRMoveFolder, sIdCategoryToEdit = "+sIdCategoryToEdit);
+	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';	
+	ajaxCall('ajax/moveItem.php?idTopic=' + idTopic + '&sPathToMove=' + sPathToMove	+ '&sPathWhereToPaste=' + sPathWhereToPaste 
+						+ '&rowOfPasteItem=' + rowOfPasteItem,
+						pasteHereTreeItemInDbbFailed, pasteHereTreeItemUpdateClient, 
+						sPathToMove, sPathWhereToPaste);
+}
+
+function pasteHereTreeItemInDbbFailed(errorMessage) {
+	alert ("Impossible de déplacer l'élément sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
+	hideContextMenu();
+	resetDataTreeReadyForEvent();
+}
+
+
+function pasteHereTreeItemUpdateClient(errorMessageFromServer, sPathToMove, sPathWhereToPaste) {
+	if (errorMessageFromServer==="") {
+		var oDOMToMove = document.getElementById(sPathToMove);
+		var oDOMWhereToPaste = document.getElementById(sPathWhereToPaste);
+		var nbOfFoldersInPathWhereToPaste = oDOMWhereToPaste.nbOfFolders;
+		var nbOfNotesInPathWhereToPaste = oDOMWhereToPaste.nbOfNotes;
 		
-		// effacer toutes les div des treeItem dans le folder parent de CutPath (mais pas le folder parent lui-même)
-		sPathParentOfCutPath = sCutPath.slice(0,-3);
+		var sTreeToMoveJSON = "{";		
+		var relativePath = "";
+		var aORb = "a";
+		var currentRank = 1;
+		var oDOMToChange;
+		var sPathToChange;
+		var sNbOfItems
+		
+		do { // lister les treeItem par ordre alphabétique de div et fabriquer le json avec
+			sNbOfItems = aORb ==="a" ? "nbOfFolders" : "nbOfNotes"; 
+			if (document.getElementById(sPathToMove + relativePath) !== undefined) {
+				oDOMToChange = document.getElementById(sPathToMove + relativePath);
+				sPathToChange = oDOMToChange.id;
+				sTreeToMoveJSON += '"'+ sPathToMove + aORb + XX(nbOfTreeItemsInPathWhereToPaste + currentRank) + '":["'
+										+ oDOMToChange.content + '","' + oDOMToChange.dateCreation + '","'+ '"],'
+				currentRank += 1;				
+			}
+			else if (aORb ==="a") {
+				aORb = "b";
+				currentRank = 1;
+			}
+			else if (aORb === "b") {
+				relativePath += "a01"
+				aOrb = "a";
+				currentRank = 1;
+			}
+		} while (sPathToChange.indexOf(sPathToMove) === 0);
+		sTreeToMoveJSON .= substr(0,-1).'"}';
+	/* 	
+	
+		// effacer toutes les div des treeItem dans le folder parent de sPathToMove (mais pas le folder parent lui-même)
+		sPathParentOfCutPath = sPathToMove.slice(0,-3);
 		aoDOMToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+sPathParentOfCutPath+'a'+'"]');
 		for (var i=0 ; i < aoDOMToDelete.length ; i++ ) {
 			document.getElementById("frameOfTree").removeChild(aoDOMToDelete[i]);
 		}
-		ToutesCategories[sPathParentOfCutPath].nbOfFolders =0;
+		oDOMToMove.nbOfFolders =0;
 		
 		aoDOMToDelete = document.getElementById("frameOfTree").querySelectorAll('div[id^="'+sPathParentOfCutPath+'b'+'"]'); 
 		for (var j=0 ; j < aoDOMToDelete.length ; j++ ) {
 			document.getElementById("frameOfTree").removeChild(aoDOMToDelete[j]);
 		}			
-		ToutesCategories[sPathParentOfCutPath].nbOfNotes =0;
+		oDOMToMove.nbOfNotes =0;
+	 */}
+	else {
+		alert ("Erreur inattendue lors du déplacement au niveau du serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
+	}
+}
+
+	/* 	
 		
 		// insérer le folder déplacé dans sPathWhereToPaste
-		var sInstantiateFolderMoved = '["'+pathFocused+sCutPath.substr(-3,1)+rowOfPasteItem+'","'+ToutesCategories[sCutPath].sContent+'"]';
+		var sInstantiateFolderMoved = '["'+pathFocused+sPathToMove.substr(-3,1)+rowOfPasteItem+'","'+ToutesCategories[sPathToMove].sContent+'"]';
 		instancierArborescenceRecuperee ( sInstantiateFolderMoved , pathFocused );
 		document.getElementById("fondPageEntrerTexte").style.display = 'none';
 		resetColorTreeItem();
@@ -683,13 +733,8 @@ function queryXHRMoveItem(sCutPath, sPathWhereToPaste) {
 		pathToPaste = null;
 		ongoingAction = null;
 		//ajouter l'affichage de ce qui a �t� coll�
-		} 
-		else if (xhr.readyState == 4 && xhr.status != 200) { // !== ??
-				alert('Une erreur est survenue dans queryXHRMoveItem !\n\nCode:' + xhr.status + '\nTexte: ' + xhr.statusText);
-		}
-	}
-}
 
+ */
 // document.getElementById("NouvelleNote").addEventListener('click', insertNewNote, false); // insert depuis le menu html, att! pas encore impl�ment�
 
 function displayTreeInNewWindow(sOriginPathTreeToDisplay) {
