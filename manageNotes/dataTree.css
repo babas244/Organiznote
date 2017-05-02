@@ -13,7 +13,7 @@
 #frameOfTree
 {
 	position: relative;
-	height: 100%;
+	height: 102%;
 	width: 98%;
 	left: 2%;
 	background-color: rgba(255,255,220,0.8);
@@ -157,3 +157,32 @@ div#frameContextMenuTree
 	background-color: red;
 }
 
+/*-------------------------Layer for phone--------------------*/
+@media screen and (max-width: 480px) {
+	#containerOfTree
+	{
+		position: absolute;
+		height: 95%;
+		width: 100%;
+		left: 0%;
+	}
+	
+	#frameOfTree
+	{
+		left: 0%;
+	}
+	
+	#referencesUser
+	{
+		width: 90%;
+	}
+	
+	#frameOfSwitchToTreeForMobile
+	{
+		display: block;
+		position: absolute;
+		left: 90%;
+		width:10%;
+		height: 5%;
+	}
+}

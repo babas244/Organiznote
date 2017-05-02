@@ -65,35 +65,6 @@ li button:hover, li:hover
 	background-color : #2dfbb3;	
 }
 
-/*-------------------------Layer for phone--------------------*/
-@media screen and (max-width: 480px) {
-	#containerOfTree
-	{
-		position: absolute;
-		height: 95%;
-		width: 100%;
-		left: 0%;
-	}
-	
-	#frameOfTree
-	{
-		left: 0%;
-	}
-	
-	#referencesUser
-	{
-		width: 90%;
-	}
-	
-	#frameOfSwitchToTreeForMobile
-	{
-		display: block;
-		position: absolute;
-		left: 90%;
-		width:10%;
-		height: 5%;
-	}
-}
 
 /*-------------------------General--------------------*/ 
 
