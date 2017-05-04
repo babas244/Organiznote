@@ -58,11 +58,11 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 			oDOMFormItemLabel.id = 'formItem'+ rankInForm; 
 			oDOMFormItemLabel.className = "FormItemLabel";
 			oDOMFormItemLabel.innerHTML = oForm[rankInForm].label; 
-			oDOMFormItemLabel.addEventListener('click', function (e) { // à mettre en dehors de la boucle ?
+/* 			oDOMFormItemLabel.addEventListener('click', function (e) { // à mettre en dehors de la boucle ?
 				var displayStyle = e.target.nextSibling.style.display;
 				e.target.nextSibling.style.display = displayStyle === "block" ? "none" : "block";
 			}, false);
-			document.getElementById("superForm").appendChild(oDOMFormItemLabel);
+ */			document.getElementById("superForm").appendChild(oDOMFormItemLabel);
 			document.getElementById("superForm").appendChild(oDOMForm);
 			oDOMElementBr = document.createElement("Br");
 			document.getElementById("superForm").appendChild(oDOMElementBr);
