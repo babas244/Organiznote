@@ -8,10 +8,60 @@ $idTopic = htmlspecialchars($_GET["idTopic"]);
 if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 
 		$aLabels = array();
-		$aLabels[0] = "01234";
-		$aLabels[1] = "012";
-		$aLabels[2] = "012";
-		$aLabels[3] = "012";
+		$aNbOfLabels = array();
+			
+		$reqRetrieveLabels = $bdd -> prepare('SELECT todo_userlabelstitles.content AS labelTitleContent, todo_userlabelstitles.rankLabelTitle AS rankLabelTitle, todo_userlabels.content AS labelContent
+											FROM todo_userlabels 
+											INNER JOIN todo_userlabelstitles
+											ON todo_userlabelstitles.id = todo_userlabels.idLabelTitle
+											WHERE todo_userlabels.idUser=:idUser AND todo_userlabels.idTopic=:idTopic 
+											ORDER BY todo_userlabelstitles.rankLabelTitle, todo_userlabels.rankLabel');
+			$reqRetrieveLabels -> execute(array(
+			'idUser' => $_SESSION['id'],
+			'idTopic' => $idTopic)) or die(print_r($reqRetrieveLabels->errorInfo()));
+			//echo ('<br>'.$reqRetrieveLabels->rowCount().' rangs affectés');
+			
+			$labelsFetched = '';
+			
+			$labelTitlesFetched = '';
+			
+			$rankLabelTitleTest = 0;
+			$rankLabelTest = 0;
+			
+			while ($data = $reqRetrieveLabels->fetch()) {
+				if ($rankLabelTitleTest <= $data['rankLabelTitle'] && $rankLabelTitleTest!=0) { // on attaque donc un nouveau Title
+					$aNbOfLabels[$rankLabelTitleTest - 1] = $rankLabelTest;
+					$rankLabelTest = 0;
+					$labelsFetched = substr($labelsFetched, 0, -1).'],'; // remplacer la virgule en fin de chaîne par le crochet final 
+				}
+				
+				if ($rankLabelTest ==0) { // 	
+					$labelTitlesFetched .= '"'.$data['labelTitleContent'].'",';
+					$labelsFetched .= '["'.$data['labelContent'].'",';
+					$rankLabelTitleTest +=1;
+				}
+				else {
+					$labelsFetched .= '"'.$data['labelContent'].'",';
+				}
+				$rankLabelTest +=1;
+			}
+			$aNbOfLabels[$rankLabelTitleTest - 1] = $rankLabelTest;
+		
+		$reqRetrieveLabels -> closeCursor();	
+
+		$labelTitlesFetched = substr($labelTitlesFetched, 0, -1)."]"; // remplacer la virgule en fin de chaîne par un crochet 
+
+		$labelsFetched = substr($labelsFetched, 0, -1)."]]"; // remplacer la virgule à la fin
+
+		$sOutput = '{"titleLabels":['.$labelTitlesFetched.',"contentLabels":['.$labelsFetched.',"toDoList":'; 		
+	
+		for ($labelTitleRank = 0 ; $labelTitleRank < 4 ; $labelTitleRank++) {
+		$sLabelsToRetrieve = "";
+			for ($labelRank = 0 ; $labelRank < $aNbOfLabels[$labelTitleRank]; $labelRank++) {
+				$sLabelsToRetrieve .= $labelRank;
+			}
+			$aLabels[$labelTitleRank] = $sLabelsToRetrieve;
+		}
 
 		$aExecuteReq = array();
 		array_push($aExecuteReq,$_SESSION['id'],$idTopic);	
@@ -49,9 +99,28 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 				$i+=1;
 			}
 		$reqDisplayToDoList -> closeCursor();	
-					
+		$sOutput .= $toDoFetched == "" ? "" : '{'.substr(substr($toDoFetched, 0, -1),2)."]}"; //il faut enlever le dernier ","
+
+		$sOutput .= ',"toDoArchived":'; // puis les toDo archivés
+
+		$reqDisplayToDoListArchived = $bdd -> prepare("SELECT content, dateCreation, dateExpired, latitude, longitude, accuracyPosition, dateArchive 
+												FROM todolists 
+	WHERE idUser=:idUser AND idTopic=:idTopic AND dateArchive IS NOT NULL
+	ORDER BY dateArchive");
+			$reqDisplayToDoListArchived -> execute(array(
+			'idUser' => $_SESSION['id'],
+			'idTopic' => $idTopic)) or die(print_r($reqDisplayToDoListArchived->errorInfo()));
+			//echo ('<br>'.$reqDisplayToDoListArchived->rowCount().' rangs affectés');
+			
+			$toDoArchivedFetched = "[";
+			while ($data = $reqDisplayToDoListArchived->fetch()) {
+				$toDoArchivedFetched .= '["'.$data['content'].'","'.$data['dateCreation'].'","'.$data['dateExpired'].'","'.$data['latitude'].'","'.$data['longitude'].'","'.$data['accuracyPosition'].'","'.$data['dateArchive'].'"],'; 
+			}
+		$reqDisplayToDoListArchived -> closeCursor();	
+		$sOutput .= $toDoArchivedFetched == "" ? "" : substr($toDoArchivedFetched, 0, -1)."]"; //il faut enlever le dernier ",";
+		
 		header('Content-Disposition: attachment; filename="exportToDoList_'. substr($_SESSION['user'],0,10) .'_'. substr($_SESSION['topic'],0,10) .'.json"');
-		echo $toDoFetched == "" ? "" : '{'.substr(substr($toDoFetched, 0, -1),2)."]}"; //il faut enlever le dernier ","
+		echo $sOutput.'}'; 
 }
 
 else {
