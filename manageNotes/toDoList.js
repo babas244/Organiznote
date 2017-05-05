@@ -1,7 +1,7 @@
 var toDoFocused = [{id:null},{sLabels:null},{position:null}];
-var aNbOfLabels = [5,3,3,3]; // à charger depuis la bdd
+var aNbOfLabels =[];
 var isDisplayDateExpired = false;
-var aLabelsChecked =[[1,0,0,0,0],[1,1,1],[1,1,1],[1,1,1]]; // à fabriquer par une boucle après chargement de aNbOfLabels
+var aLabelsChecked = [];
 var aLabelNbItems = {}; 
 var toDoSendGeolocationLabels = null;
 var toDoSendGeolocationPosition = null;
@@ -10,9 +10,8 @@ initializePageToDo();
 
 function initializePageToDo () {
 	addEventsDragAndDropToLastAndInvisible(document.getElementById("lastAndInvisible"));
-	counterInsertDivSeparatorLabels();
 	document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
-	ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + "&label0=0&label1=012&label2=012&label3=012", initializetoDoFailed, insertToDoListBefore, retrieveLabels);	
+	ajaxCall('phpAjaxCalls_ToDo/retrieveLabels.php?idTopic=' + idTopic, initializetoDoFailed, displayLabelsCheckboxes);
 }
 		
 function counterInsertDivSeparatorLabels() {
@@ -26,11 +25,29 @@ function counterInsertDivSeparatorLabels() {
 				}	
 			} 			
 		} 
-	} 
+	}
+	retrieveToDoListFirstTime();
 }
 
-function retrieveLabels() {
-	ajaxCall('phpAjaxCalls_ToDo/retrieveLabels.php?idTopic=' + idTopic, initializetoDoFailed, displayLabelsCheckboxes); 	
+function retrieveToDoListFirstTime() {
+	var sLabelsPhp="";
+	var labelTitleRank;
+	var labelRank;
+	for (labelTitleRank = 0 ; labelTitleRank < 4 ; labelTitleRank++) {
+		//alert (sLabelsPhp)
+		sLabelsPhp += "&label" + labelTitleRank + "="
+		if (labelTitleRank === 0) {
+			sLabelsPhp += "0"; 
+		}  
+		else {
+			for (labelRank = 0 ; labelRank < aNbOfLabels[labelTitleRank]; labelRank++) {
+				sLabelsPhp += labelRank;
+			}			
+		}
+	}
+	//alert (sLabelsPhp);
+	ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + sLabelsPhp, initializetoDoFailed, insertToDoListBefore, resetToDoReadyForEvent);	
+	
 }
 
 document.getElementById("addToDoButton").addEventListener('click', initializeFormToDo, false);
@@ -91,9 +108,10 @@ function submitToDoQuickFailed(errorMessage) {
 
 function displayLabelsCheckboxes(sLabelsJSON) {
 	oLabels = JSON.parse(sLabelsJSON);
-	
 	for (var labelTitleRank = 0; labelTitleRank < oLabels.title.length; labelTitleRank ++) {
+		aLabelsChecked[labelTitleRank] = [];
 		for (var labelRank = 0 ; labelRank < oLabels.content[labelTitleRank].length; labelRank++) {
+			aNbOfLabels[labelTitleRank] = oLabels.content[labelTitleRank].length;
 			var oDOMFrameCheckbox = document.createElement("span");
 			oDOMFrameCheckbox.className = 'frameCheckbox';
 			//alert ('h = ' + labelTitleRank/oLabels.title.length + '    s = ' + labelRank/oLabels.content[labelTitleRank].length);
@@ -112,13 +130,14 @@ function displayLabelsCheckboxes(sLabelsJSON) {
 			var oDOMDivLabel = document.createElement("label");
 			oDOMDivLabel.innerHTML = oLabels.content[labelTitleRank][labelRank];
 			oDOMDivLabel.htmlFor = oDOMLabelCheckbox.id;
-			oDOMFrameCheckbox.appendChild(oDOMDivLabel);				
+			oDOMFrameCheckbox.appendChild(oDOMDivLabel);
+			aLabelsChecked[labelTitleRank][labelRank] = (labelTitleRank === 0 &&  labelRank > 0) ? 0 : 1;// [[1,0,0,0,0],[1,1,1],[1,1,1],[1,1,1]];
 		}	
 		oDOMElementBr = document.createElement("Br");
 		document.getElementById("containerOfLabelsCheckBoxes").appendChild(oDOMElementBr);
 	}
 	updateCheckboxes();
-	resetToDoReadyForEvent();
+	counterInsertDivSeparatorLabels();
 }
 			
 function resetToDoReadyForEvent() {
