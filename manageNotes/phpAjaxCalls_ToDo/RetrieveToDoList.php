@@ -5,11 +5,11 @@ session_start();
 
 if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["label0"]) && isset($_GET["label1"]) && isset($_GET["label2"]) && isset($_GET["label3"])) {
 
-	if (preg_match("#^[0-9]{1,4}$#", $_GET["label0"]) && preg_match("#^[0-9]{1,4}$#", $_GET["label1"]) && preg_match("#^[0-9]{1,4}$#", $_GET["label3"]) && preg_match("#^[0-9]{1,4}$#", $_GET["label3"])) {		
+	if (preg_match("#^[0-9]{1,9}$#", $_GET["label0"]) && preg_match("#^[0-9]{1,9}$#", $_GET["label1"]) && preg_match("#^[0-9]{1,9}$#", $_GET["label3"]) && preg_match("#^[0-9]{1,9}$#", $_GET["label3"])) {		
 		
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
 		$aLabels = array();
-		$aLabels[0] = htmlspecialchars($_GET["label0"]); // utile ??
+		$aLabels[0] = htmlspecialchars($_GET["label0"]);
 		$aLabels[1] = htmlspecialchars($_GET["label1"]);
 		$aLabels[2] = htmlspecialchars($_GET["label2"]);
 		$aLabels[3] = htmlspecialchars($_GET["label3"]);
