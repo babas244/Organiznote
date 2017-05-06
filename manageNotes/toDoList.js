@@ -236,7 +236,7 @@ function deleteToDo () {
 function stateToDoDone () {
 	if (confirm("Êtes-vous sûr de bien vouloir archiver comme faite la note :\n" + document.getElementById(toDoFocused[0].id).content) == true) {
 			var dateArchiveCreated = new Date()
-			var dateArchive = dateArchiveCreated.toISOString().substr(0,11)+dateArchiveCreated.getHours()+dateArchiveCreated.toISOString().substr(13,3);
+			var dateArchive = dateArchiveCreated.toISOString().substr(0,11)+XX(dateArchiveCreated.getHours())+dateArchiveCreated.toISOString().substr(13,3);
 			var sForm = '[{"name":"DateArchive", "attributes" : {"value" : "' + dateArchive + '" }, "label" : "Date d\'archivage (format AAAA-MM-JJThh:mm)"}]';
 		//alert (sForm);
 		superFormModale(sForm, "Confirmation de la date d'archivage", setToDoDoneAjax, "array", fCheckFormDateArchive);
@@ -247,8 +247,13 @@ function stateToDoDone () {
 }
 
 function setToDoDoneAjax(aFormDateArchive) {
-	document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
-	ajaxCall('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic + '&dateArchive=' + aFormDateArchive[0].replace("T"," ")+":00" + "&sLabels=" + toDoFocused[0].sLabels + "&position=" + toDoFocused[0].position, setToDoDoneFailed, deleteToDoAndHideContextMenu, toDoFocused[0].id);		
+	if (ResponseForm !== "") {
+		document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
+		ajaxCall('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic + '&dateArchive=' + aFormDateArchive[0].replace("T"," ")+":00" + "&sLabels=" + toDoFocused[0].sLabels + "&position=" + toDoFocused[0].position, setToDoDoneFailed, deleteToDoAndHideContextMenu, toDoFocused[0].id);		
+	}
+	else {
+		hideContextMenuToDo();
+	}
 }
 
 function deleteToDoAndHideContextMenu(errorMessageFromServer,idDOMToDelete) {
