@@ -67,7 +67,7 @@
 
 div[id^="separatorLabels"]
 {
-	border: 1px black solid;
+	border-top: 1px black solid;
 }
 
 .dateExpired

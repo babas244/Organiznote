@@ -122,7 +122,7 @@ function displayLabelsCheckboxes(sLabelsJSON) {
 			oDOMLabelCheckbox.id = "checkboxLabel"+labelTitleRank+"a"+labelRank;
 			oDOMLabelCheckbox.labelTitleRank = labelTitleRank;
 			oDOMLabelCheckbox.labelRank = labelRank;
-			oDOMLabelCheckbox.addEventListener('input', function (e){
+			oDOMLabelCheckbox.addEventListener('change', function (e){
 				displayToDoList(e.target.labelTitleRank, e.target.labelRank, e.target.checked);
 				// faut-il mettre ici à jour aLabelsChecked ?
 			}, false);
