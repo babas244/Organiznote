@@ -5,6 +5,7 @@ var aLabelsChecked = [];
 var aLabelNbItems = {}; 
 var toDoSendGeolocationLabels = null;
 var toDoSendGeolocationPosition = null;
+var aLabelColor = [];
 
 initializePageToDo();
 
@@ -110,12 +111,14 @@ function displayLabelsCheckboxes(sLabelsJSON) {
 	oLabels = JSON.parse(sLabelsJSON);
 	for (var labelTitleRank = 0; labelTitleRank < oLabels.title.length; labelTitleRank ++) {
 		aLabelsChecked[labelTitleRank] = [];
+		aLabelColor[labelTitleRank] = [];
 		for (var labelRank = 0 ; labelRank < oLabels.content[labelTitleRank].length; labelRank++) {
 			aNbOfLabels[labelTitleRank] = oLabels.content[labelTitleRank].length;
 			var oDOMFrameCheckbox = document.createElement("span");
 			oDOMFrameCheckbox.className = 'frameCheckbox';
 			//alert ('h = ' + labelTitleRank/oLabels.title.length + '    s = ' + labelRank/oLabels.content[labelTitleRank].length);
-			oDOMFrameCheckbox.style.backgroundColor = HSVtoHex(labelTitleRank/oLabels.title.length,(labelRank)/oLabels.content[labelTitleRank].length, 1);
+			aLabelColor[labelTitleRank][labelRank] = HSVtoHex(labelTitleRank/oLabels.title.length,(labelRank)/oLabels.content[labelTitleRank].length, 1)
+			oDOMFrameCheckbox.style.backgroundColor = aLabelColor[labelTitleRank][labelRank];
 			document.getElementById("containerOfLabelsCheckBoxes").appendChild(oDOMFrameCheckbox);
 			var oDOMLabelCheckbox = document.createElement("input");
 			oDOMLabelCheckbox.type = "checkbox";
@@ -191,13 +194,26 @@ function insertToDoListBefore(sToDoListJSON, fCallback, sIsNew) {
 	var oToDoListJSONParsed = sToDoListJSON == "" ? "" : JSON.parse(sToDoListJSON);
 	var sContent;
 	var nNbOfToDoInLabels;
+	var i,j;
 	for (sLabels in oToDoListJSONParsed) {
 		if (aLabelNbItems[sLabels] === undefined || sIsNew === "newNote") { // il faut en fait deux fCallback différentes ici
 			aLabels = sLabels.split("");
 			nNbOfToDoInLabels = oToDoListJSONParsed[sLabels].length;
-			aLabelNbItems[sLabels] = aLabelNbItems[sLabels]=== undefined ? 0 : aLabelNbItems[sLabels];
+			aLabelNbItems[sLabels] = aLabelNbItems[sLabels]=== undefined ? 0 : aLabelNbItems[sLabels]; // dernier membre : nNbOfToDoInLabels ou aLabelNbItems[sLabels] ??
+			//alert (sLabels + " " + aLabelNbItems[sLabels]);
+			if (nNbOfToDoInLabels !== 0) {
+				for (j = 0 ; j < 4 ; j ++) {
+					var oDOMLabelsNameSeparator = document.createElement("span");
+					oDOMLabelsNameSeparator.className = "labelsNameSeparator";
+					//alert (aLabelColor[j][aLabels[j]]);
+					oDOMLabelsNameSeparator.style.backgroundColor = aLabelColor[j][aLabels[j]];
+					oDOMLabelsNameSeparator.innerHTML = oLabels.content[j][aLabels[j]];
+					//alert ("separatorLabels"+sLabels);
+					document.getElementById("separatorLabels"+sLabels).appendChild(oDOMLabelsNameSeparator);
+				}
+			}
 			//alert (nNbOfToDoInLabels+"     "+aLabelNbItems[sLabels])
-			for (var i = 0 ; i < nNbOfToDoInLabels; i++ ) {
+			for (i = 0 ; i < nNbOfToDoInLabels; i++ ) {
 				sContent = oToDoListJSONParsed[sLabels][i][0].replace(/&lt;br&gt;/gi, "\n");
 				var oDOMToDo = document.createElement("div");
 				oDOMToDo.id = 'toDo'+sLabels+(parseInt(i)+parseInt(aLabelNbItems[sLabels]));
@@ -247,7 +263,7 @@ function stateToDoDone () {
 }
 
 function setToDoDoneAjax(aFormDateArchive) {
-	if (ResponseForm !== "") {
+	if (aFormDateArchive !== "") {
 		document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 		ajaxCall('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic + '&dateArchive=' + aFormDateArchive[0].replace("T"," ")+":00" + "&sLabels=" + toDoFocused[0].sLabels + "&position=" + toDoFocused[0].position, setToDoDoneFailed, deleteToDoAndHideContextMenu, toDoFocused[0].id);		
 	}

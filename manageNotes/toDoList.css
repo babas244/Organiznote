@@ -32,7 +32,6 @@
 	overflow: scroll;
 	/* pour le tel il faudra probablement mettre a position : fixed;*/
 	max-height: 80%;
-	font-size: 1.2em;
 }
 
 #addToDoButton
@@ -57,6 +56,7 @@
 	background-color: #eeaaee;
 	border: 1px black solid;
 	border-radius: 2px;
+	font-size: 1.2em;
 	word-wrap: break-word;	
 }
 
@@ -68,6 +68,16 @@
 div[id^="separatorLabels"]
 {
 	border-top: 1px black solid;
+	background-color: black;
+	font-size: 0.7em;
+    text-align: justify;
+    text-align-last:justify;
+}
+
+.labelsNameSeparator
+{
+	border-right: 1px black solid;
+	padding: 2px;
 }
 
 .dateExpired
