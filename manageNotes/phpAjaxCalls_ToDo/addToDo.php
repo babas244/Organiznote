@@ -28,7 +28,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 			'label1' => $aLabels[1],
 			'label2' => $aLabels[2],
 			'label3' => $aLabels[3])) or die(print_r($reqCountToDoHasLabels->errorInfo()));
-			//echo ('<br>'.$reqCountToDoHasLabels->rowCount().' rangs affectés');
+			//echo ('<br>'.$reqCountToDoHasLabels->rowCount().' rangs affectÃ©s');
 		while ($data = $reqCountToDoHasLabels->fetch()) {
 			$nbOfToDoHasLabels = $data['nbOfToDoHasLabels'];
 		}
@@ -49,11 +49,11 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 			'label1' => $aLabels[1],
 			'label2' => $aLabels[2],
 			'label3' => $aLabels[3])) or die(print_r($reqInsertToDo->errorInfo()));
-		//echo ('<br>'.$reqInsertToDo->rowCount().' rangs affectés');
+		//echo ('<br>'.$reqInsertToDo->rowCount().' rangs affectÃ©s');
 		$reqInsertToDo -> closeCursor();	
 	}
 }
 else {
-	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	
+	echo 'Une des variables n\'est pas dÃ©finie ou la session n\'est pas ouverte !!!';	
 }
 ?>

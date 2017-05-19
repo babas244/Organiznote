@@ -18,7 +18,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["dateArchiv
 		$aLabels = str_split($sLabels);
 		$position = htmlspecialchars($_GET["position"]);
 		
-		// mettre dateArchive de la toDo égale à NOW()
+		// mettre dateArchive de la toDo Ã©gale Ã  NOW()
 		$reqArchiveToDo = $bdd -> prepare('UPDATE todolists SET dateArchive=:dateArchive WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND noteRank=:NoteRank');
 			$reqArchiveToDo -> execute(array(
 			'idUser' => $_SESSION['id'],
@@ -29,10 +29,10 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["dateArchiv
 			'label2' => $aLabels[2],
 			'label3' => $aLabels[3],
 			'NoteRank'=> $position)) or die(print_r($reqArchiveToDo->errorInfo()));
-		//echo ('<br>'.$reqArchiveToDo->rowCount().' rangs affectés');
+		//echo ('<br>'.$reqArchiveToDo->rowCount().' rangs affectÃ©s');
 		$reqArchiveToDo -> closeCursor();	
 
-		// mettre à jour les positions
+		// mettre Ã  jour les positions
 		$reqUpdateToDo = $bdd -> prepare('UPDATE todolists SET noteRank = noteRank - 1
 		WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND noteRank > :oldNoteRank');
 			$reqUpdateToDo -> execute(array(
@@ -43,12 +43,12 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["dateArchiv
 			'label2' => $aLabels[2],
 			'label3' => $aLabels[3],
 			'oldNoteRank'=> $position)) or die(print_r($reqUpdateToDo->errorInfo()));
-		//echo ('<br>'.$reqUpdateToDo->rowCount().' rangs affectés');
+		//echo ('<br>'.$reqUpdateToDo->rowCount().' rangs affectÃ©s');
 		$reqUpdateToDo -> closeCursor();
 	}
 }
 
 else {
-	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	
+	echo 'Une des variables n\'est pas dÃ©finie ou la session n\'est pas ouverte !!!';	
 }
 ?>

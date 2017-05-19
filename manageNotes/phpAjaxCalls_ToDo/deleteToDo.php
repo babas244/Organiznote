@@ -29,10 +29,10 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sLabels"])
 			'label2' => $aLabels[2],
 			'label3' => $aLabels[3],
 			'NoteRank'=> $position)) or die(print_r($reqDeleteToDo->errorInfo()));
-		//echo ('<br>'.$reqDeleteToDo->rowCount().' rangs affectés');
+		//echo ('<br>'.$reqDeleteToDo->rowCount().' rangs affectÃ©s');
 		$reqDeleteToDo -> closeCursor();	
 
-		// mettre à jour les positions
+		// mettre Ã  jour les positions
 		$reqUpdateToDo = $bdd -> prepare('UPDATE todolists SET noteRank = noteRank - 1
 		WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND noteRank > :oldNoteRank');
 			$reqUpdateToDo -> execute(array(
@@ -43,12 +43,12 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sLabels"])
 			'label2' => $aLabels[2],
 			'label3' => $aLabels[3],
 			'oldNoteRank'=> $position)) or die(print_r($reqUpdateToDo->errorInfo()));
-		//echo ('<br>'.$reqUpdateToDo->rowCount().' rangs affectés');
+		//echo ('<br>'.$reqUpdateToDo->rowCount().' rangs affectÃ©s');
 		$reqUpdateToDo -> closeCursor();
 	}
 }
 
 else {
-	echo 'error inattendue dans deleteToDo.php : Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	
+	echo 'error inattendue dans deleteToDo.php : Une des variables n\'est pas dÃ©finie ou la session n\'est pas ouverte !!!';	
 }
 ?>

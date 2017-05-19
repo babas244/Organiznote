@@ -18,7 +18,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCutPath"]
 		require '../../isIdTopicSafeAndMatchUser.php';
 		
 		// on update les noms de tous les paths descendants de sCutPath et aussi sCutPath
-		$lengthCutPath = strlen($sCutPath); // on pourrait mettre le +1 ici au lieu de le recalculer dans la requete à chaque fois
+		$lengthCutPath = strlen($sCutPath); // on pourrait mettre le +1 ici au lieu de le recalculer dans la requete Ã  chaque fois
 		//echo $lengthCutPath;
 		//exit;
 		
@@ -33,10 +33,10 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCutPath"]
 			'rowOfPasteItem' => $rowOfPasteItem,
 			'lengthCutPath' => $lengthCutPath,
 			'startWithCutPath' => $sCutPath.'%')) or die(print_r($reqUpdatePathFamilyOfCutPath->errorInfo()));
-		echo ('<br>'.$reqUpdatePathFamilyOfCutPath->rowCount()." lignes affectées dans reqUpdatePathFamilyOfCutPath<br>");
+		echo ('<br>'.$reqUpdatePathFamilyOfCutPath->rowCount()." lignes affectÃ©es dans reqUpdatePathFamilyOfCutPath<br>");
 		$reqUpdatePathFamilyOfCutPath->closeCursor();
 											
-		// on update tous les items affectés par le décalage
+		// on update tous les items affectÃ©s par le dÃ©calage
 		$sPathParent = substr($sCutPath,0,-3);
 		$sRankDeleted = $sCutPath;
 		$nRankDeleted = intval(substr($sRankDeleted,-2));
@@ -52,12 +52,12 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCutPath"]
 			'lengthPathParent' => $lengthPathParent,
 			'startWithPathParent' => $sPathParent.'a%',
 			'nRankDeleted' => $nRankDeleted)) or die(print_r($reqUpdateSiblingsAndChildren->errorInfo()));		
-			echo ('<br>'.$reqUpdateSiblingsAndChildren->rowCount()." lignes affectées dans reqUpdateSiblingsAndChildren<br>");
+			echo ('<br>'.$reqUpdateSiblingsAndChildren->rowCount()." lignes affectÃ©es dans reqUpdateSiblingsAndChildren<br>");
 			$reqUpdateSiblingsAndChildren->closeCursor();  // attention la requete concerne les folders ET les notes 
 	}
 }
 
 else {
-	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
+	echo 'Une des variables n\'est pas dÃ©finie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
 }
 ?>

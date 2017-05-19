@@ -9,7 +9,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sParentPat
 	
 	$sParentPathOfTreeToExport = htmlspecialchars($_GET["sParentPathOfTreeToExport"]);
 	
-	$reqRetrieveParentContent = $bdd -> prepare('SELECT content FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote=:pathParent'); // on retrouve le content de pathParent et on vérifie qu'il existe bien en même temps dans la bdd
+	$reqRetrieveParentContent = $bdd -> prepare('SELECT content FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote=:pathParent'); // on retrouve le content de pathParent et on vÃ©rifie qu'il existe bien en mÃªme temps dans la bdd
 		$reqRetrieveParentContent -> execute(array(
 		'idUser' => $_SESSION['id'],
 		'idTopic' => $idTopic,
@@ -22,7 +22,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sParentPat
 		
 		if ($reqRetrieveParentContent->rowCount() == 0) {
 			header('Content-Disposition: attachment; filename="exportDataTree_ERREUR EXPORT (voir message erreur dedans).json"');
-			echo '{"error":"le fichier ne peut pas être écrit, car il est impossible de trouver la catégorie parent dans la base de données. Contacter l\'administrateur du site si l\'erreur se répète"}'; 
+			echo '{"error":"le fichier ne peut pas Ãªtre Ã©crit, car il est impossible de trouver la catÃ©gorie parent dans la base de donnÃ©es. Contacter l\'administrateur du site si l\'erreur se rÃ©pÃ¨te"}'; 
 			exit;
 		}
 
@@ -47,7 +47,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sParentPat
 		
 		if ($reqRetrieveTree->rowCount() == 0) {
 			header('Content-Disposition: attachment; filename="exportDataTree_ERREUR EXPORT (voir message erreur dedans).json"');
-			echo '{"error":"le fichier est vide, car le dossier sélectionné pour l\'exportation n\'a pas de descendants."}'; 
+			echo '{"error":"le fichier est vide, car le dossier sÃ©lectionnÃ© pour l\'exportation n\'a pas de descendants."}'; 
 			exit;
 		}
 
@@ -59,7 +59,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sParentPat
 }
 
 else {
-	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
+	echo 'Une des variables n\'est pas dÃ©finie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
 }
 	
 ?>

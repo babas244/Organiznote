@@ -28,7 +28,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryT
 		$reqDeleteNote->closeCursor();
 
 											
-		// on update toutes les notes affectés par le décalage
+		// on update toutes les notes affectÃ©s par le dÃ©calage
 		$sPathParent = $sCategoryOfDad;
 		$sRankDeleted = $sCategoryToDelete;
 		$nRankDeleted = intval(substr($sRankDeleted,-2));
@@ -48,6 +48,6 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryT
 }
 
 else {
-	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
+	echo 'Une des variables n\'est pas dÃ©finie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
 }
 ?>

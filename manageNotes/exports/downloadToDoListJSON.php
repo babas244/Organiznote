@@ -19,7 +19,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 			$reqRetrieveLabels -> execute(array(
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $idTopic)) or die(print_r($reqRetrieveLabels->errorInfo()));
-			//echo ('<br>'.$reqRetrieveLabels->rowCount().' rangs affectés');
+			//echo ('<br>'.$reqRetrieveLabels->rowCount().' rangs affectÃ©s');
 			
 			$labelsFetched = '';
 			
@@ -32,7 +32,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 				if ($rankLabelTitleTest <= $data['rankLabelTitle'] && $rankLabelTitleTest!=0) { // on attaque donc un nouveau Title
 					$aNbOfLabels[$rankLabelTitleTest - 1] = $rankLabelTest;
 					$rankLabelTest = 0;
-					$labelsFetched = substr($labelsFetched, 0, -1).'],'; // remplacer la virgule en fin de chaîne par le crochet final 
+					$labelsFetched = substr($labelsFetched, 0, -1).'],'; // remplacer la virgule en fin de chaÃ®ne par le crochet final 
 				}
 				
 				if ($rankLabelTest ==0) { // 	
@@ -49,9 +49,9 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		
 		$reqRetrieveLabels -> closeCursor();	
 
-		$labelTitlesFetched = substr($labelTitlesFetched, 0, -1)."]"; // remplacer la virgule en fin de chaîne par un crochet 
+		$labelTitlesFetched = substr($labelTitlesFetched, 0, -1)."]"; // remplacer la virgule en fin de chaÃ®ne par un crochet 
 
-		$labelsFetched = substr($labelsFetched, 0, -1)."]]"; // remplacer la virgule à la fin
+		$labelsFetched = substr($labelsFetched, 0, -1)."]]"; // remplacer la virgule Ã  la fin
 
 		$sOutput = '{"titleLabels":['.$labelTitlesFetched.',"contentLabels":['.$labelsFetched.',"toDoList":'; 		
 	
@@ -81,7 +81,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 	WHERE idUser=? AND idTopic=? AND label0 IN $questionMarks[0] AND label1 IN $questionMarks[1] AND label2 IN $questionMarks[2] AND label3 IN $questionMarks[3] AND dateArchive IS NULL
 	ORDER BY label0, label1, label2, label3, noteRank");
 			$reqDisplayToDoList -> execute($aExecuteReq) or die(print_r($reqDisplayToDoList->errorInfo()));
-			//echo ('<br>'.$reqDisplayToDoList->rowCount().' rangs affectés');
+			//echo ('<br>'.$reqDisplayToDoList->rowCount().' rangs affectÃ©s');
 			
 			$toDoFetched = "";
 			$i=0;
@@ -101,7 +101,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		$reqDisplayToDoList -> closeCursor();	
 		$sOutput .= $toDoFetched == "" ? "" : '{'.substr(substr($toDoFetched, 0, -1),2)."]}"; //il faut enlever le dernier ","
 
-		$sOutput .= ',"toDoArchived":'; // puis les toDo archivés
+		$sOutput .= ',"toDoArchived":'; // puis les toDo archivÃ©s
 
 		$reqDisplayToDoListArchived = $bdd -> prepare("SELECT content, dateCreation, dateExpired, latitude, longitude, accuracyPosition, dateArchive 
 												FROM todolists 
@@ -110,7 +110,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 			$reqDisplayToDoListArchived -> execute(array(
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $idTopic)) or die(print_r($reqDisplayToDoListArchived->errorInfo()));
-			//echo ('<br>'.$reqDisplayToDoListArchived->rowCount().' rangs affectés');
+			//echo ('<br>'.$reqDisplayToDoListArchived->rowCount().' rangs affectÃ©s');
 			
 			$toDoArchivedFetched = "[";
 			while ($data = $reqDisplayToDoListArchived->fetch()) {
@@ -124,7 +124,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 }
 
 else {
-	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
+	echo 'Une des variables n\'est pas dÃ©finie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
 }
 	
 ?>

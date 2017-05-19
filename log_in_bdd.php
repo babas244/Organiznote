@@ -1,5 +1,5 @@
 <?php 
-// connexion à la bdd
+// connexion Ã  la bdd
 try {
 	$bdd= new PDO('mysql:host=localhost;dbname=organiznotes', 'root', '');
 }

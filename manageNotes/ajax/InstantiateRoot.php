@@ -25,6 +25,6 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 }
 
 else {
-	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';
+	echo 'Une des variables n\'est pas dÃ©finie ou la session n\'est pas ouverte !!!';
 }
 ?> 

@@ -19,11 +19,11 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 		$position = htmlspecialchars($_GET["position"]);		
 		
 		$sNewLabels = htmlspecialchars($_GET["sNewLabels"]); // utile ??
-		//$aNewLabels = array(); //nécessaire ??
+		//$aNewLabels = array(); //nÃ©cessaire ??
 		$aNewLabels = str_split($sNewLabels);
 		if ($aLabels[0] == $aNewLabels[0] && $aLabels[1] == $aNewLabels[1] && $aLabels[2] == $aNewLabels[2] && $aLabels[3] == $aNewLabels[3]) {
 			
-			// on n'a donc pas changé de sLabels, on udpate que le content		
+			// on n'a donc pas changÃ© de sLabels, on udpate que le content		
 			$reqUpdateToDo = $bdd -> prepare('UPDATE todolists SET content=:newNote
 			WHERE Iduser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND noteRank=:NoteRank');
 				$reqUpdateToDo -> execute(array(
@@ -35,11 +35,11 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 				'label2' => $aLabels[2],
 				'label3' => $aLabels[3],
 				'NoteRank'=> $position)) or die(print_r($reqUpdateToDo->errorInfo()));
-			//echo ('<br>'.$reqUpdateToDo->rowCount().' rangs affectés');
+			//echo ('<br>'.$reqUpdateToDo->rowCount().' rangs affectÃ©s');
 			$reqUpdateToDo -> closeCursor();	
 		} 
-		else { // on a changé de sLabels 
-			// Il faut préparer la MAJ des positions : d'abord compter le nombre de toDo avec du nouveau sLabels pour insérer à la fin
+		else { // on a changÃ© de sLabels 
+			// Il faut prÃ©parer la MAJ des positions : d'abord compter le nombre de toDo avec du nouveau sLabels pour insÃ©rer Ã  la fin
 			$reqCountToDoNewLabels = $bdd -> prepare("SELECT COUNT(*) AS nbOfToDoNewLabels FROM todolists 
 		WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND dateArchive IS NULL");
 				$reqCountToDoNewLabels -> execute(array(
@@ -49,7 +49,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 				'label1' => $aNewLabels[1],
 				'label2' => $aNewLabels[2],
 				'label3' => $aNewLabels[3])) or die(print_r($reqCountToDoNewLabels->errorInfo()));
-				//echo ('<br>'.$reqCountToDoNewLabels->rowCount().' rangs affectés');
+				//echo ('<br>'.$reqCountToDoNewLabels->rowCount().' rangs affectÃ©s');
 			while ($data = $reqCountToDoNewLabels->fetch()) {
 				$nbOfToDoNewLabels = $data['nbOfToDoNewLabels'];
 			}
@@ -74,10 +74,10 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 				'oldLabel2' => $aLabels[2],
 				'oldLabel3' => $aLabels[3],
 				'oldNoteRank'=> $position)) or die(print_r($reqUpdateToDo->errorInfo()));
-			//echo ('<br>'.$reqUpdateToDo->rowCount().' rangs affectés');
+			//echo ('<br>'.$reqUpdateToDo->rowCount().' rangs affectÃ©s');
 			$reqUpdateToDo -> closeCursor();
 			
-			// mettre à jour les positions
+			// mettre Ã  jour les positions
 			$reqUpdateToDo = $bdd -> prepare('UPDATE todolists SET noteRank = noteRank - 1
 			WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND noteRank > :oldNoteRank');
 				$reqUpdateToDo -> execute(array(
@@ -88,13 +88,13 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 				'label2' => $aLabels[2],
 				'label3' => $aLabels[3],
 				'oldNoteRank'=> $position)) or die(print_r($reqUpdateToDo->errorInfo()));
-			//echo ('<br>'.$reqUpdateToDo->rowCount().' rangs affectés');
+			//echo ('<br>'.$reqUpdateToDo->rowCount().' rangs affectÃ©s');
 			$reqUpdateToDo -> closeCursor();
 			
 		}
 	}
 }
 else {
-	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	
+	echo 'Une des variables n\'est pas dÃ©finie ou la session n\'est pas ouverte !!!';	
 }
 ?>

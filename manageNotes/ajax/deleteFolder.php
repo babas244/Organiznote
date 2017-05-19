@@ -25,9 +25,9 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryT
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $idTopic, 
 			'idNoteToDelete' => $sCategoryToDelete."%"));
-		$reqDeleteChildren->closeCursor();	// att ! 01% efface aussi 01, ce qui sera interdit si 01 devient la racine. pour éviter ça on effacer 01a%, mais cela  n'inclut que les folders, mais de risque car il n'y a pas d'appel de deleteNote pour la racine
+		$reqDeleteChildren->closeCursor();	// att ! 01% efface aussi 01, ce qui sera interdit si 01 devient la racine. pour Ã©viter Ã§a on effacer 01a%, mais cela  n'inclut que les folders, mais de risque car il n'y a pas d'appel de deleteNote pour la racine
 											
-		// on update tous les items affectés par le décalage
+		// on update tous les items affectÃ©s par le dÃ©calage
 		$sPathParent = $sCategoryOfDad;
 		$sRankDeleted = $sCategoryToDelete;
 		$nRankDeleted = intval(substr($sRankDeleted,-2));
@@ -47,6 +47,6 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryT
 }
 
 else {
-	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
+	echo 'Une des variables n\'est pas dÃ©finie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
 }
 ?>

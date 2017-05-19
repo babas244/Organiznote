@@ -20,7 +20,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		$reqRetrieveLabels -> execute(array(
 		'idUser' => $_SESSION['id'],
 		'idTopic' => $idTopic)) or die(print_r($reqRetrieveLabels->errorInfo()));
-		//echo ('<br>'.$reqRetrieveLabels->rowCount().' rangs affectés');
+		//echo ('<br>'.$reqRetrieveLabels->rowCount().' rangs affectÃ©s');
 		
 		$labelsFetched = '';
 		
@@ -32,7 +32,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		while ($data = $reqRetrieveLabels->fetch()) {
 			if ($rankLabelTitleTest <= $data['rankLabelTitle'] && $rankLabelTitleTest!=0) { // on attaque donc un nouveau Title
 				$rankLabelTest = 0;
-				$labelsFetched = substr($labelsFetched, 0, -1).'],'; // remplacer la virgule en fin de chaîne par le crochet final 
+				$labelsFetched = substr($labelsFetched, 0, -1).'],'; // remplacer la virgule en fin de chaÃ®ne par le crochet final 
 			}
 			
 			if ($rankLabelTest ==0) { // 	
@@ -47,13 +47,13 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		}
 	$reqRetrieveLabels -> closeCursor();	
 	
-	$labelTitlesFetched = substr($labelTitlesFetched, 0, -1)."]"; // remplacer la virgule en fin de chaîne par un crochet 
+	$labelTitlesFetched = substr($labelTitlesFetched, 0, -1)."]"; // remplacer la virgule en fin de chaÃ®ne par un crochet 
 	
-	$labelsFetched = substr($labelsFetched, 0, -1)."]]"; // remplacer la virgule à la fin
+	$labelsFetched = substr($labelsFetched, 0, -1)."]]"; // remplacer la virgule Ã  la fin
 	
 	echo '{"title":['.$labelTitlesFetched.',"content":['.$labelsFetched.'}'; 		
 }
 else {
-	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
+	echo 'Une des variables n\'est pas dÃ©finie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
 }
 ?>

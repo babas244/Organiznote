@@ -36,7 +36,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["label0"]) 
 	WHERE idUser=? AND idTopic=? AND label0 IN $questionMarks[0] AND label1 IN $questionMarks[1] AND label2 IN $questionMarks[2] AND label3 IN $questionMarks[3] AND dateArchive IS NULL
 	ORDER BY label0, label1, label2, label3, noteRank");
 			$reqDisplayToDoList -> execute($aExecuteReq) or die(print_r($reqDisplayToDoList->errorInfo()));
-			//echo ('<br>'.$reqDisplayToDoList->rowCount().' rangs affectés');
+			//echo ('<br>'.$reqDisplayToDoList->rowCount().' rangs affectÃ©s');
 			
 			$toDoFetched = "";
 			$i=0;
@@ -61,6 +61,6 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["label0"]) 
 }
 
 else {
-	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
+	echo 'Une des variables n\'est pas dÃ©finie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
 }
 ?>

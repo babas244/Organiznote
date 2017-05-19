@@ -44,7 +44,7 @@ div#menu
 	font-size : 22px;
 }
 
-ul {padding: 0px;} /* il y a un padding par défaut des ul sinon !!*/
+ul {padding: 0px;} /* il y a un padding par dÃ©faut des ul sinon !!*/
 ul ul {display: none; position: absolute; left: 0px; bottom: 0px; margin: 0px; padding: 0px;}
 li {list-style-type: none; position: relative; left: 0px; bottom: 20px; width: 100px; border: 1px black solid}
 li:hover ul.Niveau2 {display: block;}

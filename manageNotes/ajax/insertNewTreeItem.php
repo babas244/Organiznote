@@ -23,12 +23,12 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["newNote"])
 			'idTopic' => $idTopic, 
 			'idNote' => $sPathTreeItemToInsert,
 			'newNote' => $newNote)) or die(print_r($reqInsertNote->errorInfo()));
-		//echo ('<br>'.$reqInsertNote->rowCount().' rangs affectés');
+		//echo ('<br>'.$reqInsertNote->rowCount().' rangs affectÃ©s');
 		$reqInsertNote -> closeCursor();	
 	}
 }
 
 else {
-	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	
+	echo 'Une des variables n\'est pas dÃ©finie ou la session n\'est pas ouverte !!!';	
 }
 ?>

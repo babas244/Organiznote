@@ -30,6 +30,6 @@ if (isset($_SESSION['id'])&& isset($_GET["idTopic"]) && isset($_GET["sPathToEdit
 	}
 }
 else {
-	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	
+	echo 'Une des variables n\'est pas dÃ©finie ou la session n\'est pas ouverte !!!';	
 }
 ?>
