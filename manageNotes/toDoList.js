@@ -201,15 +201,21 @@ function insertToDoListBefore(sToDoListJSON, fCallback, sIsNew) {
 			nNbOfToDoInLabels = oToDoListJSONParsed[sLabels].length;
 			aLabelNbItems[sLabels] = aLabelNbItems[sLabels]=== undefined ? 0 : aLabelNbItems[sLabels]; // dernier membre : nNbOfToDoInLabels ou aLabelNbItems[sLabels] ??
 			//alert (sLabels + " " + aLabelNbItems[sLabels]);
+			var oDOMSeparatorLabels = document.getElementById("separatorLabels"+sLabels);
 			if (nNbOfToDoInLabels !== 0) {
-				for (j = 0 ; j < 4 ; j ++) {
-					var oDOMLabelsNameSeparator = document.createElement("span");
-					oDOMLabelsNameSeparator.className = "labelsNameSeparator";
-					//alert (aLabelColor[j][aLabels[j]]);
-					oDOMLabelsNameSeparator.style.backgroundColor = aLabelColor[j][aLabels[j]];
-					oDOMLabelsNameSeparator.innerHTML = oLabels.content[j][aLabels[j]];
-					//alert ("separatorLabels"+sLabels);
-					document.getElementById("separatorLabels"+sLabels).appendChild(oDOMLabelsNameSeparator);
+				if (oDOMSeparatorLabels.firstElementChild === null) {
+					for (j = 0 ; j < 4 ; j ++) {
+						var oDOMLabelsNameSeparator = document.createElement("span");
+						oDOMLabelsNameSeparator.className = "labelsNameSeparator";
+						//alert (aLabelColor[j][aLabels[j]]);
+						oDOMLabelsNameSeparator.style.backgroundColor = aLabelColor[j][aLabels[j]];
+						oDOMLabelsNameSeparator.innerHTML = oLabels.content[j][aLabels[j]];
+						//alert ("separatorLabels"+sLabels);
+						oDOMSeparatorLabels.appendChild(oDOMLabelsNameSeparator);
+					}		
+				}
+				else {
+					oDOMSeparatorLabels.style.display = 'block';
 				}
 			}
 			//alert (nNbOfToDoInLabels+"     "+aLabelNbItems[sLabels])
@@ -375,9 +381,14 @@ function updateToDo(errorMessageFromServer , sNewContent, sNewLabels) {
 }
 
 function deleteToDoFromDOM (idDOMToDoFocused) {
-	document.getElementById('noScroll').removeChild(document.getElementById(idDOMToDoFocused)); 
-	for (var i = parseInt(toDoFocused[0].position) + 1 ; i < aLabelNbItems[toDoFocused[0].sLabels] ; i++) {
-		document.getElementById('toDo'+toDoFocused[0].sLabels+i).id = 'toDo'+toDoFocused[0].sLabels+parseInt(i-1); // on décale les id de 1
+	document.getElementById('noScroll').removeChild(document.getElementById(idDOMToDoFocused));
+	if (aLabelNbItems[toDoFocused[0].sLabels] === 1) {// s'il n'y avait qu'une seule note au moment de l'effacement
+		document.getElementById("separatorLabels"+toDoFocused[0].sLabels).style.display = 'none';
+	}
+	else {
+		for (var i = parseInt(toDoFocused[0].position) + 1 ; i < aLabelNbItems[toDoFocused[0].sLabels] ; i++) {
+			document.getElementById('toDo'+toDoFocused[0].sLabels+i).id = 'toDo'+toDoFocused[0].sLabels+parseInt(i-1); // on décale les id de 1
+		}
 	}
 	aLabelNbItems[toDoFocused[0].sLabels] -= 1;
 }				
