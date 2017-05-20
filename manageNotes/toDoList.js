@@ -6,6 +6,7 @@ var aLabelNbItems = {};
 var toDoSendGeolocationLabels = null;
 var toDoSendGeolocationPosition = null;
 var aLabelColor = [];
+var isToDoOkToMoveRankOnServer = true; 
 
 initializePageToDo();
 
@@ -512,40 +513,57 @@ function addEventsDragAndDrop(DOMElement) {
 		e.preventDefault();
 		this.style.borderTop = "1px black solid";
 		var idDroppedElement = e.dataTransfer.getData("text");
-		alert ('idDroppedElement = ' + idDroppedElement);
+		//alert ('idDroppedElement = ' + idDroppedElement);
 		if (idDroppedElement.startsWith('toDo')) {
 			var sLabels = idDroppedElement.substr(4,4); 
 			if (sLabels === this.id.substr(4,4)) {
-				var droppedElement = document.getElementById(idDroppedElement);
-				var newElement = droppedElement.cloneNode(true);
-				addEventsDragAndDrop(newElement);
-				addContextMenu(newElement);
-				this.parentNode.insertBefore(newElement, this);
-				droppedElement.parentNode.removeChild(droppedElement);
 				var oldRank = parseInt(idDroppedElement.substr(8));
 				var targetedRank = parseInt(this.id.substr(8));
-				alert ('targetedRank = '+ targetedRank);
-					if (targetedRank > oldRank) {
-						upperRank = targetedRank;
-						lowerRank = oldRank + 1;
-						increase = - 1;
-						var newRank = targetedRank;
+				if (targetedRank !== oldRank && targetedRank !== oldRank - 1) {
+					var droppedElement = document.getElementById(idDroppedElement);
+					var newElement = droppedElement.cloneNode(true);
+					addEventsDragAndDrop(newElement);
+					addContextMenu(newElement);
+					this.parentNode.insertBefore(newElement, this);
+					droppedElement.parentNode.removeChild(droppedElement);
+					//alert ('targetedRank = '+ targetedRank);
+						if (targetedRank > oldRank) {
+							upperRank = targetedRank;
+							lowerRank = oldRank + 1;
+							increase = - 1;
+							var newRank = targetedRank;
+						}
+						else {
+							upperRank = oldRank - 1;
+							lowerRank = targetedRank + 1;
+							increase = + 1;	
+							var newRank = targetedRank + 1;
+						}
+					for (var i = lowerRank ; i <= upperRank ; i ++) {
+						//alert ('Ancien id toDo+sLabels+i).id =' + document.getElementById('toDo'+sLabels+i).id + '\n et nouveau : '+ 'toDo'+sLabels+parseInt(i+increase));
+						document.getElementById('toDo'+sLabels+i).id = 'toDo'+sLabels+parseInt(i+increase); // on décale les id de 1			
 					}
-					else {
-						upperRank = oldRank - 1;
-						lowerRank = targetedRank + 1;
-						increase = + 1;
-						var newRank = targetedRank + 1;
+					//alert ('newElement.id = ' + 'toDo'+sLabels+parseInt(newRank))
+					newElement.id = 'toDo'+sLabels+parseInt(newRank); // on update oldRank en newRank					
+					if (isToDoOkToMoveRankOnServer) {
+						ajaxCall('phpAjaxCalls_ToDo/changeRankOfToDoInsideSLabels.php?idTopic=' + idTopic + "&sLabels=" + sLabels + "&oldRank=" + oldRank + "&targetedRank=" + targetedRank, changeRankOfToDoFailed, changeRankOfToDoClient);	
 					}
-				for (var i = lowerRank ; i <= upperRank ; i ++) {
-					alert ('Ancien id toDo+sLabels+i).id =' + document.getElementById('toDo'+sLabels+i).id + '\n et nouveau : '+ 'toDo'+sLabels+parseInt(i+increase));
-					document.getElementById('toDo'+sLabels+i).id = 'toDo'+sLabels+parseInt(i+increase); // on décale les id de 1			
 				}
-			alert ('newElement.id = ' + 'toDo'+sLabels+parseInt(newRank))
-			newElement.id = 'toDo'+sLabels+parseInt(newRank); // on update oldRank en newRank					
 			}
 		}
 	}, false);	
+}
+
+function changeRankOfToDoFailed(errorMessage) {
+	console.log("Accès au serveur impossible, pas de déplacement du toDO dans le serveur" + errorMessage);
+	isToDoOkToMoveRankOnServer = false;
+}
+
+function changeRankOfToDoClient(errorMessageFromServer) {
+	if (errorMessageFromServer !== "") {
+		alert("Erreur dans le déplacement de toDO dans le serveur : \n" + errorMessageFromServer);	
+		isToDoOkToMoveRankOnServer = false;
+	}
 }
 
 function addEventsDragAndDropToLastAndInvisible(DOMElement) {
