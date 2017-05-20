@@ -512,12 +512,39 @@ function addEventsDragAndDrop(DOMElement) {
 		e.preventDefault();
 		this.style.borderTop = "1px black solid";
 		var idDroppedElement = e.dataTransfer.getData("text");
-		var droppedElement = document.getElementById(idDroppedElement);
-		var newElement = droppedElement.cloneNode(true);
-		addEventsDragAndDrop(newElement);
-		addContextMenu(newElement);
-		this.parentNode.insertBefore(newElement, this);
-		droppedElement.parentNode.removeChild(droppedElement);
+		alert ('idDroppedElement = ' + idDroppedElement);
+		if (idDroppedElement.startsWith('toDo')) {
+			var sLabels = idDroppedElement.substr(4,4); 
+			if (sLabels === this.id.substr(4,4)) {
+				var droppedElement = document.getElementById(idDroppedElement);
+				var newElement = droppedElement.cloneNode(true);
+				addEventsDragAndDrop(newElement);
+				addContextMenu(newElement);
+				this.parentNode.insertBefore(newElement, this);
+				droppedElement.parentNode.removeChild(droppedElement);
+				var oldRank = parseInt(idDroppedElement.substr(8));
+				var targetedRank = parseInt(this.id.substr(8));
+				alert ('targetedRank = '+ targetedRank);
+					if (targetedRank > oldRank) {
+						upperRank = targetedRank;
+						lowerRank = oldRank + 1;
+						increase = - 1;
+						var newRank = targetedRank;
+					}
+					else {
+						upperRank = oldRank - 1;
+						lowerRank = targetedRank + 1;
+						increase = + 1;
+						var newRank = targetedRank + 1;
+					}
+				for (var i = lowerRank ; i <= upperRank ; i ++) {
+					alert ('Ancien id toDo+sLabels+i).id =' + document.getElementById('toDo'+sLabels+i).id + '\n et nouveau : '+ 'toDo'+sLabels+parseInt(i+increase));
+					document.getElementById('toDo'+sLabels+i).id = 'toDo'+sLabels+parseInt(i+increase); // on décale les id de 1			
+				}
+			alert ('newElement.id = ' + 'toDo'+sLabels+parseInt(newRank))
+			newElement.id = 'toDo'+sLabels+parseInt(newRank); // on update oldRank en newRank					
+			}
+		}
 	}, false);	
 }
 
@@ -540,7 +567,7 @@ function addEventsDragAndDropToLastAndInvisible(DOMElement) {
 		addEventsDragAndDrop(newElement);
 		addContextMenu(newElement);
 		this.parentNode.insertBefore(newElement, this);
-		droppedElement.parentNode.removeChild(droppedElement);
+		droppedElement.parentNode.removeChild(droppedElement);			
 	}, false);	
 }
 
