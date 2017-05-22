@@ -225,6 +225,7 @@ function insertToDoListBefore(sToDoListJSON, fCallback, sIsNew) {
 				var oDOMToDo = document.createElement("div");
 				oDOMToDo.id = 'toDo'+sLabels+(parseInt(i)+parseInt(aLabelNbItems[sLabels]));
 				addContextMenu(oDOMToDo);
+				oDOMToDo.style.backgroundColor = backgroundColorToDo;
 				oDOMToDo.className = 'unselectable toDo toDo0a'+aLabels[0]+' toDo1a'+aLabels[1]+' toDo2a'+aLabels[2]+' toDo3a'+aLabels[3];
 				oDOMToDo.draggable = "true";
 				oDOMToDo.dateCreation = oToDoListJSONParsed[sLabels][i][1];
@@ -483,7 +484,7 @@ function displayContextMenuToDo() {
 
 function hideContextMenuToDo () {
 	if (document.getElementById(toDoFocused[0].id) !== null) {
-		document.getElementById(toDoFocused[0].id).style.backgroundColor = '#eeaaee';
+		document.getElementById(toDoFocused[0].id).style.backgroundColor = backgroundColorToDo;
 	}
 	toDoFocused = [{id:null},{sLabels:null},{position:null}];
 	document.getElementById('greyLayerOnNoScroll').style.display = 'none';

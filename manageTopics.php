@@ -92,8 +92,8 @@ if (!isset($_SESSION['id'])) {
 				<fieldset>
 					<legend>Créer un nouveau <strong>sujet</strong> de notes</legend>
 					Titre :<input type="text" name="newTopic"  maxlength="254"><br><br>
-					Couleur de fond :<input type="color" id="colorBackGround" name="colorBackGround" value="#ffff11" onchange="updateApercu()"><br><br>
-					Couleur du texte : <input type="color" id="colorFont" name="colorFont" value="#000000" onchange="updateApercu()"><br><br>
+					Couleur de fond :<input type="color" id="colorBackGround" name="colorBackGround" value="#eeaaee" oninput="updateApercu()"><br><br>
+					<!--Couleur du texte : --><input style="display:none" type="color" id="colorFont" name="colorFont" value="#000000" onchange="updateApercu()"><br><br>
 					Aperçu : <div id="apercu">Sujet</div><br><br>
 					<input type="submit" value="Envoyer">
 				</fieldset>

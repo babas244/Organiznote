@@ -8,12 +8,13 @@ require '../sessionAuthentication.php';
 if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 	require '../isIdTopicSafeAndMatchUser.php';
 	$idTopic = htmlspecialchars($_GET['idTopic']);	
-	$reqGetTopic = $bdd -> prepare('SELECT topic FROM topics WHERE idUser=:idUser AND id=:idTopic');
+	$reqGetTopic = $bdd -> prepare('SELECT topic, colorBackGround FROM topics WHERE idUser=:idUser AND id=:idTopic');
 		$reqGetTopic -> execute(array(
 		'idUser' => $_SESSION['id'],
 		'idTopic' => $idTopic));
 		$resultat = $reqGetTopic -> fetch();
 		$_SESSION['topic'] = $resultat['topic'];
+		$backgroundColorToDo = $resultat['colorBackGround'];
 		if ($reqGetTopic->rowCount() == 0) {
 			header("Location: ../logout.php");
 		}
@@ -136,7 +137,8 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 			<?php
 			echo "var idUser = ".$_SESSION['id'].";"; 
 			echo "var idTopic = ". $idTopic.";";
-}			
+			echo "var backgroundColorToDo = '".$backgroundColorToDo."';";
+}
 			?>
 		</script>
 		
