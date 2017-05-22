@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Dim 21 Mai 2017 à 06:59
+-- Généré le :  Lun 22 Mai 2017 à 06:02
 -- Version du serveur :  5.7.11
 -- Version de PHP :  7.0.4
 
@@ -38,7 +38,7 @@ CREATE TABLE `notes` (
   `latitude` decimal(10,8) DEFAULT NULL,
   `longitude` decimal(11,8) DEFAULT NULL,
   `accuracyPosition` int(11) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=FIXED;
 
 -- --------------------------------------------------------
 
@@ -53,8 +53,8 @@ CREATE TABLE `todolists` (
   `noteRank` int(11) NOT NULL,
   `content` text NOT NULL,
   `dateCreation` datetime DEFAULT NULL,
-  `dateExpired` varchar(255) DEFAULT NULL,
-  `dateArchive` varchar(255) DEFAULT NULL,
+  `dateExpired` datetime DEFAULT NULL,
+  `dateArchive` datetime DEFAULT NULL,
   `label0` varchar(255) NOT NULL,
   `label1` varchar(255) NOT NULL,
   `label2` varchar(255) NOT NULL,
@@ -169,32 +169,32 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `notes`
 --
 ALTER TABLE `notes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
 --
 -- AUTO_INCREMENT pour la table `todolists`
 --
 ALTER TABLE `todolists`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=154;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=164;
 --
 -- AUTO_INCREMENT pour la table `todo_userlabels`
 --
 ALTER TABLE `todo_userlabels`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
 --
 -- AUTO_INCREMENT pour la table `todo_userlabelstitles`
 --
 ALTER TABLE `todo_userlabelstitles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 --
 -- AUTO_INCREMENT pour la table `topics`
 --
 ALTER TABLE `topics`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
