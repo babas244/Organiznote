@@ -19,7 +19,8 @@ function instantiateRoot(topic) {
 	document.getElementById("greyLayerOnFrameOfTree").style.display = "block";
 	oDOMRoot = document.getElementById("01")
 	oDOMRoot.innerHTML = topic;   //textContent? 
-	oDOMRoot.style.border = '2px black solid'  // className is Root ?
+	oDOMRoot.style.border = '2px black solid'
+	oDOMRoot.className = "unselectable folder";
 	oTreeNotes = new SimpleTree("01");					
 	oDOMRoot.addEventListener('click', function(e) {
 		oTreeNotes.moveInSimpleTree(e.target.id);
