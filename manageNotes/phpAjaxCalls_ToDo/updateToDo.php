@@ -25,7 +25,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 			
 			// on n'a donc pas changé de sLabels, on udpate que le content		
 			$reqUpdateToDo = $bdd -> prepare('UPDATE todolists SET content=:newNote
-			WHERE Iduser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND noteRank=:NoteRank');
+			WHERE Iduser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND dateArchive IS NULL AND noteRank=:NoteRank');
 				$reqUpdateToDo -> execute(array(
 				'idUser' => $_SESSION['id'],
 				'idTopic' => $idTopic,
@@ -59,7 +59,8 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 			
 			// updater les contenus, avec la nouvelle position
 			$reqUpdateToDo = $bdd -> prepare('UPDATE todolists SET noteRank=:noteRank,content=:newNote,label0=:newLabel0,label1=:newLabel1,label2=:newLabel2,label3=:newLabel3
-			WHERE Iduser=:idUser AND idTopic=:idTopic AND label0=:oldLabel0 AND label1=:oldLabel1 AND label2=:oldLabel2 AND label3=:oldLabel3 AND noteRank=:oldNoteRank');
+			WHERE Iduser=:idUser AND idTopic=:idTopic AND label0=:oldLabel0 AND label1=:oldLabel1 AND label2=:oldLabel2 AND label3=:oldLabel3 
+			AND dateArchive IS NULL AND noteRank=:oldNoteRank');
 				$reqUpdateToDo -> execute(array(
 				'idUser' => $_SESSION['id'],
 				'idTopic' => $idTopic,
@@ -79,7 +80,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 			
 			// mettre à jour les positions
 			$reqUpdateToDo = $bdd -> prepare('UPDATE todolists SET noteRank = noteRank - 1
-			WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND noteRank > :oldNoteRank');
+			WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND dateArchive IS NULL AND noteRank > :oldNoteRank');
 				$reqUpdateToDo -> execute(array(
 				'idUser' => $_SESSION['id'],
 				'idTopic' => $idTopic,

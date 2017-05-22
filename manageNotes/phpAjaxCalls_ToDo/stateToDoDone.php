@@ -19,7 +19,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["dateArchiv
 		$position = htmlspecialchars($_GET["position"]);
 		
 		// mettre dateArchive de la toDo égale à NOW()
-		$reqArchiveToDo = $bdd -> prepare('UPDATE todolists SET dateArchive=:dateArchive WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND noteRank=:NoteRank');
+		$reqArchiveToDo = $bdd -> prepare('UPDATE todolists SET dateArchive=:dateArchive WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND dateArchive IS NULL AND noteRank=:NoteRank');
 			$reqArchiveToDo -> execute(array(
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $idTopic, 
@@ -34,7 +34,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["dateArchiv
 
 		// mettre à jour les positions
 		$reqUpdateToDo = $bdd -> prepare('UPDATE todolists SET noteRank = noteRank - 1
-		WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND noteRank > :oldNoteRank');
+		WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND dateArchive IS NULL AND noteRank > :oldNoteRank');
 			$reqUpdateToDo -> execute(array(
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $idTopic,

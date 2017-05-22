@@ -17,7 +17,11 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sLabels"])
 		$aLabels = str_split($sLabels);
 		$oldRank = intval(htmlspecialchars($_GET["oldRank"]));		
 		$targetedRank = intval(htmlspecialchars($_GET["targetedRank"]));		
-
+		/* 
+		var_dump($oldRank);
+		var_dump($sLabels);
+		var_dump($targetedRank);
+		 */
 		// mettre à jour les positions
 		if ($targetedRank > $oldRank) {
 			$upperRank = $targetedRank;
@@ -31,11 +35,15 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sLabels"])
 			$increase = 1;
 			$newRank = $targetedRank + 1;
 		}
-				
+
+/* 		var_dump($lowerRank);
+		var_dump($upperRank);
+		var_dump($newRank);
+ */		
 		// retrouver l'id du toDo à déplacer //         et vérifier avec son content tronqué qu'il n'y a pas de déplacement
 		$reqRetrieveIdOldToDo = $bdd -> prepare('SELECT id FROM todolists
 		WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3
-		AND noteRank=:oldRank');
+		AND noteRank=:oldRank AND dateArchive IS NULL');
 			$reqRetrieveIdOldToDo -> execute(array(
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $idTopic,

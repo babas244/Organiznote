@@ -24,7 +24,8 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sLabels"])
 		// inserer la geoLocation
 		$reqInsertToDoGeolocation = $bdd -> prepare('UPDATE todolists 
 										SET latitude=:latitude, longitude=:longitude, accuracyPosition=:accuracyPosition
-										WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND noteRank=:noteRank');
+										WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 
+										AND label3=:label3 AND dateArchive IS NULL AND noteRank=:noteRank');
 			$reqInsertToDoGeolocation -> execute(array(
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $idTopic,
