@@ -404,7 +404,6 @@ function initializeFormToDo() {
 
 function submitToDoQuick(){
 	var sToDoContent = document.getElementById("toDoTextarea").value;
-	hideFormEnterToDo();
 	if (sToDoContent !=="") {
 		var dateCreation = sLocalDatetime(new Date());
 		var sToDoAddedJSON = '{"0000":[["'+ sToDoContent +'","'+ dateCreation +'",""]]}';
@@ -412,21 +411,25 @@ function submitToDoQuick(){
 			aLabelNbItems["0000"]=0;
 		}
 		document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
-		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + sToDoContent + "&dateCreation=" + dateCreation + "&sLabels=0000", submitToDoQuickFailed, submitToDoQuickCheckResponse, sToDoAddedJSON);
+		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + sToDoContent + "&dateCreation=" + dateCreation + "&sLabels=0000", submitToDoQuickFailed, submitToDoQuickCheckResponse, sToDoAddedJSON, sToDoContent);
 	}
 }
 
-function submitToDoQuickCheckResponse(errorMessageFromServer, sToDoAddedJSON) {
+function submitToDoQuickCheckResponse(errorMessageFromServer, sToDoAddedJSON, sToDoContent) {
 	if (errorMessageFromServer==="") {
+		hideFormEnterToDo();
 		insertToDoListBefore(sToDoAddedJSON, resetToDoReadyForEvent, "newNote");
 		toDoSendGeolocationLabels = "0000";
 		toDoSendGeolocationPosition = parseInt(aLabelNbItems["0000"]) - 1;
 		getGeolocation(insertGeolocationToDoInDbb);
 	}
+	else if (errorMessageFromServer==="disconnected"){
+		alert("Vous avez été déconnecté. Impossible de récupérer des données ou de faire des changements sur le serveur sans se reconnecter.");
+		resetToDoReadyForEvent();		
+	}
 	else {
 		alert ("Erreur inattendue lors de l'update dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
 	}
-	hideContextMenuToDo();
 }
 
 function insertGeolocationToDoInDbb(oPosition) {
@@ -488,6 +491,7 @@ function hideContextMenuToDo () {
 	}
 	toDoFocused = [{id:null},{sLabels:null},{position:null}];
 	document.getElementById('greyLayerOnNoScroll').style.display = 'none';
+	alert ("coucou");
 	document.getElementById("containerOfLabelsCheckBoxes").style.display = 'block';
 	document.getElementById('cancelContextMenu').style.display = 'none';
 	document.getElementById('deleteToDo').style.display = 'none';

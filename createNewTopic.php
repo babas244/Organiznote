@@ -82,14 +82,14 @@ if (isset($_SESSION['id']) && isset($_POST['newTopic']) && isset($_POST['colorBa
 			
 			// Créer les labels dans la base de données, par défaut pour que l'user en ait de toutes façons
 			$reqCreateDefaultLabelOfToDoList = $bdd->prepare('INSERT INTO todo_userlabels(idUser,idTopic,idLabelTitle, rankLabel,content) 
-				VALUES 	(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="0"),"0","a la une"),
+				VALUES 	(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="0"),"0","à la une"),
 						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="0"),"1","je ne sais pas"),
-						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="0"),"2","bientot"),
+						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="0"),"2","bientôt"),
 						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="0"),"3","souvent"),
 						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="0"),"4","un jour"),
 						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="1"),"0","je ne sais pas"),
-						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="1"),"1","categorie1"),
-						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="1"),"2","categorie2"),
+						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="1"),"1","catégorie1"),
+						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="1"),"2","catégorie2"),
 						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="2"),"0","je ne sais pas"),
 						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="2"),"1","rapide"),
 						(:idUser,:idTopic,(SELECT id FROM todo_userlabelstitles WHERE idUser=:idUser AND idTopic=:idTopic AND rankLabelTitle="2"),"2","long"),
