@@ -16,7 +16,11 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sLabels"])
 		$sLabels = htmlspecialchars($_GET["sLabels"]);
 		$aLabels = str_split($sLabels);
 		$oldRank = intval(htmlspecialchars($_GET["oldRank"]));		
-		$targetedRank = intval(htmlspecialchars($_GET["targetedRank"]));		
+		$targetedRank = intval(htmlspecialchars($_GET["targetedRank"]));	
+
+		//$position = $oldRank;
+		//require 'checkToDoIsTheRightOne.php';
+		
 		/* 
 		var_dump($oldRank);
 		var_dump($sLabels);

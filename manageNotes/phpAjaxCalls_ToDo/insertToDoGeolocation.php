@@ -20,6 +20,8 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sLabels"])
 		$accuracyPosition = htmlspecialchars($_GET["accuracyPosition"]);
 		
 		$aLabels = str_split($sLabels);
+
+		require 'checkToDoIsTheRightOne.php';
 		
 		// inserer la geoLocation
 		$reqInsertToDoGeolocation = $bdd -> prepare('UPDATE todolists 

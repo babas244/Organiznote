@@ -18,9 +18,13 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 		$aLabels = str_split($sLabels);
 		$position = htmlspecialchars($_GET["position"]);		
 		
+
 		$sNewLabels = htmlspecialchars($_GET["sNewLabels"]); // utile ??
 		//$aNewLabels = array(); //nécessaire ??
 		$aNewLabels = str_split($sNewLabels);
+
+		require 'checkToDoIsTheRightOne.php';
+		
 		if ($aLabels[0] == $aNewLabels[0] && $aLabels[1] == $aNewLabels[1] && $aLabels[2] == $aNewLabels[2] && $aLabels[3] == $aNewLabels[3]) {
 			
 			// on n'a donc pas changé de sLabels, on udpate que le content		

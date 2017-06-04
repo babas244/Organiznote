@@ -17,6 +17,8 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["dateArchiv
 		$sLabels = htmlspecialchars($_GET["sLabels"]); 
 		$aLabels = str_split($sLabels);
 		$position = htmlspecialchars($_GET["position"]);
+
+		require 'checkToDoIsTheRightOne.php';
 		
 		// mettre dateArchive de la toDo égale à NOW()
 		$reqArchiveToDo = $bdd -> prepare('UPDATE todolists SET dateArchive=:dateArchive WHERE idUser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND dateArchive IS NULL AND noteRank=:NoteRank');

@@ -7,6 +7,7 @@ var toDoSendGeolocationLabels = null;
 var toDoSendGeolocationPosition = null;
 var aLabelColor = [];
 var isToDoOkToMoveRankOnServer = true; 
+var lengthCheckedString = 30;
 
 initializePageToDo();
 
@@ -250,7 +251,11 @@ function insertToDoListBefore(sToDoListJSON, fCallback, sIsNew) {
 function deleteToDo () {
 	if (confirm("Êtes-vous sûr de bien vouloir effacer la note :\n" + document.getElementById(toDoFocused[0].id).content) == true) {
 		document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
-		ajaxCall('phpAjaxCalls_ToDo/deleteToDo.php?idTopic=' + idTopic + "&sLabels=" + toDoFocused[0].sLabels + "&position=" + toDoFocused[0].position, deleteToDoFailed, deleteToDoAndHideContextMenu, toDoFocused[0].id);	
+		ajaxCall('phpAjaxCalls_ToDo/deleteToDo.php?idTopic=' + idTopic 
+		+ "&sLabels=" + toDoFocused[0].sLabels 
+		+ "&position=" + toDoFocused[0].position
+		+ "&sContentStart=" + document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString), 
+		deleteToDoFailed, deleteToDoAndHideContextMenu, toDoFocused[0].id);	
 	}
 	else { 
 		hideContextMenuToDo();
@@ -273,7 +278,12 @@ function stateToDoDone () {
 function setToDoDoneAjax(aFormDateArchive) {
 	if (aFormDateArchive !== "") {
 		document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
-		ajaxCall('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic + '&dateArchive=' + aFormDateArchive[0].replace("T"," ")+":00" + "&sLabels=" + toDoFocused[0].sLabels + "&position=" + toDoFocused[0].position, setToDoDoneFailed, deleteToDoAndHideContextMenu, toDoFocused[0].id);		
+		ajaxCall('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic 
+		+ '&dateArchive=' + aFormDateArchive[0].replace("T"," ")+":00" 
+		+ "&sLabels=" + toDoFocused[0].sLabels + "&position=" 
+		+ toDoFocused[0].position
+		+ "&sContentStart=" + document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString), 		
+		setToDoDoneFailed, deleteToDoAndHideContextMenu, toDoFocused[0].id);		
 	}
 	else {
 		hideContextMenuToDo();
@@ -286,10 +296,19 @@ function deleteToDoAndHideContextMenu(errorMessageFromServer,idDOMToDelete) {
 		deleteToDoFromDOM(idDOMToDelete);
 	} 
 	else {
-		alert ("Erreur inattendue lors de la mise à jour dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);
+		handleErrorsFromServer(errorMessageFromServer);
 	}
 	hideContextMenuToDo();
 	resetToDoReadyForEvent();
+}
+
+function handleErrorsFromServer(errorMessageFromServer) {
+	if (errorMessageFromServer==="reload") {
+		alert ("Veuillez recharger la page, elle a dû être modifiée dans une autre page et n'est plus à jour. Si le problème persiste, contacter l'administrateur du site");
+	}
+	else {
+		alert ("Erreur inattendue lors de la mise à jour dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);
+	}
 }
 
 function fCheckFormDateArchive() {
@@ -334,11 +353,22 @@ function submitToDoFull(ResponseForm) {
 			var sToDoAddedJSON = '{"'+ sLabelsForm +'":[["'+ ResponseForm[0] +'","'+ dateCreation +'",""]]}';
 			//alert (sToDoAddedJSON);
 			document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
-			ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + ResponseForm[0] + "&dateCreation=" + dateCreation + "&sLabels=" + sLabels, submitToDoFullFailed, addNewToDoWithLabels, sToDoAddedJSON);
+			ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic 
+			+ "&toDoContent=" + ResponseForm[0] 
+			+ "&dateCreation=" + dateCreation 
+			+ "&sLabels=" + sLabels
+			+ "&sContentStart=" + document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString), 
+			submitToDoFullFailed, addNewToDoWithLabels, sToDoAddedJSON);
 		}
 		else { // c'est donc un update que l'on fait
 			document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
-			ajaxCall('phpAjaxCalls_ToDo/updateToDo.php?idTopic=' + idTopic + "&toDoContent=" + ResponseForm[0] + "&sLabels=" + toDoFocused[0].sLabels + "&position=" + toDoFocused[0].position + "&sNewLabels=" + sLabelsForm, updateToDoFailed, updateToDo, ResponseForm[0], sLabelsForm);
+			ajaxCall('phpAjaxCalls_ToDo/updateToDo.php?idTopic=' + idTopic 
+			+ "&toDoContent=" + ResponseForm[0] 
+			+ "&sLabels=" + toDoFocused[0].sLabels 
+			+ "&position=" + toDoFocused[0].position 
+			+ "&sNewLabels=" + sLabelsForm 
+			+ "&sContentStart=" + document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString), 
+			updateToDoFailed, updateToDo, ResponseForm[0], sLabelsForm);
 		}
 	}
 	else {
@@ -359,7 +389,6 @@ function addNewToDoWithLabels(errorMessageFromServer,sToDoAddedJSON) {
 }
 
 function updateToDo(errorMessageFromServer , sNewContent, sNewLabels) {
-	//alert (errorMessageFromServer + " in updateToDo ")
 	if (errorMessageFromServer==="") {
 		var oDOMToDoFocused = document.getElementById(toDoFocused[0].id);
 		if (toDoFocused[0].sLabels === sNewLabels) { // les sLabels ne changent pas
@@ -377,7 +406,7 @@ function updateToDo(errorMessageFromServer , sNewContent, sNewLabels) {
 		document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'none';
 	}
 	else {
-		alert ("Erreur inattendue lors de l'update dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
+		handleErrorsFromServer(errorMessageFromServer);
 	}
 	hideContextMenuToDo();
 }
@@ -411,11 +440,11 @@ function submitToDoQuick(){
 			aLabelNbItems["0000"]=0;
 		}
 		document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
-		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + sToDoContent + "&dateCreation=" + dateCreation + "&sLabels=0000", submitToDoQuickFailed, submitToDoQuickCheckResponse, sToDoAddedJSON, sToDoContent);
+		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + sToDoContent + "&dateCreation=" + dateCreation + "&sLabels=0000", submitToDoQuickFailed, submitToDoQuickCheckResponse, sToDoAddedJSON);
 	}
 }
 
-function submitToDoQuickCheckResponse(errorMessageFromServer, sToDoAddedJSON, sToDoContent) {
+function submitToDoQuickCheckResponse(errorMessageFromServer, sToDoAddedJSON) {
 	if (errorMessageFromServer==="") {
 		hideFormEnterToDo();
 		insertToDoListBefore(sToDoAddedJSON, resetToDoReadyForEvent, "newNote");
@@ -437,12 +466,14 @@ function insertGeolocationToDoInDbb(oPosition) {
 		getGeolocationToDoFailed("Warning : Geolocation is not supported by this browser.");
 	}
 	else {
-		ajaxCall('phpAjaxCalls_ToDo/insertToDoGeolocation.php?idTopic=' + idTopic + "&sLabels=" + toDoSendGeolocationLabels 
-																	+ "&position=" + toDoSendGeolocationPosition 
-																	+ "&latitude=" + oPosition.coords.latitude 
-																	+ "&longitude=" + oPosition.coords.longitude
-																	+ "&accuracyPosition=" + oPosition.coords.accuracy,
-																	getGeolocationToDoFailed, getLocationToDoUpdateClient);	
+		ajaxCall('phpAjaxCalls_ToDo/insertToDoGeolocation.php?idTopic=' + idTopic 
+		+ "&sLabels=" + toDoSendGeolocationLabels 
+		+ "&position=" + toDoSendGeolocationPosition 
+		+ "&latitude=" + oPosition.coords.latitude 
+		+ "&longitude=" + oPosition.coords.longitude
+		+ "&accuracyPosition=" + oPosition.coords.accuracy,
+		+ "&sContentStart=" + document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString), 
+		getGeolocationToDoFailed, getLocationToDoUpdateClient);	
 	}
 	toDoSendGeolocationLabels = null;
 	toDoSendGeolocationPosition = null;
@@ -455,7 +486,7 @@ function getGeolocationToDoFailed(errorMessage) {
 
 function getLocationToDoUpdateClient(errorMessageFromServer) {
 	if (errorMessageFromServer!=="") {
-		alert ("Erreur inattendue lors de l'insertion dans le serveur de la geolocalisation. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
+		handleErrorsFromServer(errorMessageFromServer);
 	}
 }
 
@@ -491,7 +522,6 @@ function hideContextMenuToDo () {
 	}
 	toDoFocused = [{id:null},{sLabels:null},{position:null}];
 	document.getElementById('greyLayerOnNoScroll').style.display = 'none';
-	alert ("coucou");
 	document.getElementById("containerOfLabelsCheckBoxes").style.display = 'block';
 	document.getElementById('cancelContextMenu').style.display = 'none';
 	document.getElementById('deleteToDo').style.display = 'none';
@@ -551,7 +581,12 @@ function addEventsDragAndDrop(DOMElement) {
 					//alert ('newElement.id = ' + 'toDo'+sLabels+parseInt(newRank))
 					newElement.id = 'toDo'+sLabels+parseInt(newRank); // on update oldRank en newRank					
 					if (isToDoOkToMoveRankOnServer) {
-						ajaxCall('phpAjaxCalls_ToDo/changeRankOfToDoInsideSLabels.php?idTopic=' + idTopic + "&sLabels=" + sLabels + "&oldRank=" + oldRank + "&targetedRank=" + targetedRank, changeRankOfToDoFailed, changeRankOfToDoClient);	
+						ajaxCall('phpAjaxCalls_ToDo/changeRankOfToDoInsideSLabels.php?idTopic=' + idTopic 
+						+ "&sLabels=" + sLabels 
+						+ "&oldRank=" + oldRank 
+						+ "&targetedRank=" + targetedRank,
+						//+ "&sContentStart=" + droppedElement.content.substr(0, lengthCheckedString), 
+						changeRankOfToDoFailed, changeRankOfToDoClient);	
 					}
 				}
 			}
@@ -566,7 +601,7 @@ function changeRankOfToDoFailed(errorMessage) {
 
 function changeRankOfToDoClient(errorMessageFromServer) {
 	if (errorMessageFromServer !== "") {
-		alert("Erreur dans le déplacement de toDO dans le serveur : \n" + errorMessageFromServer);	
+		handleErrorsFromServer(errorMessageFromServer);	
 		isToDoOkToMoveRankOnServer = false;
 	}
 }
