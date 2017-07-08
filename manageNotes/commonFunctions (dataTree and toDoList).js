@@ -21,6 +21,17 @@ function ajaxCall(sPathPhp, fCallbackFailed, fCallback, parameter1, parameter2, 
 	}
 }
 
+function IsJSONValid(sJSONString) {
+	try {
+		JSON.parse(sJSONString);
+	}
+	catch(e) {
+		alert ("Erreur inattendue. Contactez l'administrateur. Le message est :\n\n" + e + "\n\nin : " + sJSONString);
+		return false;
+	}
+	return true;
+}
+
 function checkResponseAjaxIsJSON(sJSONString, nameOfFunctionCalling) {
 	//alert("La string JSON est : " + sJSONString + ", arrivée dans la fonction : " + nameOfFunctionCalling);
 	try {

@@ -193,57 +193,60 @@ function displayToDoList (labelTitleRank, labelRank, isChecked) {
 function insertToDoListBefore(sToDoListJSON, fCallback, sIsNew) {
 	//alert ("sToDoListJSON : " + sToDoListJSON + " fCallback :" + fCallback.name + " sIsNew : " + sIsNew);
 	//if (sToDoListJSON =="" && pathFocused=="01") {alert("Pas encore de notes. Cliquer sur le + pour en ajouter une.");}
-	var oToDoListJSONParsed = sToDoListJSON == "" ? "" : JSON.parse(sToDoListJSON);
-	var sContent;
-	var nNbOfToDoInLabels;
-	var i,j;
-	for (sLabels in oToDoListJSONParsed) {
-		if (aLabelNbItems[sLabels] === undefined || sIsNew === "newNote") { // il faut en fait deux fCallback différentes ici
-			aLabels = sLabels.split("");
-			nNbOfToDoInLabels = oToDoListJSONParsed[sLabels].length;
-			aLabelNbItems[sLabels] = aLabelNbItems[sLabels]=== undefined ? 0 : aLabelNbItems[sLabels]; // dernier membre : nNbOfToDoInLabels ou aLabelNbItems[sLabels] ??
-			//alert (sLabels + " " + aLabelNbItems[sLabels]);
-			var oDOMSeparatorLabels = document.getElementById("separatorLabels"+sLabels);
-			if (nNbOfToDoInLabels !== 0) {
-				if (oDOMSeparatorLabels.firstElementChild === null) {
-					for (j = 0 ; j < 4 ; j ++) {
-						var oDOMLabelsNameSeparator = document.createElement("span");
-						oDOMLabelsNameSeparator.className = "labelsNameSeparator";
-						//alert (aLabelColor[j][aLabels[j]]);
-						oDOMLabelsNameSeparator.style.backgroundColor = aLabelColor[j][aLabels[j]];
-						oDOMLabelsNameSeparator.innerHTML = oLabels.content[j][aLabels[j]];
-						//alert ("separatorLabels"+sLabels);
-						oDOMSeparatorLabels.appendChild(oDOMLabelsNameSeparator);
-					}		
+	
+	if (sToDoListJSON !== "" && IsJSONValid(sToDoListJSON)) {
+		var oToDoListJSONParsed = JSON.parse(sToDoListJSON);
+		var sContent;
+		var nNbOfToDoInLabels;
+		var i,j;
+		for (sLabels in oToDoListJSONParsed) {
+			if (aLabelNbItems[sLabels] === undefined || sIsNew === "newNote") { // il faut en fait deux fCallback différentes ici
+				aLabels = sLabels.split("");
+				nNbOfToDoInLabels = oToDoListJSONParsed[sLabels].length;
+				aLabelNbItems[sLabels] = aLabelNbItems[sLabels]=== undefined ? 0 : aLabelNbItems[sLabels]; // dernier membre : nNbOfToDoInLabels ou aLabelNbItems[sLabels] ??
+				//alert (sLabels + " " + aLabelNbItems[sLabels]);
+				var oDOMSeparatorLabels = document.getElementById("separatorLabels"+sLabels);
+				if (nNbOfToDoInLabels !== 0) {
+					if (oDOMSeparatorLabels.firstElementChild === null) {
+						for (j = 0 ; j < 4 ; j ++) {
+							var oDOMLabelsNameSeparator = document.createElement("span");
+							oDOMLabelsNameSeparator.className = "labelsNameSeparator";
+							//alert (aLabelColor[j][aLabels[j]]);
+							oDOMLabelsNameSeparator.style.backgroundColor = aLabelColor[j][aLabels[j]];
+							oDOMLabelsNameSeparator.innerHTML = oLabels.content[j][aLabels[j]];
+							//alert ("separatorLabels"+sLabels);
+							oDOMSeparatorLabels.appendChild(oDOMLabelsNameSeparator);
+						}		
+					}
+					else {
+						oDOMSeparatorLabels.style.display = 'block';
+					}
 				}
-				else {
-					oDOMSeparatorLabels.style.display = 'block';
+				//alert (nNbOfToDoInLabels+"     "+aLabelNbItems[sLabels])
+				for (i = 0 ; i < nNbOfToDoInLabels; i++ ) {
+					sContent = oToDoListJSONParsed[sLabels][i][0].replace(/&lt;br&gt;/gi, "\n");
+					var oDOMToDo = document.createElement("div");
+					oDOMToDo.id = 'toDo'+sLabels+(parseInt(i)+parseInt(aLabelNbItems[sLabels]));
+					addContextMenu(oDOMToDo);
+					oDOMToDo.style.backgroundColor = backgroundColorToDo;
+					oDOMToDo.className = 'unselectable toDo toDo0a'+aLabels[0]+' toDo1a'+aLabels[1]+' toDo2a'+aLabels[2]+' toDo3a'+aLabels[3];
+					oDOMToDo.draggable = "true";
+					oDOMToDo.dateCreation = oToDoListJSONParsed[sLabels][i][1];
+					oDOMToDo.dateExpired = oToDoListJSONParsed[sLabels][i][2];
+					oDOMToDo.content = sContent;
+					oDOMToDo.innerHTML = sContent+'<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
+					addEventsDragAndDrop(oDOMToDo);
+					document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById("separatorLabels"+sLabels).nextSibling);
+				}
+			aLabelNbItems[sLabels] += nNbOfToDoInLabels;	
+			}
+			else {
+				var aDOMToDoToDisplay = document.querySelectorAll('div[id^="toDo' + sLabels + '"]');
+				for (var j = 0 ; j < aDOMToDoToDisplay.length ; j++) {
+					aDOMToDoToDisplay[j].style.display = 'block';
 				}
 			}
-			//alert (nNbOfToDoInLabels+"     "+aLabelNbItems[sLabels])
-			for (i = 0 ; i < nNbOfToDoInLabels; i++ ) {
-				sContent = oToDoListJSONParsed[sLabels][i][0].replace(/&lt;br&gt;/gi, "\n");
-				var oDOMToDo = document.createElement("div");
-				oDOMToDo.id = 'toDo'+sLabels+(parseInt(i)+parseInt(aLabelNbItems[sLabels]));
-				addContextMenu(oDOMToDo);
-				oDOMToDo.style.backgroundColor = backgroundColorToDo;
-				oDOMToDo.className = 'unselectable toDo toDo0a'+aLabels[0]+' toDo1a'+aLabels[1]+' toDo2a'+aLabels[2]+' toDo3a'+aLabels[3];
-				oDOMToDo.draggable = "true";
-				oDOMToDo.dateCreation = oToDoListJSONParsed[sLabels][i][1];
-				oDOMToDo.dateExpired = oToDoListJSONParsed[sLabels][i][2];
-				oDOMToDo.content = sContent;
-				oDOMToDo.innerHTML = sContent+'<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
-				addEventsDragAndDrop(oDOMToDo);
-				document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById("separatorLabels"+sLabels).nextSibling);
-			}
-		aLabelNbItems[sLabels] += nNbOfToDoInLabels;	
-		}
-		else {
-			var aDOMToDoToDisplay = document.querySelectorAll('div[id^="toDo' + sLabels + '"]');
-			for (var j = 0 ; j < aDOMToDoToDisplay.length ; j++) {
-				aDOMToDoToDisplay[j].style.display = 'block';
-			}
-		}
+		}		
 	}
 	fCallback();
 }				
@@ -305,6 +308,7 @@ function deleteToDoAndHideContextMenu(errorMessageFromServer,idDOMToDelete) {
 function handleErrorsFromServer(errorMessageFromServer) {
 	if (errorMessageFromServer==="reload") {
 		alert ("Veuillez recharger la page, elle a dû être modifiée dans une autre page et n'est plus à jour. Si le problème persiste, contacter l'administrateur du site");
+		resetToDoReadyForEvent();
 	}
 	else {
 		alert ("Erreur inattendue lors de la mise à jour dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);
@@ -435,7 +439,7 @@ function submitToDoQuick(){
 	var sToDoContent = document.getElementById("toDoTextarea").value;
 	if (sToDoContent !=="") {
 		var dateCreation = sLocalDatetime(new Date());
-		var sToDoAddedJSON = '{"0000":[["'+ sToDoContent +'","'+ dateCreation +'",""]]}';
+		var sToDoAddedJSON = '{"0000":[["'+ sToDoContent.replace(/"/gi,"\\\"") +'","'+ dateCreation +'",""]]}';
 		if (aLabelNbItems["0000"] === undefined) {
 			aLabelNbItems["0000"]=0;
 		}
