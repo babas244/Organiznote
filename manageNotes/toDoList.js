@@ -185,6 +185,10 @@ function displayToDoList (labelTitleRank, labelRank, isChecked) {
 		if (numberOfToDo !== 0) {
 			for (var k = 0; k < numberOfToDo ; k++) {
 				aDOMHasClassOfToDo[k].style.display = 'none';
+				var oDOMISSeparator = aDOMHasClassOfToDo[k].previousSibling; //previousElementSibling non ???
+				if (oDOMISSeparator.id.substr(0,6) == "separa") {
+					oDOMISSeparator.style.display ='none';
+				}
 			}
 		}
 	}
@@ -218,9 +222,6 @@ function insertToDoListBefore(sToDoListJSON, fCallback, sIsNew) {
 							oDOMSeparatorLabels.appendChild(oDOMLabelsNameSeparator);
 						}		
 					}
-					else {
-						oDOMSeparatorLabels.style.display = 'block';
-					}
 				}
 				//alert (nNbOfToDoInLabels+"     "+aLabelNbItems[sLabels])
 				for (i = 0 ; i < nNbOfToDoInLabels; i++ ) {
@@ -244,6 +245,10 @@ function insertToDoListBefore(sToDoListJSON, fCallback, sIsNew) {
 				var aDOMToDoToDisplay = document.querySelectorAll('div[id^="toDo' + sLabels + '"]');
 				for (var j = 0 ; j < aDOMToDoToDisplay.length ; j++) {
 					aDOMToDoToDisplay[j].style.display = 'block';
+					var oDOMIsSeparator = aDOMToDoToDisplay[j].previousSibling;
+					if (oDOMIsSeparator.id.substr(0,6) == "separa") {
+						oDOMIsSeparator.style.display ='block';
+					}	
 				}
 			}
 		}		
