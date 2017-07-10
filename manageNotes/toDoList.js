@@ -367,7 +367,7 @@ function submitToDoFull(ResponseForm) {
 		else { // c'est donc un update que l'on fait
 			document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 			ajaxCall('phpAjaxCalls_ToDo/updateToDo.php?idTopic=' + idTopic 
-			+ "&toDoContent=" + ResponseForm[0] 
+			+ "&toDoContent=" + ResponseForm[0]
 			+ "&sLabels=" + toDoFocused[0].sLabels 
 			+ "&position=" + toDoFocused[0].position 
 			+ "&sNewLabels=" + sLabelsForm 

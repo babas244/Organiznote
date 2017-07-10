@@ -1,5 +1,9 @@
 function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType, fCallbackCheckForm) {
 	
+	if (!IsJSONValid(sFormJSON)) {
+		alert ("Erreur inattendue...\n\nLe formulaire ne peut pas être affiché car la chaîne qui l'ouvre n'est pas valide.")
+		return "";
+	}
 	displayForm();
 	// il faut un test ici pour vérifier que tous les "name" reçus sont uniques
 	buildForm();
