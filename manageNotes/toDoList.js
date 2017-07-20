@@ -8,6 +8,7 @@ var toDoSendGeolocationPosition = null;
 var aLabelColor = [];
 var isToDoOkToMoveRankOnServer = true; 
 var lengthCheckedString = 30;
+var isUniqueLabelChecked = false;
 
 initializePageToDo();
 
@@ -29,28 +30,45 @@ function counterInsertDivSeparatorLabels() {
 			} 			
 		} 
 	}
-	retrieveToDoListFirstTime();
+	ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + sBuildLabelsPhp(0,0), initializetoDoFailed, insertToDoListBefore, resetToDoReadyForEvent);	
 }
 
-function retrieveToDoListFirstTime() {
-	var sLabelsPhp="";
+function sBuildLabelsPhp(labelTitleRankToDisplay, labelRankToDisplay) {
+	var sLabelsPhp;
 	var labelTitleRank;
 	var labelRank;
-	for (labelTitleRank = 0 ; labelTitleRank < 4 ; labelTitleRank++) {
-		//alert (sLabelsPhp)
-		sLabelsPhp += "&label" + labelTitleRank + "="
-		if (labelTitleRank === 0) {
-			sLabelsPhp += "0"; 
-		}  
-		else {
-			for (labelRank = 0 ; labelRank < aNbOfLabels[labelTitleRank]; labelRank++) {
-				sLabelsPhp += labelRank;
-			}			
+	if (isUniqueLabelChecked) {
+		sLabelsPhp="";
+		for (labelTitleRank = 0 ; labelTitleRank < 4 ; labelTitleRank++) {
+			//alert (sLabelsPhp)
+			sLabelsPhp += "&label" + labelTitleRank + "="
+			if (labelTitleRank === labelTitleRankToDisplay) {
+				sLabelsPhp += labelRankToDisplay; 
+			}  
+			else {
+				for (labelRank = 0 ; labelRank < aNbOfLabels[labelTitleRank]; labelRank++) {
+					sLabelsPhp += labelRank;
+				}			
+			}
 		}
 	}
+	else {
+		sLabelsPhp ="&";
+		for (var labelTitleRank = 0 ; labelTitleRank < 4 ; labelTitleRank++) {
+			if (labelTitleRank!==labelTitleRankToDisplay) {
+				sLabelsPhp += 'label'+labelTitleRank+'=';
+				for (var labelRank = 0 ; labelRank < aNbOfLabels[labelTitleRank] ; labelRank++) {
+					if (aLabelsChecked[labelTitleRank][labelRank]) {							
+						sLabelsPhp += labelRank;
+					}
+				}
+			sLabelsPhp += '&';
+			}
+		}
+		sLabelsPhp += 'label'+labelTitleRankToDisplay+'='+labelRankToDisplay;		
+	}
 	//alert (sLabelsPhp);
-	ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + sLabelsPhp, initializetoDoFailed, insertToDoListBefore, resetToDoReadyForEvent);	
-	
+	return sLabelsPhp;	
 }
 
 document.getElementById("addToDoButton").addEventListener('click', initializeFormToDo, false);
@@ -150,34 +168,17 @@ function resetToDoReadyForEvent() {
 }
 
 function updateCheckboxes() {
+	var labelRank;
 	for (var labelTitleRank = 0 ; labelTitleRank < 4 ; labelTitleRank++) {
-		for (var labelRank = 0 ; labelRank < aNbOfLabels[labelTitleRank] ; labelRank++) {
+		for (labelRank = 0 ; labelRank < aNbOfLabels[labelTitleRank] ; labelRank++) {
 			document.getElementById("checkboxLabel"+labelTitleRank+"a"+labelRank).checked = aLabelsChecked[labelTitleRank][labelRank];
 		}
 	}	
 }
 
-function displayToDoList (labelTitleRank, labelRank, isChecked) {
-	if (isChecked) {
-			aLabelsChecked[labelTitleRank][labelRank] = 1;
-			var addressPhpLabels ="&";
-			for (var i = 0 ; i < 4 ; i++) {
-				if (i!==labelTitleRank) {
-					addressPhpLabels += 'label'+i+'=';
-					for (var j = 0 ; j < aNbOfLabels[i] ; j++) {
-						if (aLabelsChecked[i][j]) {							
-							addressPhpLabels += j;
-						}
-					}
-				addressPhpLabels += '&';
-				}
-			}
-			addressPhpLabels += 'label'+labelTitleRank+'='+labelRank;
-			//alert (addressPhpLabels);
-			document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
-			ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + addressPhpLabels, loadToDoListFailed, insertToDoListBefore, resetToDoReadyForEvent)		
-		}
-	else { // unchecked
+function displayToDoList (labelTitleRank, labelRank, isChecked) {	
+	document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
+	if (!isChecked) {  // if unchecked
 		aLabelsChecked[labelTitleRank][labelRank] = 0;
 		var aDOMHasClassOfToDo = document.querySelectorAll('.toDo'+labelTitleRank+'a'+labelRank);  //('div[classname="toDo'+labelTitleRank+'a'+labelRank+'"]'); marche pas ??
 		var numberOfToDo = aDOMHasClassOfToDo.length;
@@ -191,6 +192,45 @@ function displayToDoList (labelTitleRank, labelRank, isChecked) {
 				}
 			}
 		}
+	document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'none';
+	}
+	else { // isChecked
+		if (isUniqueLabelChecked) {			
+			var labelRankCounter;		
+			for (var labelTitleRankCounter = 0 ; labelTitleRankCounter < 4 ; labelTitleRankCounter++) { // cocher correctement les checkboxLabel
+				for (labelRankCounter = 0 ; labelRankCounter < aNbOfLabels[labelTitleRankCounter] ; labelRankCounter++) {
+					if (labelTitleRankCounter !== labelTitleRank) { // on coche toutes les checkboxes si elles sont d'un autre title que celui demandé
+						aLabelsChecked[labelTitleRankCounter][labelRankCounter] = 1;
+						document.getElementById("checkboxLabel"+labelTitleRankCounter+"a"+labelRankCounter).checked = 1;
+					}
+					else if (labelRankCounter === labelRank) {
+						aLabelsChecked[labelTitleRankCounter][labelRankCounter] = 1;				
+					}
+					else { // il faut donc aussi effacer les contenus de ces toDo ci
+						aLabelsChecked[labelTitleRankCounter][labelRankCounter] = 0;
+						document.getElementById("checkboxLabel"+labelTitleRankCounter+"a"+labelRankCounter).checked = 0;
+
+						var aDOMHasClassOfToDo = document.querySelectorAll('div[class*="toDo"]'); //'+labelTitleRank+'a"]');  
+						//alert ('div[class^="toDo'+labelTitleRank+'a"]');
+						var numberOfToDo = aDOMHasClassOfToDo.length;
+						//alert (numberOfToDo);	
+						if (numberOfToDo !== 0) {
+							for (var k = 0; k < numberOfToDo ; k++) {
+								aDOMHasClassOfToDo[k].style.display = 'none';
+								var oDOMISSeparator = aDOMHasClassOfToDo[k].previousSibling; //previousElementSibling non ???
+								if (oDOMISSeparator.id.substr(0,6) == "separa") {
+									oDOMISSeparator.style.display ='none';
+								}
+							}
+						}					
+					}
+				}
+			}		
+		}
+		else { // on demande pas de uniqueLabel
+			aLabelsChecked[labelTitleRank][labelRank] = 1;
+		}
+	ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + sBuildLabelsPhp(labelTitleRank, labelRank), loadToDoListFailed, insertToDoListBefore, resetToDoReadyForEvent);	
 	}
 }
 
