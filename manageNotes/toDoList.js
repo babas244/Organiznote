@@ -79,6 +79,7 @@ document.getElementById("StatedToDoDone").addEventListener('click', stateToDoDon
 document.getElementById("editToDo").addEventListener('click', editToDo, false);
 document.getElementById("cancelContextMenu").addEventListener('click', hideContextMenuToDo, false);
 document.getElementById("exportToDoList").addEventListener('click', exportToDoList, false);
+document.getElementById("selectAllToDoOrOne").addEventListener('click', selectAllToDoOrOne, false);
 
 document.getElementById("noScroll").addEventListener('touchmove', function(event) {
 	event.preventDefault();
@@ -686,6 +687,10 @@ function addContextMenu(oDOMToDo) {
 		toDoFocused[0].position = toDoFocused[0].id.substr(8); 
 		displayContextMenuToDo();
 	}, false);
+}
+
+function selectAllToDoOrOne(){
+	isUniqueLabelChecked =  isUniqueLabelChecked === true ? false : true;
 }
 
 function sLocalDatetime(date){
