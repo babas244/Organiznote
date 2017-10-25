@@ -398,13 +398,14 @@ function fCheckFormToDo(){
 function submitToDoFull(ResponseForm) {
 	if (ResponseForm !== "") {
 		var sLabelsForm = ResponseForm[1].toString()+ResponseForm[2]+ResponseForm[3]+ResponseForm[4];
+		var sToDoContent = hackReplaceAll(ResponseForm[0]);
 		if (toDoFocused[0].id === null ) {
 			var dateCreation = sLocalDatetime(new Date());
-			var sToDoAddedJSON = '{"'+ sLabelsForm +'":[["'+ ResponseForm[0] +'","'+ dateCreation +'",""]]}';
+			var sToDoAddedJSON = '{"'+ sLabelsForm +'":[["'+ sToDoContent +'","'+ dateCreation +'",""]]}';
 			//alert (sToDoAddedJSON);
 			document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 			ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic 
-			+ "&toDoContent=" + ResponseForm[0] 
+			+ "&toDoContent=" + sToDoContent 
 			+ "&dateCreation=" + dateCreation 
 			+ "&sLabels=" + sLabels
 			+ "&sContentStart=" + document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString), 
@@ -413,12 +414,12 @@ function submitToDoFull(ResponseForm) {
 		else { // c'est donc un update que l'on fait
 			document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 			ajaxCall('phpAjaxCalls_ToDo/updateToDo.php?idTopic=' + idTopic 
-			+ "&toDoContent=" + encodeURIComponent(ResponseForm[0])
+			+ "&toDoContent=" + encodeURIComponent(sToDoContent)
 			+ "&sLabels=" + toDoFocused[0].sLabels 
 			+ "&position=" + toDoFocused[0].position 
 			+ "&sNewLabels=" + sLabelsForm 
 			+ "&sContentStart=" + document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString), 
-			updateToDoFailed, updateToDo, ResponseForm[0], sLabelsForm);
+			updateToDoFailed, updateToDo, sToDoContent, sLabelsForm);
 		}
 	}
 	else {
@@ -482,7 +483,7 @@ function initializeFormToDo() {
 
 
 function submitToDoQuick(){
-	var sToDoContent = document.getElementById("toDoTextarea").value;
+	var sToDoContent = hackReplaceAll(document.getElementById("toDoTextarea").value);
 	if (sToDoContent !=="") {
 		var dateCreation = sLocalDatetime(new Date());
 		var sToDoAddedJSON = '{"0000":[["'+ sToDoContent.replace(/"/gi,"\\\"") +'","'+ dateCreation +'",""]]}';

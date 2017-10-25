@@ -1,3 +1,25 @@
+var monthNameAbbreviation=["jan","fev","mar","avr","mai","jun","jlt","aou","sep","oct","nov","dec"]; 
+var dayAbbreviation=["Di","Lu","Ma","Me","Je","Ve","Sa"];
+
+
+function hackReplaceAll(sStringtoSearchAndReplace) {
+	return sStringtoSearchAndReplace.replace(/%dc%/g,hackReplaceDateChineseFormat()).replace(/%d%/g,hackReplaceDate());;
+}
+
+function hackReplaceDateChineseFormat() {
+	oNewDate = new Date();
+	var monthNumber = oNewDate.getMonth();
+	var sNewDate = oNewDate.getFullYear()+"-"+XX(monthNumber)+monthNameAbbreviation[monthNumber]+"-"+XX(oNewDate.getDate()); 				
+	return sNewDate;
+}
+
+function hackReplaceDate() {
+	oNewDate = new Date();
+	var dayNumber = oNewDate.getDay();
+	var sNewDate = "("+dayAbbreviation[dayNumber]+" "+dayNumber+" "+" "+monthNameAbbreviation[oNewDate.getMonth()]+" "+oNewDate.getFullYear().toString().slice(2,4)+")"; 				
+	return sNewDate;
+}
+
 function XX(integer) {
 	return integer>9 ? ""+integer : "0"+integer;
 }

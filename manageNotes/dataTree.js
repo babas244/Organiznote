@@ -336,7 +336,7 @@ function fCheckFormInsertOnlyTextarea(){
 
 function insertNewNoteInDbb(aResponseForm) {
 	if (aResponseForm!=="") {
-		var sNewNote = aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
+		var sNewNote = hackReplaceAll(aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>'));
 		var sPathTreeItemToInsert = pathFocused + "b" + XX(parseInt(oDOMFocused.nbOfNotes)+1);
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
 		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + sNewNote
@@ -349,7 +349,7 @@ function insertNewNoteInDbb(aResponseForm) {
 
 function insertNewFolderInDbb(aResponseForm) {
 	if (aResponseForm!=="") {
-		var sNewNote = aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
+		var sNewNote = hackReplaceAll(aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>'));
 		var sPathTreeItemToInsert = pathFocused + "a" + XX(parseInt(oDOMFocused.nbOfFolders)+1);
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
 		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + sNewNote
@@ -423,7 +423,7 @@ function editTreeItemLaunch() {
 
 function editTreeItemInDbb(aResponseForm) {
 	if (aResponseForm!=="") {
-		var sNewNote = aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>');
+		var sNewNote = hackReplaceAll(aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>'));
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
 		ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic + '&sPathToEdit=' + pathFocused + '&sNewNote=' + sNewNote, editTreeItemFailed, editTreeItemUpdateClient, sNewNote);		
 	}
