@@ -266,7 +266,7 @@ function insertToDoListBefore(sToDoListJSON, fCallback, sIsNew) {
 				}
 				//alert (nNbOfToDoInLabels+"     "+aLabelNbItems[sLabels])
 				for (i = 0 ; i < nNbOfToDoInLabels; i++ ) {
-					sContent = oToDoListJSONParsed[sLabels][i][0].replace(/&lt;br&gt;/gi, "\n");
+					sContent = oToDoListJSONParsed[sLabels][i][0];
 					var oDOMToDo = document.createElement("div");
 					oDOMToDo.id = 'toDo'+sLabels+(parseInt(i)+parseInt(aLabelNbItems[sLabels]));
 					addContextMenu(oDOMToDo);
@@ -276,7 +276,7 @@ function insertToDoListBefore(sToDoListJSON, fCallback, sIsNew) {
 					oDOMToDo.dateCreation = oToDoListJSONParsed[sLabels][i][1];
 					oDOMToDo.dateExpired = oToDoListJSONParsed[sLabels][i][2];
 					oDOMToDo.content = sContent;
-					oDOMToDo.innerHTML = sContent+'<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
+					oDOMToDo.innerHTML = sContent.replace(/\n/gi, "<Br>")+'<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
 					addEventsDragAndDrop(oDOMToDo);
 					document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById("separatorLabels"+sLabels).nextSibling);
 				}
@@ -373,7 +373,8 @@ function fCheckFormDateArchive() {
 
 function editToDo() {
 	var sForm = '[';
-	sForm += '{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700", "value" : "' + document.getElementById(toDoFocused[0].id).content + '" }, "label" : "note"},{';
+	sForm += '{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700", "value" : "' 
+	+ escapeStringForJSON(document.getElementById(toDoFocused[0].id).content) + '" }, "label" : "note"},{';
 	for (var labelTitleRank = 0; labelTitleRank < oLabels.title.length; labelTitleRank ++) {
 		sForm += '"name":"'+labelTitleRank+'","HTMLType":"select","attributes":{"selectedIndex":"'+toDoFocused[0].sLabels.substr(labelTitleRank,1)+'"},"options":['; 
 		for (var labelRank = 0 ; labelRank < oLabels.content[labelTitleRank].length; labelRank++) {
@@ -401,7 +402,7 @@ function submitToDoFull(ResponseForm) {
 		var sToDoContent = hackReplaceAll(ResponseForm[0]);
 		if (toDoFocused[0].id === null ) {
 			var dateCreation = sLocalDatetime(new Date());
-			var sToDoAddedJSON = '{"'+ sLabelsForm +'":[["'+ sToDoContent +'","'+ dateCreation +'",""]]}';
+			var sToDoAddedJSON = '{"'+ sLabelsForm +'":[["'+ escapeStringForJSON(sToDoContent) +'","'+ dateCreation +'",""]]}';
 			//alert (sToDoAddedJSON);
 			document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 			ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic 
@@ -450,7 +451,7 @@ function updateToDo(errorMessageFromServer , sNewContent, sNewLabels) {
 			deleteToDoFromDOM(toDoFocused[0].id);
 			var aLabelsOfNewToDo = sNewLabels.split("");
 			if (aLabelsChecked[0][aLabelsOfNewToDo[0]]==1 && aLabelsChecked[1][aLabelsOfNewToDo[1]]==1 && aLabelsChecked[2][aLabelsOfNewToDo[2]]==1 && aLabelsChecked[3][aLabelsOfNewToDo[3]]==1) {// afficher le nouveau toDo seulement si il a des labels déjà demandés à être affichés
-				var sToDoNewJSON = '{"'+ sNewLabels +'":[["'+ sNewContent +'","'+ oDOMToDoFocused.dateCreation +'","'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) +'"]]}';
+				var sToDoNewJSON = '{"'+ sNewLabels +'":[["'+ escapeStringForJSON(sNewContent) +'","'+ oDOMToDoFocused.dateCreation +'","'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) +'"]]}';
 				insertToDoListBefore(sToDoNewJSON, hideContextMenuToDo, "newNote");
 			}
 		}
@@ -486,7 +487,7 @@ function submitToDoQuick(){
 	var sToDoContent = hackReplaceAll(document.getElementById("toDoTextarea").value);
 	if (sToDoContent !=="") {
 		var dateCreation = sLocalDatetime(new Date());
-		var sToDoAddedJSON = '{"0000":[["'+ sToDoContent.replace(/"/gi,"\\\"") +'","'+ dateCreation +'",""]]}';
+		var sToDoAddedJSON = '{"0000":[["'+ escapeStringForJSON(sToDoContent) +'","'+ dateCreation +'",""]]}';
 		if (aLabelNbItems["0000"] === undefined) {
 			aLabelNbItems["0000"]=0;
 		}

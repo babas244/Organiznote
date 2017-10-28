@@ -47,7 +47,7 @@ if (isset($_SESSION['id'])) {
 				}
 			}
 
-			echo $sTreeItemsFetched == "" ? "" : substr($sTreeItemsFetched,0,-1)."]}"; //il faut enlever le dernier ","
+			echo htmlspecialchars_decode($sTreeItemsFetched == "" ? "" : substr($sTreeItemsFetched,0,-1)."]}"); //il faut enlever le dernier ","
 
 			$reqRetrieveChildren->closeCursor();	
 		}

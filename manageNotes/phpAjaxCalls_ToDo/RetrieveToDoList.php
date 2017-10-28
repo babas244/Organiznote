@@ -6,7 +6,9 @@ session_start();
 if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["label0"]) && isset($_GET["label1"]) && isset($_GET["label2"]) && isset($_GET["label3"])) {
 
 	if (preg_match("#^[0-9]{1,9}$#", $_GET["label0"]) && preg_match("#^[0-9]{1,9}$#", $_GET["label1"]) && preg_match("#^[0-9]{1,9}$#", $_GET["label3"]) && preg_match("#^[0-9]{1,9}$#", $_GET["label3"])) {		
-		
+	
+	require '../escapeStringForJSON.php';
+	
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
 		$aLabels = array();
 		$aLabels[0] = htmlspecialchars($_GET["label0"]);
@@ -45,11 +47,11 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["label0"]) 
 			while ($data = $reqDisplayToDoList->fetch()) {
 				$sLabelsFetchedNew = $data['label0'].$data['label1'].$data['label2'].$data['label3'];
 				if ($sLabelsFetchedNew !== $sLabelsFetched OR $i===0) {
-					$toDoFetched = substr($toDoFetched, 0, -1).'],"'.$sLabelsFetchedNew.'":[["'.$data['content'].'","'.$data['dateCreation'].'","'.$data['dateExpired'].'"],';
+					$toDoFetched = substr($toDoFetched, 0, -1).'],"'.$sLabelsFetchedNew.'":[["'.escapeStringForJSON(htmlspecialchars_decode(($data['content']))).'","'.$data['dateCreation'].'","'.$data['dateExpired'].'"],';
 					$sLabelsFetched = $sLabelsFetchedNew;
 				}
 				else {
-					$toDoFetched .= '["'.$data['content'].'","'.$data['dateCreation'].'","'.$data['dateExpired'].'"],';
+					$toDoFetched .= '["'.escapeStringForJSON(htmlspecialchars_decode($data['content'])).'","'.$data['dateCreation'].'","'.$data['dateExpired'].'"],';
 				}
 				$i+=1;
 			}
