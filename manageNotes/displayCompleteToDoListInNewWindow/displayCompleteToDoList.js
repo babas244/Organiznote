@@ -52,7 +52,7 @@ function sBuildLabelsPhp() {
 				sLabelsPhp += labelRank;
 			}		
 		}
-	alert (sLabelsPhp);
+	//alert (sLabelsPhp);
 	return sLabelsPhp;	
 }
 
@@ -79,17 +79,14 @@ function insertToDoListBefore(sToDoListJSON) {
 				aLabels = sLabels.split("");
 				nNbOfToDoInLabels = oToDoListJSONParsed[sLabels].length;
 				aLabelNbItems[sLabels] = aLabelNbItems[sLabels]=== undefined ? 0 : aLabelNbItems[sLabels]; // dernier membre : nNbOfToDoInLabels ou aLabelNbItems[sLabels] ??
-				//alert (sLabels + " " + aLabelNbItems[sLabels]);
 				var oDOMSeparatorLabels = document.getElementById("separatorLabels"+sLabels);
 				if (nNbOfToDoInLabels !== 0) {
 					if (oDOMSeparatorLabels.firstElementChild === null) {
 						for (j = 0 ; j < 4 ; j ++) {
 							var oDOMLabelsNameSeparator = document.createElement("span");
 							oDOMLabelsNameSeparator.className = "labelsNameSeparator";
-							//alert (aLabelColor[j][aLabels[j]]);
 							oDOMLabelsNameSeparator.style.backgroundColor = aLabelColor[j][aLabels[j]];
 							oDOMLabelsNameSeparator.innerHTML = oLabels.content[j][aLabels[j]];
-							//alert ("separatorLabels"+sLabels);
 							oDOMSeparatorLabels.appendChild(oDOMLabelsNameSeparator);
 						}		
 					}
@@ -98,11 +95,8 @@ function insertToDoListBefore(sToDoListJSON) {
 				for (i = 0 ; i < nNbOfToDoInLabels; i++ ) {
 					sContent = oToDoListJSONParsed[sLabels][i][0];
 					var oDOMToDo = document.createElement("div");
-					oDOMToDo.id = 'toDo'+sLabels+(parseInt(i)+parseInt(aLabelNbItems[sLabels]));
 					oDOMToDo.style.backgroundColor = backgroundColorToDo;
-					oDOMToDo.className = 'unselectable toDo toDo0a'+aLabels[0]+' toDo1a'+aLabels[1]+' toDo2a'+aLabels[2]+' toDo3a'+aLabels[3];
-					oDOMToDo.dateCreation = oToDoListJSONParsed[sLabels][i][1];
-					oDOMToDo.dateExpired = oToDoListJSONParsed[sLabels][i][2];
+					oDOMToDo.className = 'toDo';
 					oDOMToDo.content = sContent;
 					oDOMToDo.innerHTML = sContent.replace(/\n/gi, "<Br>")+'<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
 					document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById("separatorLabels"+sLabels).nextSibling);

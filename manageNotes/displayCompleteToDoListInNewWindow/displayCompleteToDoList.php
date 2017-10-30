@@ -31,14 +31,28 @@ $idTopic = htmlspecialchars($_GET["idTopic"]);
 	</head>
     <body>
 	<div id="noScroll"></div>
+	<Br><Br>
+	<p>Todos archivés</p>
 	<?php
 	if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
+		$reqDisplayToDoListArchived = $bdd -> prepare("SELECT content, dateCreation, dateArchive 
+		FROM todolists 
+		WHERE idUser=:idUser AND idTopic=:idTopic AND dateArchive IS NOT NULL 
+		ORDER BY DateArchive");
+				$reqDisplayToDoListArchived -> execute(array(
+					'idUser' => $_SESSION['id'],
+					'idTopic' => $idTopic)) or die(print_r($reqDisplayToDoListArchived->errorInfo()));
+							
+				while ($data = $reqDisplayToDoListArchived->fetch()) {
+					echo '<div id="containerOfArchived"><div class="dateArchived">'.$data['dateArchive'].'</div><div class="toDo">'.$data['content'].'</div><div class="dateCreation">crée le : '.$data['dateCreation'].'</div></div>';
+				}
+		$reqDisplayToDoListArchived -> closeCursor();					
 	?>	
 		<script>
 			<?php
 			echo "var idUser = ".$_SESSION['id'].";"; 
 			echo "var idTopic = ". $idTopic.";";
-			echo "var backgroundColorToDo = '".$backgroundColorToDo."';";
+			echo "var backgroundColorToDo = '".$backgroundColorToDo."';";	
 			?>
 		</script>
 	<?php

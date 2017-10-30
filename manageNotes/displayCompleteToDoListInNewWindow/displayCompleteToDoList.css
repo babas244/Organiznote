@@ -36,3 +36,18 @@ div[id^="separatorLabels"]
 {
 	background-color: yellow;
 }
+
+.containerOfArchived
+{
+	display: flex;
+}
+
+.dateArchived
+{
+	background-color: LightGreen;
+}
+
+.dateCreation
+{
+	background-color: yellow;
+}
