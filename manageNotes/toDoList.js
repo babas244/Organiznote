@@ -475,14 +475,12 @@ function updateToDo(errorMessageFromServer , sNewContent, sNewLabels) {
 			deleteToDoFromDOM(toDoFocused[0].id);
 			var aLabelsOfNewToDo = sNewLabels.split("");
 			if (aLabelsChecked[0][aLabelsOfNewToDo[0]]==1 && aLabelsChecked[1][aLabelsOfNewToDo[1]]==1 && aLabelsChecked[2][aLabelsOfNewToDo[2]]==1 && aLabelsChecked[3][aLabelsOfNewToDo[3]]==1) {// afficher le nouveau toDo seulement si il a des labels déjà demandés à être affichés
-				var sToDoNewJSON2 = '{"'+ sNewLabels +'":[["'+ sNewContent +'","'+ oDOMToDoFocused.dateCreation +'","'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) +'"]]}';
 				oJSONTemp[sNewLabels]= [];
 				oJSONTemp[sNewLabels][0] = [];
 				oJSONTemp[sNewLabels][0][0] = sNewContent;
 				oJSONTemp[sNewLabels][0][1] = oDOMToDoFocused.dateCreation;
 				oJSONTemp[sNewLabels][0][2] = oDOMToDoFocused.dateExpired === undefined ? null : oDOMToDoFocused.dateExpired;
 				var sToDoNewJSON = JSON.stringify(oJSONTemp);
-				alert (sToDoNewJSON2+"\n\n"+sToDoNewJSON)
 				insertToDoListBefore(sToDoNewJSON, hideContextMenuToDo, "newNote");
 			}
 		}

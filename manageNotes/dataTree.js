@@ -5,6 +5,8 @@ var pathToPaste = null;
 var TreezIndex = -1;
 var emailAddressSiteAdmin = "postmaster@";
 var pathSendGeolocation;
+var oJSONFormTempDataTree = [];
+var oJSONTempDataTree = [];
 
 document.getElementById("displayAndHideTree").addEventListener('click', function () {
 	TreezIndex = TreezIndex === -1 ? 1 : -1; 
@@ -221,7 +223,7 @@ function instantiateRetrievedTree ( sTreeItems , fCallback, path ) { // path = p
 				var oDOMFolder = document.createElement("div");
 				oDOMFolder.id  = pathParent + "a" + XX(oDOMParent.nbOfFolders+j+1);
 				//alert ("i = " + i + "pathParent =" +pathParent +  "aTreeItems[i][pathParent].a[j][0] =" + aTreeItems[i][pathParent].a[j][0])
-				oDOMFolder.content = aTreeItems[i][pathParent].a[j][0].replace(/&lt;br&gt;/gi, "\n");
+				oDOMFolder.content = aTreeItems[i][pathParent].a[j][0];
 				oDOMFolder.innerHTML = oDOMFolder.content;
 				oDOMFolder.style.display = 'none';
 				oDOMFolder.className = "folder unselectable";
@@ -243,7 +245,7 @@ function instantiateRetrievedTree ( sTreeItems , fCallback, path ) { // path = p
 			for (k = 0 ; k < nbOfNotesAddedToParent ; k++) {
 				var oDOMNote = document.createElement("div");
 				oDOMNote.id  = pathParent + "b" + XX(oDOMParent.nbOfNotes+k+1);
-				oDOMNote.content = aTreeItems[i][pathParent].b[k][0].replace(/&lt;br&gt;/gi, "\n");
+				oDOMNote.content = aTreeItems[i][pathParent].b[k][0];
 				oDOMNote.innerHTML = oDOMNote.content;
 				oDOMNote.style.display = 'none';
 				oDOMNote.className = "note unselectable";
@@ -288,7 +290,15 @@ function insertNewNoteLaunch() {
 	hideContextMenu();
 	if (oDOMFocused.nbOfFolders !== undefined) {
 		if (oDOMFocused.nbOfNotes <= 98) {
-			var sForm = '[{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700"}, "label" : "Entrez le nom de la nouvelle note :"}]';
+			oJSONFormTempDataTree[0]={};
+			oJSONFormTempDataTree[0].name = "content";
+			oJSONFormTempDataTree[0].HTMLType="textarea";
+			oJSONFormTempDataTree[0].attributes={};
+			oJSONFormTempDataTree[0].attributes.cols="30"
+			oJSONFormTempDataTree[0].attributes.maxLength="1700"
+			oJSONFormTempDataTree[0].attributes.rows="5";
+			oJSONFormTempDataTree[0].label="Entrez le nom de la nouvelle note.";
+			var sForm = JSON.stringify(oJSONFormTempDataTree);
 			superFormModale(sForm, "Nouvelle catégorie", insertNewNoteInDbb, "array", fCheckFormInsertOnlyTextarea);	
 		}
 		else {
@@ -308,7 +318,15 @@ function insertNewFolderLaunch() {
 	hideContextMenu();
 	if (oDOMFocused.nbOfFolders !== undefined) {
 		if (oDOMFocused.nbOfFolders <= 98) {
-			var sForm = '[{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700"}, "label" : "Entrez le nom de la nouvelle catégorie :"}]';
+			oJSONFormTempDataTree[0]={};
+			oJSONFormTempDataTree[0].name = "content";
+			oJSONFormTempDataTree[0].HTMLType="textarea";
+			oJSONFormTempDataTree[0].attributes={};
+			oJSONFormTempDataTree[0].attributes.cols="30"
+			oJSONFormTempDataTree[0].attributes.maxLength="1700"
+			oJSONFormTempDataTree[0].attributes.rows="5";
+			oJSONFormTempDataTree[0].label="Entrez le nom de la nouvelle catégorie.";
+			var sForm = JSON.stringify(oJSONFormTempDataTree);
 			superFormModale(sForm, "Nouvelle catégorie", insertNewFolderInDbb, "array", fCheckFormInsertOnlyTextarea);	
 		}
 		else {
@@ -336,10 +354,10 @@ function fCheckFormInsertOnlyTextarea(){
 
 function insertNewNoteInDbb(aResponseForm) {
 	if (aResponseForm!=="") {
-		var sNewNote = hackReplaceAll(aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>'));
+		var sNewNote = hackReplaceAll(aResponseForm[0]);
 		var sPathTreeItemToInsert = pathFocused + "b" + XX(parseInt(oDOMFocused.nbOfNotes)+1);
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + sNewNote
+		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + encodeURIComponent(sNewNote)
 				+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "b");
 	}
 	else {
@@ -349,10 +367,10 @@ function insertNewNoteInDbb(aResponseForm) {
 
 function insertNewFolderInDbb(aResponseForm) {
 	if (aResponseForm!=="") {
-		var sNewNote = hackReplaceAll(aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>'));
+		var sNewNote = hackReplaceAll(aResponseForm[0]);
 		var sPathTreeItemToInsert = pathFocused + "a" + XX(parseInt(oDOMFocused.nbOfFolders)+1);
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + sNewNote
+		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + encodeURIComponent(sNewNote)
 				+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "a");
 	}
 	else {
@@ -368,8 +386,12 @@ function insertNewTreeItemInDbbFailed(errorMessage) {
 
 function insertNewTreeItemUpdateClient(errorMessageFromServer, sNewNote, aORb) {
 	if (errorMessageFromServer==="") {
-		sNewNote = sNewNote.replace(/"/g, '\\"');
-		var sTreeItems = '[{"' + pathFocused + '":{"'+ aORb +'":[["' + sNewNote + '"]]}}]';
+		oJSONTempDataTree[0] = {};
+		oJSONTempDataTree[0][pathFocused] = {};
+		oJSONTempDataTree[0][pathFocused][aORb] = [];
+		oJSONTempDataTree[0][pathFocused][aORb][0] = [];
+		oJSONTempDataTree[0][pathFocused][aORb][0][0] = sNewNote;		
+		var sTreeItems = JSON.stringify(oJSONTempDataTree);
 		instantiateRetrievedTree(sTreeItems);			
 		if (pathFocused === oTreeNotes.openedFolder) {
 			var sNbOfItems = aORb ==="a" ? "nbOfFolders" : "nbOfNotes"; 
@@ -416,16 +438,24 @@ function getLocationTreeItemUpdateClient(errorMessageFromServer) {
 
 function editTreeItemLaunch() {
 	hideContextMenu();
-	var sForm = '[{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700", "value" : "' 
-	+ oDOMFocused.content.replace(/<br>/g,'\\n') + '" }, "label" : "Entrée à modifier :"}]';
+	oJSONFormTempDataTree[0]={};
+	oJSONFormTempDataTree[0].name = "content";
+	oJSONFormTempDataTree[0].HTMLType="textarea";
+	oJSONFormTempDataTree[0].attributes={};
+	oJSONFormTempDataTree[0].attributes.cols="30"
+	oJSONFormTempDataTree[0].attributes.maxLength="1700"
+	oJSONFormTempDataTree[0].attributes.rows="5";
+	oJSONFormTempDataTree[0].attributes.value= oDOMFocused.content;
+	oJSONFormTempDataTree[0].label="Entrée à modifier :";
+	var sForm = JSON.stringify(oJSONFormTempDataTree);
 	superFormModale(sForm, "Editer", editTreeItemInDbb, "array", fCheckFormInsertOnlyTextarea);	
 }
 
 function editTreeItemInDbb(aResponseForm) {
 	if (aResponseForm!=="") {
-		var sNewNote = hackReplaceAll(aResponseForm[0].replace(/\r\n|\r|\n/g,'<br>'));
+		var sNewNote = hackReplaceAll(aResponseForm[0]);
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-		ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic + '&sPathToEdit=' + pathFocused + '&sNewNote=' + sNewNote, editTreeItemFailed, editTreeItemUpdateClient, sNewNote);		
+		ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic + '&sPathToEdit=' + pathFocused + '&sNewNote=' + encodeURIComponent(sNewNote), editTreeItemFailed, editTreeItemUpdateClient, sNewNote);		
 	}
 	else {
 		resetDataTreeReadyForEvent();	
@@ -440,7 +470,7 @@ function editTreeItemFailed(errorMessage) {
 
 function editTreeItemUpdateClient(errorMessageFromServer, sNewContent) {
 	if (errorMessageFromServer==="") {
-		oDOMFocused.content = sNewContent.replace(/&lt;br&gt;/gi, "\n");
+		oDOMFocused.content = sNewContent;
 		oDOMFocused.innerHTML = oDOMFocused.content;
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'none';
 		resetDataTreeReadyForEvent();

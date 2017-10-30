@@ -1,8 +1,6 @@
 <?php
 
 header("Content-Type: application/json; charset=UTF-8");
-//header("Content-Type: text/plain");
-
 
 session_start();
 
@@ -27,27 +25,24 @@ if (isset($_SESSION['id'])) {
 			'pathParent' => $sPathParent));
 
 			//echo $reqRetrieveChildren->rowCount();
-			
-			$isFirstRowOfFolderFetched = false;
-			$isFirstRowOfNoteFetched = false;
-			$sTreeItemsFetched = "";
+
+			$arrayJSON = array();
+			$arrayJSON['a']= array();
+			$arrayJSON['b']= array();
+			$ia = 0;
+			$ib = 0;
 			
 			while ($data = $reqRetrieveChildren->fetch()) {
-				$sTreeItemsTypeFetched = substr($data['idNote'], -3, 1);
-				if ($sTreeItemsTypeFetched === "a" and !$isFirstRowOfFolderFetched) {
-					$sTreeItemsFetched = '{"a":[["'.$data['content'].'","'.$data['dateCreation'].'"],';
-					$isFirstRowOfFolderFetched = true;
+				$sTreeItemsTypeFetched = substr($data['idNote'], -3, 1);		
+				$sTreeItemsTypeFetched === "a" ? $i = $ia : $i= $ib;	
+				if ($i===0) {
+					$arrayJSON[$sTreeItemsTypeFetched][$i] = array();
 				}
-				else if ($sTreeItemsTypeFetched === "b" and !$isFirstRowOfNoteFetched) {
-				$sTreeItemsFetched = (!$isFirstRowOfFolderFetched ? "{" : substr($sTreeItemsFetched, 0, -1).'],').'"b":[["'.$data['content'].'","'.$data['dateCreation'].'"],';
-					$isFirstRowOfNoteFetched = true;
-				}
-				else {
-					$sTreeItemsFetched .= '["'.$data['content'].'","'.$data['dateCreation'].'"],';
-				}
+				$arrayJSON[$sTreeItemsTypeFetched][$i][0] = htmlspecialchars_decode($data['content']);
+				$arrayJSON[$sTreeItemsTypeFetched][$i][1] = $data['dateCreation'];
+				$sTreeItemsTypeFetched == "a" ? $ia+=1 : $ib+=1;
 			}
-
-			echo htmlspecialchars_decode($sTreeItemsFetched == "" ? "" : substr($sTreeItemsFetched,0,-1)."]}"); //il faut enlever le dernier ","
+			echo json_encode($arrayJSON);
 
 			$reqRetrieveChildren->closeCursor();	
 		}
