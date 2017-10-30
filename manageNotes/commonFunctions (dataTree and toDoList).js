@@ -1,11 +1,5 @@
 var monthNameAbbreviation=["jan","fev","mar","avr","mai","jun","jlt","aou","sep","oct","nov","dec"]; 
 var dayAbbreviation=["Di","Lu","Ma","Me","Je","Ve","Sa"];
-var oTemporaryObjectCheckJSONIsValid = {};
-
-function escapeStringForJSON(sString) {
-	oTemporaryObjectCheckJSONIsValid.value = sString;
-	return JSON.parse(JSON.stringify(oTemporaryObjectCheckJSONIsValid)).value;	
-}
 
 function hackReplaceAll(sStringtoSearchAndReplace) {
 	return sStringtoSearchAndReplace.replace(/%dc%/g,hackReplaceDateChineseFormat()).replace(/%d%/g,hackReplaceDate());;

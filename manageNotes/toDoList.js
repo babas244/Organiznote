@@ -9,6 +9,8 @@ var aLabelColor = [];
 var isToDoOkToMoveRankOnServer = true; 
 var lengthCheckedString = 30;
 var isUniqueLabelChecked = false;
+var oJSONTemp = {};
+var oJSONFormTemp = [];
 
 initializePageToDo();
 
@@ -313,10 +315,14 @@ function deleteToDo () {
 
 function stateToDoDone () {
 	if (confirm("ÃŠtes-vous sÃ»r de bien vouloir archiver comme faite la note :\n" + document.getElementById(toDoFocused[0].id).content) == true) {
-			var dateArchiveCreated = new Date()
-			var dateArchive = dateArchiveCreated.toISOString().substr(0,11)+XX(dateArchiveCreated.getHours())+dateArchiveCreated.toISOString().substr(13,3);
-			var sForm = '[{"name":"DateArchive", "attributes" : {"value" : "' + dateArchive + '" }, "label" : "Date d\'archivage (format AAAA-MM-JJThh:mm)"}]';
-		//alert (sForm);
+		var dateArchiveCreated = new Date()
+		var dateArchive = dateArchiveCreated.toISOString().substr(0,11)+XX(dateArchiveCreated.getHours())+dateArchiveCreated.toISOString().substr(13,3);
+		oJSONFormTemp[0] = {}; //mettre un var ici ?
+		oJSONFormTemp[0].name = "DateArchive";
+		oJSONFormTemp[0].attributes = {};
+		oJSONFormTemp[0].attributes.value = dateArchive;
+		oJSONFormTemp[0].label = "Date d\'archivage (format AAAA-MM-JJThh:mm)";
+		var sForm = JSON.stringify(oJSONFormTemp);
 		superFormModale(sForm, "Confirmation de la date d'archivage", setToDoDoneAjax, "array", fCheckFormDateArchive);
 	} 
 	else {
@@ -372,17 +378,29 @@ function fCheckFormDateArchive() {
 }
 
 function editToDo() {
-	var sForm = '[';
-	sForm += '{"name":"content","HTMLType" : "textarea" , "attributes" : { "rows" : "5" , "cols" : "30", "maxLength" : "1700", "value" : "' 
-	+ escapeStringForJSON(document.getElementById(toDoFocused[0].id).content) + '" }, "label" : "note"},{';
+	oJSONFormTemp[0]={};
+	oJSONFormTemp[0].name = "content";
+	oJSONFormTemp[0].HTMLType="textarea";
+	oJSONFormTemp[0].attributes={};
+	oJSONFormTemp[0].attributes.cols="30"
+	oJSONFormTemp[0].attributes.maxLength="1700"
+	oJSONFormTemp[0].attributes.rows="5"
+	oJSONFormTemp[0].attributes.value= document.getElementById(toDoFocused[0].id).content;
+	oJSONFormTemp[0].label="note";
 	for (var labelTitleRank = 0; labelTitleRank < oLabels.title.length; labelTitleRank ++) {
-		sForm += '"name":"'+labelTitleRank+'","HTMLType":"select","attributes":{"selectedIndex":"'+toDoFocused[0].sLabels.substr(labelTitleRank,1)+'"},"options":['; 
+		rankForm = labelTitleRank + 1;
+		oJSONFormTemp[rankForm]= {};
+		oJSONFormTemp[rankForm].name = labelTitleRank.toString();
+		oJSONFormTemp[rankForm].HTMLType = "select";
+		oJSONFormTemp[rankForm].attributes = {};
+		oJSONFormTemp[rankForm].attributes.selectedIndex = toDoFocused[0].sLabels.substr(labelTitleRank,1);
+		oJSONFormTemp[rankForm].options = []; 
 		for (var labelRank = 0 ; labelRank < oLabels.content[labelTitleRank].length; labelRank++) {
-			sForm += '"'+oLabels.content[labelTitleRank][labelRank]+'",';
+			oJSONFormTemp[rankForm].options[labelRank] = oLabels.content[labelTitleRank][labelRank];
 		}
-	sForm = sForm.slice(0,-1)+ '], "label" : "'+oLabels.title[labelTitleRank]+'"},{';
+	oJSONFormTemp[rankForm].label = oLabels.title[labelTitleRank];
 	}
-	sForm = sForm.slice(0,-2)+']';
+	var sForm = JSON.stringify(oJSONFormTemp);
 	superFormModale(sForm, "Etiquettes", submitToDoFull, "array", fCheckFormToDo);
 }
 
@@ -402,14 +420,20 @@ function submitToDoFull(ResponseForm) {
 		var sToDoContent = hackReplaceAll(ResponseForm[0]);
 		if (toDoFocused[0].id === null ) {
 			var dateCreation = sLocalDatetime(new Date());
-			var sToDoAddedJSON = '{"'+ sLabelsForm +'":[["'+ escapeStringForJSON(sToDoContent) +'","'+ dateCreation +'",""]]}';
-			//alert (sToDoAddedJSON);
+			oJSONTemp[sLabelsForm]= [];
+			oJSONTemp[sLabelsForm][0] = [];
+			oJSONTemp[sLabelsForm][0][0] = sToDoContent;
+			oJSONTemp[sLabelsForm][0][1] = dateCreation;
+			oJSONTemp[sLabelsForm][0][2] = "";
+			var sToDoAddedJSON = JSON.stringify(oJSONTemp);
+			/*var sToDoAddedJSON2 = '{"'+ sLabelsForm +'":[["'+ sToDoContent +'","'+ dateCreation +'",""]]}';
+			alert (sToDoAddedJSON2 +"\n\n"+ sToDoAddedJSON);*/
 			document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 			ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic 
-			+ "&toDoContent=" + sToDoContent 
+			+ "&toDoContent=" + encodeURIComponent(sToDoContent) 
 			+ "&dateCreation=" + dateCreation 
 			+ "&sLabels=" + sLabels
-			+ "&sContentStart=" + document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString), 
+			+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString)), 
 			submitToDoFullFailed, addNewToDoWithLabels, sToDoAddedJSON);
 		}
 		else { // c'est donc un update que l'on fait
@@ -419,7 +443,7 @@ function submitToDoFull(ResponseForm) {
 			+ "&sLabels=" + toDoFocused[0].sLabels 
 			+ "&position=" + toDoFocused[0].position 
 			+ "&sNewLabels=" + sLabelsForm 
-			+ "&sContentStart=" + document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString), 
+			+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString)), 
 			updateToDoFailed, updateToDo, sToDoContent, sLabelsForm);
 		}
 	}
@@ -444,14 +468,21 @@ function updateToDo(errorMessageFromServer , sNewContent, sNewLabels) {
 	if (errorMessageFromServer==="") {
 		var oDOMToDoFocused = document.getElementById(toDoFocused[0].id);
 		if (toDoFocused[0].sLabels === sNewLabels) { // les sLabels ne changent pas
-			oDOMToDoFocused.innerHTML = sNewContent + '<span class="dateExpired">'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) + '</div>'
+			oDOMToDoFocused.innerHTML = sNewContent.replace(/\n/gi, "<Br>") + '<span class="dateExpired">'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) + '</div>'
 			oDOMToDoFocused.content = sNewContent;
 		}
 		else { // les sLabels changent aussi
 			deleteToDoFromDOM(toDoFocused[0].id);
 			var aLabelsOfNewToDo = sNewLabels.split("");
 			if (aLabelsChecked[0][aLabelsOfNewToDo[0]]==1 && aLabelsChecked[1][aLabelsOfNewToDo[1]]==1 && aLabelsChecked[2][aLabelsOfNewToDo[2]]==1 && aLabelsChecked[3][aLabelsOfNewToDo[3]]==1) {// afficher le nouveau toDo seulement si il a des labels déjà demandés à être affichés
-				var sToDoNewJSON = '{"'+ sNewLabels +'":[["'+ escapeStringForJSON(sNewContent) +'","'+ oDOMToDoFocused.dateCreation +'","'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) +'"]]}';
+				var sToDoNewJSON2 = '{"'+ sNewLabels +'":[["'+ sNewContent +'","'+ oDOMToDoFocused.dateCreation +'","'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) +'"]]}';
+				oJSONTemp[sNewLabels]= [];
+				oJSONTemp[sNewLabels][0] = [];
+				oJSONTemp[sNewLabels][0][0] = sNewContent;
+				oJSONTemp[sNewLabels][0][1] = oDOMToDoFocused.dateCreation;
+				oJSONTemp[sNewLabels][0][2] = oDOMToDoFocused.dateExpired === undefined ? null : oDOMToDoFocused.dateExpired;
+				var sToDoNewJSON = JSON.stringify(oJSONTemp);
+				alert (sToDoNewJSON2+"\n\n"+sToDoNewJSON)
 				insertToDoListBefore(sToDoNewJSON, hideContextMenuToDo, "newNote");
 			}
 		}
@@ -487,7 +518,12 @@ function submitToDoQuick(){
 	var sToDoContent = hackReplaceAll(document.getElementById("toDoTextarea").value);
 	if (sToDoContent !=="") {
 		var dateCreation = sLocalDatetime(new Date());
-		var sToDoAddedJSON = '{"0000":[["'+ escapeStringForJSON(sToDoContent) +'","'+ dateCreation +'",""]]}';
+		oJSONTemp['0000']= [];
+		oJSONTemp['0000'][0] = [];
+		oJSONTemp['0000'][0][0] = sToDoContent;
+		oJSONTemp['0000'][0][1] = dateCreation;
+		oJSONTemp['0000'][0][2] = null;
+		var sToDoAddedJSON = JSON.stringify(oJSONTemp);
 		if (aLabelNbItems["0000"] === undefined) {
 			aLabelNbItems["0000"]=0;
 		}

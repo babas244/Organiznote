@@ -6,9 +6,7 @@ session_start();
 if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["label0"]) && isset($_GET["label1"]) && isset($_GET["label2"]) && isset($_GET["label3"])) {
 
 	if (preg_match("#^[0-9]{1,9}$#", $_GET["label0"]) && preg_match("#^[0-9]{1,9}$#", $_GET["label1"]) && preg_match("#^[0-9]{1,9}$#", $_GET["label3"]) && preg_match("#^[0-9]{1,9}$#", $_GET["label3"])) {		
-	
-	require '../escapeStringForJSON.php';
-	
+		
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
 		$aLabels = array();
 		$aLabels[0] = htmlspecialchars($_GET["label0"]);
@@ -40,25 +38,32 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["label0"]) 
 			$reqDisplayToDoList -> execute($aExecuteReq) or die(print_r($reqDisplayToDoList->errorInfo()));
 			//echo ('<br>'.$reqDisplayToDoList->rowCount().' rangs affectés');
 			
-			$toDoFetched = "";
 			$i=0;
 			$sLabelsFetched = "";
 			
+			$arrayJSON = array();
+			
 			while ($data = $reqDisplayToDoList->fetch()) {
 				$sLabelsFetchedNew = $data['label0'].$data['label1'].$data['label2'].$data['label3'];
-				if ($sLabelsFetchedNew !== $sLabelsFetched OR $i===0) {
-					$toDoFetched = substr($toDoFetched, 0, -1).'],"'.$sLabelsFetchedNew.'":[["'.escapeStringForJSON(htmlspecialchars_decode(($data['content']))).'","'.$data['dateCreation'].'","'.$data['dateExpired'].'"],';
+				if ($sLabelsFetchedNew !== $sLabelsFetched) {
+					$i=0;
+					$arrayJSON[$sLabelsFetchedNew] = array();
+					$arrayJSON[$sLabelsFetchedNew][$i] = array();
+					$arrayJSON[$sLabelsFetchedNew][$i][0] = htmlspecialchars_decode(($data['content']));
+					$arrayJSON[$sLabelsFetchedNew][$i][1] = $data['dateCreation'];
+					$arrayJSON[$sLabelsFetchedNew][$i][2] = $data['dateExpired'];
 					$sLabelsFetched = $sLabelsFetchedNew;
 				}
 				else {
-					$toDoFetched .= '["'.escapeStringForJSON(htmlspecialchars_decode($data['content'])).'","'.$data['dateCreation'].'","'.$data['dateExpired'].'"],';
+					$arrayJSON[$sLabelsFetchedNew][$i][0] = htmlspecialchars_decode(($data['content']));
+					$arrayJSON[$sLabelsFetchedNew][$i][1] = $data['dateCreation'];
+					$arrayJSON[$sLabelsFetchedNew][$i][2] = $data['dateExpired'];					
 				}
 				$i+=1;
 			}
-		$reqDisplayToDoList -> closeCursor();	
+			echo json_encode($arrayJSON);
 			
-		echo $toDoFetched == "" ? "" : '{'.substr(substr($toDoFetched, 0, -1),2)."]}"; //il faut enlever le dernier ","
-		
+		$reqDisplayToDoList -> closeCursor();		
 	}
 }
 

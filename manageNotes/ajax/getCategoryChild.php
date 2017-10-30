@@ -1,7 +1,7 @@
 <?php
 
-//header("Content-Type: application/json; charset=UTF-8");
-header("Content-Type: text/plain");
+header("Content-Type: application/json; charset=UTF-8");
+//header("Content-Type: text/plain");
 
 
 session_start();
