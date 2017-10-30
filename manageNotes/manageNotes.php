@@ -71,6 +71,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 			</div>
 			<div id="containerOfLabelsCheckBoxes"></div>
 			<button id="exportToDoList">Exporter les ToDos</button>
+			<button id="displayCompleteToDoList">Ouvrir tout</button>
 			<button id="selectAllToDoOrOne">All</button>
 			<div id="frameOfContextMenuToDo">
 				<button id="cancelContextMenu">&lt;-</button>	

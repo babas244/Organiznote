@@ -114,6 +114,11 @@ div[id^="separatorLabels"]
 	background-color: LawnGreen;
 }
 
+#displayCompleteToDoList
+{
+	background-color: MediumVioletRed;
+}
+
 #frameOfContextMenuToDo
 {
 	position: absolute;

@@ -1,0 +1,38 @@
+.toDo
+{
+	background-color: #eeaaee;
+	border: 1px black solid;
+	border-radius: 2px;
+	font-size: 1.2em;
+	word-wrap: break-word;	
+}
+
+.toDo:active
+{
+	background-color: #ff0000;
+}
+
+div[id^="separatorLabels"]
+{
+	background-color: black;
+	font-size: 0.7em;
+}
+
+.labelsNameSeparator
+{
+	border-right: 1px black solid;
+	padding: 2px;
+}
+
+.dateExpired
+{
+	background-color: blue;
+	border-radius: 3px;
+	font-size: 15px;
+	display: none;
+}
+
+#noScroll
+{
+	background-color: yellow;
+}

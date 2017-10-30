@@ -81,6 +81,7 @@ document.getElementById("StatedToDoDone").addEventListener('click', stateToDoDon
 document.getElementById("editToDo").addEventListener('click', editToDo, false);
 document.getElementById("cancelContextMenu").addEventListener('click', hideContextMenuToDo, false);
 document.getElementById("exportToDoList").addEventListener('click', exportToDoList, false);
+document.getElementById("displayCompleteToDoList").addEventListener('click', displayCompleteToDoList, false);
 document.getElementById("selectAllToDoOrOne").addEventListener('click', selectAllToDoOrOne, false);
 
 document.getElementById("noScroll").addEventListener('touchmove', function(event) {
@@ -591,6 +592,10 @@ function exportToDoList() {
 	alert("Le fichier à télécharger a été créé.");
 }
 
+function displayCompleteToDoList() {
+	window.open('displayCompleteToDoListInNewWindow/displayCompleteToDoList.php?idTopic='+idTopic);		
+	alert("Fait !\n\nLes toDos ont été exportés dans un autre onglet ou une fenêtre (cela dépend de votre navigateur).");
+}
 function displayContextMenuToDo() {
 	document.getElementById(toDoFocused[0].id).style.backgroundColor = '#777777';
 	document.getElementById("containerOfLabelsCheckBoxes").style.display = 'none';
