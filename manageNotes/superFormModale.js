@@ -73,9 +73,9 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 			oDOMElementBr = document.createElement("Br");
 			document.getElementById("superForm").appendChild(oDOMElementBr);
 			
-			/* if (rankInForm === 0) {
+			if (rankInForm === 0 && oForm.length===1) {
 				oDOMForm.focus();
-			} */	
+			}
 		}
 	// build commandbuttons of Form
 	oDOMFormCommand = document.createElement("button");
