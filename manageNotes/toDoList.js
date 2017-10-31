@@ -650,6 +650,9 @@ function addEventsDragAndDrop(DOMElement) {
 					var newElement = droppedElement.cloneNode(true);
 					addEventsDragAndDrop(newElement);
 					addContextMenu(newElement);
+					newElement.dateCreation = droppedElement.dateCreation;
+					newElement.dateExpired = droppedElement.dateExpired;
+					newElement.content = droppedElement.content;
 					this.parentNode.insertBefore(newElement, this);
 					droppedElement.parentNode.removeChild(droppedElement);
 					//alert ('targetedRank = '+ targetedRank);
