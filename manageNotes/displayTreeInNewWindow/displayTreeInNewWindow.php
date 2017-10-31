@@ -37,11 +37,17 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sOriginPat
 		'idUser' => $_SESSION['id'],
 		'idTopic' => $idTopic,
 		'startWithPathParent' => $sOriginPathTreeToDisplay.'%')) or die(print_r($reqRetrieveTree->errorInfo()));
-
+	
+	$levelInTreeItemCurrent = 9999;
+	
 	while ($donnees = $reqRetrieveTree->fetch()) {
 			$classOfTreeItem = (substr($donnees['idNote'],-3,1)==="b" ? 'note' : 'folder');
 			$levelInTree = (strlen($donnees['idNote'])+1)/3-1;
-			echo ('<div class="level'.$levelInTree.' '.$classOfTreeItem.'">'.$donnees['content'].'</div>');
+			if ($levelInTree < $levelInTreeItemCurrent) {echo "<Br>";}
+			$levelInTreeItemCurrent = $levelInTree;
+			
+
+			echo ('<div class="level'.$levelInTree.' '.$classOfTreeItem.'">'.preg_replace('#\\n#', '<Br>',$donnees['content']).'</div>');
 		}
 	$reqRetrieveTree->closeCursor();		
 	

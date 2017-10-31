@@ -1,6 +1,5 @@
 .folder
 {
-	width: 250px;
 	background-color: #ffff00;
 	border: 1px black solid;
 	border-radius: 5px;
@@ -9,7 +8,6 @@
 
 .note
 {
-	width: 250px;
 	background-color: #ffffff;
 	border: 1px black solid;
 	border-radius: 5px;
@@ -18,25 +16,25 @@
 
 .level1 
 {
-	margin-left: 10px;
+	margin-left: 20px;
 }
 
 .level2 
 {
-	margin-left: 20px;
+	margin-left: 40px;
 }
 
 .level3 
 {
-	margin-left: 30px;
+	margin-left: 60px;
 }
 
 .level4 
 {
-	margin-left: 40px;
+	margin-left: 80px;
 }
 
 .level5 
 {
-	margin-left: 50px;
+	margin-left: 100px;
 }
