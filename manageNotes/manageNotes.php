@@ -106,6 +106,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 							</ul>	
 						</li>
 					</ul>
+				<!--<button id="boutonTest">test</button>-->
 				</div>
 			</div>
 			<div id="fondMenuCategorie">

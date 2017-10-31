@@ -616,7 +616,7 @@ function moveTreetItemLaunch() {
 	ongoingAction = 'moveTreeItem';
 } 
 
-/* document.getElementById("pasteHereTreeItem").addEventListener('click', function() {
+document.getElementById("pasteHereTreeItem").addEventListener('click', function() {
 	hideContextMenu();
 	//alert ("pathFocused =" + pathFocused + "  pathToPaste =" + pathToPaste);
 	if (pathFocused === pathToPaste.slice(0,-3)) {
@@ -649,7 +649,7 @@ function moveTreetItemLaunch() {
 			}
 		}
 	}
-}, false); */
+}, false);
 
 document.getElementById("getOutFromHere").addEventListener('click', function() {
 	hideContextMenu();
@@ -677,25 +677,30 @@ function resetColorTreeItem() {
 	}
 }
 
-
+/* document.getElementById("boutonTest").addEventListener('click', function () {
+	
+},false); */ 
 
 function pasteHereTreeItemInDbb(sPathToMove, sPathWhereToPaste) {
-	var sNbItemType = sPathToMove.substr(-3,1) === "a" ? "nbOfFolders" : "nbOfNotes"; 
-	var rowOfPasteItem = XX(parseInt(ToutesCategories[sPathWhereToPaste][sNbItemType])+1); // ou trouver ce nombre et le XX du cote serveur avec une requete dbb?
-	//alert (rowOfPasteItem);
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';	
-	ajaxCall('ajax/moveItem.php?idTopic=' + idTopic + '&sPathToMove=' + sPathToMove	+ '&sPathWhereToPaste=' + sPathWhereToPaste 
-						+ '&rowOfPasteItem=' + rowOfPasteItem,
-						pasteHereTreeItemInDbbFailed, pasteHereTreeItemUpdateClient, 
-						sPathToMove, sPathWhereToPaste);
+	ajaxCall('ajax/moveItem.php?idTopic=' + idTopic + '&sCutPath=' + sPathToMove	+ '&sPathWhereToPaste=' + sPathWhereToPaste,
+						pasteHereTreeItemInDbbFailed, pasteHereTreeItemUpdateClient, sPathToMove, sPathWhereToPaste);
 }
 
-/* function pasteHereTreeItemInDbbFailed(errorMessage) {
+function pasteHereTreeItemInDbbFailed(errorMessage) {
 	alert ("Impossible de déplacer l'élément sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
 	hideContextMenu();
 	resetDataTreeReadyForEvent();
-} */
+}
 
+function pasteHereTreeItemUpdateClient(errorMessageFromServer, sPathToMove, sPathWhereToPaste) {
+	if (errorMessageFromServer==="") {
+		location.reload();
+	}
+	else {
+		alert ("Erreur inattendue lors du déplacement au niveau du serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
+	}
+}
 
 /*
 function pasteHereTreeItemUpdateClient(errorMessageFromServer, sPathToMove, sPathWhereToPaste) {

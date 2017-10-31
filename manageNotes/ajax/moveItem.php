@@ -3,19 +3,31 @@ header("Content-Type: text/plain");
 
 session_start();
 
-if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCutPath"]) && isset($_GET["sPathWhereToPaste"]) && isset($_GET["rowOfPasteItem"])) {
+if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCutPath"]) && isset($_GET["sPathWhereToPaste"])) {
 
-	if ((preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sCutPath"])) && (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sPathWhereToPaste"])) && (preg_match("#^[0-9]{2}*$#", $_GET["rowOfPasteItem"]))) {		
+	if ((preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sCutPath"])) && (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sPathWhereToPaste"]))) {		
 		
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
 		$sCutPath = htmlspecialchars($_GET["sCutPath"]);
 		$aORb = substr($sCutPath,-3,1);
 		$sPathWhereToPaste = htmlspecialchars($_GET["sPathWhereToPaste"]);
-		$rowOfPasteItem = htmlspecialchars($_GET["rowOfPasteItem"]);
-		
+	
 		require '../../log_in_bdd.php';		
 		
 		require '../../isIdTopicSafeAndMatchUser.php';
+	
+		// on cherche le nombre d'items du même type que l'item à déplacer présents dans sPathWhereToPaste
+		$reqCountItemsInParent = $bdd -> prepare("SELECT COUNT(*) AS nbOfItemsInParent FROM notes 
+		WHERE idUser=:idUser AND idTopic=:idTopic AND idNote REGEXP :startWithPathWhereToPaste");
+			$reqCountItemsInParent -> execute(array(
+			'idUser' => $_SESSION['id'],
+			'idTopic' => $idTopic,
+			'startWithPathWhereToPaste' => "^".$sPathWhereToPaste.$aORb."[0-9]{2}$")) or die(print_r($reqCountItemsInParent->errorInfo()));
+			//echo ('<br>'.$reqCountItemsInParent->rowCount().' rangs affectés');
+		while ($data = $reqCountItemsInParent->fetch()) {
+			$rowOfPasteItem = XX($data['nbOfItemsInParent'] + 1);
+		}
+		$reqCountItemsInParent -> closeCursor();
 		
 		// on update les noms de tous les paths descendants de sCutPath et aussi sCutPath
 		$lengthCutPath = strlen($sCutPath); // on pourrait mettre le +1 ici au lieu de le recalculer dans la requete à chaque fois
@@ -33,7 +45,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCutPath"]
 			'rowOfPasteItem' => $rowOfPasteItem,
 			'lengthCutPath' => $lengthCutPath,
 			'startWithCutPath' => $sCutPath.'%')) or die(print_r($reqUpdatePathFamilyOfCutPath->errorInfo()));
-		echo ('<br>'.$reqUpdatePathFamilyOfCutPath->rowCount()." lignes affectées dans reqUpdatePathFamilyOfCutPath<br>");
+		//echo ('<br>'.$reqUpdatePathFamilyOfCutPath->rowCount()." lignes affectées dans reqUpdatePathFamilyOfCutPath<br>");
 		$reqUpdatePathFamilyOfCutPath->closeCursor();
 											
 		// on update tous les items affectés par le décalage
@@ -50,9 +62,9 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCutPath"]
 			'pathParent' => $sPathParent,
 			'aORb' => $aORb,
 			'lengthPathParent' => $lengthPathParent,
-			'startWithPathParent' => $sPathParent.'a%',
+			'startWithPathParent' => $sPathParent.$aORb.'%',
 			'nRankDeleted' => $nRankDeleted)) or die(print_r($reqUpdateSiblingsAndChildren->errorInfo()));		
-			echo ('<br>'.$reqUpdateSiblingsAndChildren->rowCount()." lignes affectées dans reqUpdateSiblingsAndChildren<br>");
+			//echo ('<br>'.$reqUpdateSiblingsAndChildren->rowCount()." lignes affectées dans reqUpdateSiblingsAndChildren<br>");
 			$reqUpdateSiblingsAndChildren->closeCursor();  // attention la requete concerne les folders ET les notes 
 	}
 }
@@ -60,4 +72,9 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCutPath"]
 else {
 	echo 'Une des variables n\'est pas définie ou la session n\'est pas ouverte !!!';	// ajouter du html pour que ca s'affiche comme une box !!
 }
+
+function XX($integer) {
+	return $integer>9 ? "".$integer : "0".$integer;
+}
+	
 ?>
