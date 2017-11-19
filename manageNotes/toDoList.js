@@ -306,7 +306,7 @@ function deleteToDo () {
 		ajaxCall('phpAjaxCalls_ToDo/deleteToDo.php?idTopic=' + idTopic 
 		+ "&sLabels=" + toDoFocused[0].sLabels 
 		+ "&position=" + toDoFocused[0].position
-		+ "&sContentStart=" + document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString), 
+		+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString)), 
 		deleteToDoFailed, deleteToDoAndHideContextMenu, toDoFocused[0].id);	
 	}
 	else { 
@@ -338,7 +338,7 @@ function setToDoDoneAjax(aFormDateArchive) {
 		+ '&dateArchive=' + aFormDateArchive[0].replace("T"," ")+":00" 
 		+ "&sLabels=" + toDoFocused[0].sLabels + "&position=" 
 		+ toDoFocused[0].position
-		+ "&sContentStart=" + document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString), 		
+		+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString)), 		
 		setToDoDoneFailed, deleteToDoAndHideContextMenu, toDoFocused[0].id);		
 	}
 	else {
