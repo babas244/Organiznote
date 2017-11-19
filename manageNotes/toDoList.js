@@ -90,7 +90,7 @@ document.getElementById("noScroll").addEventListener('touchmove', function(event
 
 document.getElementById("addToDoForm").addEventListener('submit', function(e) {
 	e.preventDefault();
-	submitToDoQuick(hackReplaceAll(document.getElementById("toDoTextarea").value));
+	submitToDoQuick();
 }, false);
 
 function initializetoDoFailed(errorMessage) {
@@ -514,7 +514,8 @@ function initializeFormToDo() {
 }
 
 
-function submitToDoQuick(sToDoContent){
+function submitToDoQuick(){
+	var sToDoContent = hackReplaceAll(document.getElementById("toDoTextarea").value);
 	if (sToDoContent !=="") {
 		var dateCreation = sLocalDatetime(new Date());
 		oJSONTemp['0000']= [];
@@ -640,7 +641,7 @@ function addEventsDragAndDrop(DOMElement) {
 		this.style.borderTop = "1px black solid";
 		var idDroppedElement = e.dataTransfer.getData("text");
 		//alert ('idDroppedElement = ' + idDroppedElement);
-		if (/^toDo[0-9]{5,7}$/.test(idDroppedElement)) {
+		if (idDroppedElement.startsWith('toDo')) {
 			var sLabels = idDroppedElement.substr(4,4); 
 			if (sLabels === this.id.substr(4,4)) {
 				var oldRank = parseInt(idDroppedElement.substr(8));
@@ -684,9 +685,6 @@ function addEventsDragAndDrop(DOMElement) {
 					}
 				}
 			}
-		}
-		else {
-			submitToDoQuick(idDroppedElement);
 		}
 	}, false);	
 }
