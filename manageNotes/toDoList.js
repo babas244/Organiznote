@@ -419,6 +419,7 @@ function submitToDoFull(ResponseForm) {
 	if (ResponseForm !== "") {
 		var sLabelsForm = ResponseForm[1].toString()+ResponseForm[2]+ResponseForm[3]+ResponseForm[4];
 		var sToDoContent = hackReplaceAll(ResponseForm[0]);
+		alert (sToDoContent.length);
 		if (toDoFocused[0].id === null ) {
 			var dateCreation = sLocalDatetime(new Date());
 			oJSONTemp[sLabelsForm]= [];
@@ -439,7 +440,7 @@ function submitToDoFull(ResponseForm) {
 		}
 		else { // c'est donc un update que l'on fait
 			document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
-			ajaxCall('phpAjaxCalls_ToDo/updateToDo.php?idTopic=' + idTopic 
+			ajaxCall('phpAjaxCalls_ToDo/updateToDo.php?idTopic=' + idTopic
 			+ "&toDoContent=" + encodeURIComponent(sToDoContent)
 			+ "&sLabels=" + toDoFocused[0].sLabels 
 			+ "&position=" + toDoFocused[0].position 
