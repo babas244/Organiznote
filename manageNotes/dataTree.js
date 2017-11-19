@@ -231,35 +231,6 @@ function instantiateRetrievedTree ( sTreeItems , fCallback, path ) { // path = p
 				oDOMFolder.addEventListener('click', function(e) {
 					moveInSimpleTreeLaunch(e.target.id);
 				}, false);				
-				
-				oDOMFolder.addEventListener('dragover', function(e) {
-					e.preventDefault();
-					this.style.backgroundColor = "#ffaa00";
-				}, false);
-					
-				oDOMFolder.addEventListener('dragleave', function(e) {
-					this.style.backgroundColor = "#ffff00";
-				}, false);
-				
-				var idFolder = oDOMFolder.id; 
-				(function (idFolder) {
-					oDOMFolder.addEventListener('drop', function(e){
-						e.preventDefault();
-						alert (idFolder.slice(0,-3));
-						if (idFolder.slice(0,-3) === oTreeNotes.openedFolder) {// si le folder est bien un enfant de openedFolder
-							this.style.backgroundColor = "#ff0000";
-							var sContent = e.dataTransfer.getData("text");
-							this.style.backgroundColor = "#ffff00";
-							pathFocused = idFolder;
-							oDOMFocused = document.getElementById(pathFocused);
-							insertNewItemLaunch(false, sContent);
-						}
-						else {
-							this.style.backgroundColor = "#ffff00";
-						}
-					}, false);
-				})(idFolder);
-				
 				var iLevelinTree = ((pathParent.length+4)/3)-1;
 				oDOMFolder.style.marginLeft = iRetraitAffichagedUneCategorie*(iLevelinTree) + 'px'; // mettre la marge en fonction du niveau de la cat�gorie
 				if (oDOMParent.nbOfNotes === 0) {// si il n'y pas une seule note
@@ -309,80 +280,65 @@ function addContextMenuDataTree(oDOMTreeItem) {
 	}, false);
 }
 
-document.getElementById("insertNewNote").addEventListener('click', function () {
-	insertNewItemLaunch(true);
-}, false);
-document.getElementById("insertNewFolder").addEventListener('click', function () {
-	insertNewItemLaunch(true);
-}, false); 
+document.getElementById("insertNewNote").addEventListener('click', insertNewNoteLaunch, false);
+document.getElementById("insertNewFolder").addEventListener('click', insertNewFolderLaunch, false);
 document.getElementById("editTreeItem").addEventListener('click', editTreeItemLaunch, false);
 document.getElementById("deleteFolder").addEventListener('click', deleteFolderLaunch, false);
 document.getElementById("deleteNote").addEventListener('click', deleteNoteLaunch, false);
 
-function insertNewItemLaunch(isUserEnterForm, sContent) {
-	if (isFolderRequiredLastOpened()) {
-		if  (isParentFolderNotFullAlready(pathFocused)) {
-			if (isUserEnterForm) {
-				hideContextMenu();
-				sItem = pathFocused.substr(-3,1) === "a" ? "catégorie" : "note";
-				oJSONFormTempDataTree[0]={};
-				oJSONFormTempDataTree[0].name = "content";
-				oJSONFormTempDataTree[0].HTMLType="textarea";
-				oJSONFormTempDataTree[0].attributes={};
-				oJSONFormTempDataTree[0].attributes.cols="30"
-				oJSONFormTempDataTree[0].attributes.maxLength="1700"
-				oJSONFormTempDataTree[0].attributes.rows="5";
-				oJSONFormTempDataTree[0].label="Entrez le nom de la nouvelle "+sItem+".";
-				var sForm = JSON.stringify(oJSONFormTempDataTree);
-				if (pathFocused.substr(-3,1) === "a") {
-					superFormModale(sForm, "Nouvelle "+sItem, insertNewFolderInDbb, "array", fCheckFormInsertOnlyTextarea);			
-				}
-				else {
-					superFormModale(sForm, "Nouvelle "+sItem, insertNewNoteInDbb, "array", fCheckFormInsertOnlyTextarea);								
-				}
-			}
-			else {
-				insertNewFolderInDbb(sContent);
-			}
-		}
-	}
-	else {
-		resetColorTreeItem();
-		pathFocused = null;		
-	}
-}
-
-function isFolderRequiredLastOpened() {
+function insertNewNoteLaunch() {
+	hideContextMenu();
 	if (oDOMFocused.nbOfFolders !== undefined) {
-		return true;
+		if (oDOMFocused.nbOfNotes <= 98) {
+			oJSONFormTempDataTree[0]={};
+			oJSONFormTempDataTree[0].name = "content";
+			oJSONFormTempDataTree[0].HTMLType="textarea";
+			oJSONFormTempDataTree[0].attributes={};
+			oJSONFormTempDataTree[0].attributes.cols="30"
+			oJSONFormTempDataTree[0].attributes.maxLength="1700"
+			oJSONFormTempDataTree[0].attributes.rows="5";
+			oJSONFormTempDataTree[0].label="Entrez le nom de la nouvelle note.";
+			var sForm = JSON.stringify(oJSONFormTempDataTree);
+			superFormModale(sForm, "Nouvelle catégorie", insertNewNoteInDbb, "array", fCheckFormInsertOnlyTextarea);	
+		}
+		else {
+			alert("Pas possible d'insérer une nouvelle note dans cette catégorie.\n\nVous avez atteint la limite prévue des 99 notes !\n\nIl serait utile de mieux réorganiser les catégories.")
+			resetColorTreeItem();
+			pathFocused = null;
+		}	
 	}
 	else {
-		alert("Pour insérer votre nouvelle catégorie, cliquer d'abord sur cette catégorie (celle dans laquelle vous voulez insérer) pour l'ouvrir car elle n'est pas encore chargée depuis le serveur. Puis insérez.");		
-		return false;
+		alert("Pour insérer votre nouvelle note, cliquer d'abord sur cette catégorie (celle dans laquelle vous voulez insérer) pour l'ouvrir car elle n'est pas encore chargée depuis le serveur. Puis insérez.");
+		resetColorTreeItem();
+		pathFocused = null;
 	}
 }
 
-function isParentFolderNotFullAlready(pathItem) {
-	var pathParent = pathItem.slice(0,-3);
-	var aORb = pathItem.substr(-3,1);
-	alert (pathFocused);
-	if (aORb === "a") {
+function insertNewFolderLaunch() {
+	hideContextMenu();
+	if (oDOMFocused.nbOfFolders !== undefined) {
 		if (oDOMFocused.nbOfFolders <= 98) {
-			return true;
+			oJSONFormTempDataTree[0]={};
+			oJSONFormTempDataTree[0].name = "content";
+			oJSONFormTempDataTree[0].HTMLType="textarea";
+			oJSONFormTempDataTree[0].attributes={};
+			oJSONFormTempDataTree[0].attributes.cols="30"
+			oJSONFormTempDataTree[0].attributes.maxLength="1700"
+			oJSONFormTempDataTree[0].attributes.rows="5";
+			oJSONFormTempDataTree[0].label="Entrez le nom de la nouvelle catégorie.";
+			var sForm = JSON.stringify(oJSONFormTempDataTree);
+			superFormModale(sForm, "Nouvelle catégorie", insertNewFolderInDbb, "array", fCheckFormInsertOnlyTextarea);	
 		}
 		else {
 			alert("Pas possible d'insérer une nouvelle catégorie.\n\nVous avez atteint la limite prévue des 99 sous-catégories !\n\nIl serait utile de mieux réorganiser les catégories.")
-			return false;
+			resetColorTreeItem();
+			pathFocused = null;
 		}
 	}
-	else { // c'est donc une note et pas un folder
-		if (oDOMFocused.nbOfNotes <= 98) {
-			return true;
-		}
-		else {
-			alert("Pas possible d'insérer une nouvelle note.\n\nVous avez atteint la limite prévue des 99 notes !\n\nIl serait utile de mieux réorganiser les notes.")
-			return false;
-		}
+	else {
+		alert("Pour insérer votre nouvelle catégorie, cliquer d'abord sur cette catégorie (celle dans laquelle vous voulez insérer) pour l'ouvrir car elle n'est pas encore chargée depuis le serveur. Puis insérez.");
+		resetColorTreeItem();
+		pathFocused = null;
 	}
 }
 
