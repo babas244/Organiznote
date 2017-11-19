@@ -17,7 +17,7 @@ if (isset($_POST['user']) && isset($_POST['pass']) && isset($_POST['rePass']) &&
 	}	
 	else {
 		if ($_POST['pass']==$_POST['rePass']) {
-			$hashPass = htmlspecialchars(sha1($_POST['pass']));
+			$hashPass = htmlspecialchars(password_hash($_POST['pass'],PASSWORD_DEFAULT));
 		}
 		else {
 			echo "- les deux mot de passes ne se correspondent pas.<br><br>";

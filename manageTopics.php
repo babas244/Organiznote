@@ -4,13 +4,12 @@ session_start();
 require 'log_in_bdd.php';  /* require 'sessin AUthentication.php'; ???*/
 
 if (!isset($_SESSION['id'])) {
-	$req = $bdd->prepare('SELECT id FROM users WHERE user = :user AND hashPass = :hashPass');
+	$req = $bdd->prepare('SELECT id, hashPass FROM users WHERE user = :user');
 	if (isset($_COOKIE['user']) && isset($_COOKIE['hashPass'])) { // s'il y a des cookies de session, on vérifie qu'ils correspondent à un des users, et on ouvre la session
 		$req->execute(array( // Vérification des cookies de connexion
-			'user' => $_COOKIE['user'],
-			'hashPass' => $_COOKIE['hashPass']));
+			'user' => htmlspecialchars($_COOKIE['user'])));
 			$resultat = $req->fetch();
-		if ($resultat) {
+		if ($resultat['hashPass'] === $_COOKIE['hashPass']) {
 			$_SESSION['id'] = $resultat['id']; // $resultat est une chaine de caracteres, ou ... un nb ??
 			$_SESSION['user'] = $_POST['user'];
 		}
@@ -18,16 +17,14 @@ if (!isset($_SESSION['id'])) {
 	else {
 		if (isset($_POST['user']) && isset($_POST['pass'])) {	// s'il n'y a pas de cookies de connexion on vérifie si user et mot de passe existent
 			
-			$hashPass = sha1($_POST['pass']); // Hachage du mot de passe // pas la peine de htmlspecialchars non ? OU sha1 peut générer du code ???
 			$user = htmlspecialchars($_POST['user']);
 
 			$req->execute(array( // Vérification des identifiants
-			'user' => $user,
-			'hashPass' => $hashPass));
+			'user' => $user));
 
 			$resultat = $req->fetch();
 
-			if (!$resultat) {
+			if (!password_verify($_POST['pass'],$resultat["hashPass"])) {
 				echo 'Mauvais identifiant ou mot de passe !';
 				echo '<br><br><a href="index.php"> vers la page d\'accueil </a>';
 			}
@@ -37,7 +34,7 @@ if (!isset($_SESSION['id'])) {
 				//require_once 'define CONSTANT domain.php';
 				if (isset($_POST['stayConnected'])) {
 					setcookie('user',$user, time()+365*24*3600, null, null, false, true); //, '/', DOMAIN , false, true);
-					setcookie('hashPass', $hashPass, time()+365*24*3600, null, null, false, true); // , '/', DOMAIN , false, true);
+					setcookie('hashPass', $resultat["hashPass"], time()+365*24*3600, null, null, false, true); // , '/', DOMAIN , false, true);
 				}
 			}
 		}
