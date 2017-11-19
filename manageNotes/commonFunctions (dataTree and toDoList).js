@@ -14,8 +14,7 @@ function hackReplaceDateChineseFormat() {
 
 function hackReplaceDate() {
 	oNewDate = new Date();
-	var dayNumber = oNewDate.getDay();
-	var sNewDate = "("+dayAbbreviation[dayNumber]+" "+dayNumber+" "+" "+monthNameAbbreviation[oNewDate.getMonth()]+" "+oNewDate.getFullYear().toString().slice(2,4)+")"; 				
+	var sNewDate = "("+dayAbbreviation[oNewDate.getDay()]+" "+oNewDate.getDate()+" "+" "+monthNameAbbreviation[oNewDate.getMonth()]+" "+oNewDate.getFullYear()+")"; 				
 	return sNewDate;
 }
 
