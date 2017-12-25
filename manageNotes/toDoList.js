@@ -315,8 +315,7 @@ function deleteToDo () {
 }
 
 function stateToDoDone () {
-	var dateArchiveCreated = new Date()
-	var dateArchive = dateArchiveCreated.toISOString().substr(0,10)+" "+XX(dateArchiveCreated.getHours())+dateArchiveCreated.toISOString().substr(13,3);
+	var dateArchive = sLocalDatetime(new Date()).slice(0,-3);
 	oJSONFormTemp[0] = {}; //mettre un var ici ?
 	oJSONFormTemp[0].name = "DateArchive";
 	oJSONFormTemp[0].attributes = {};
