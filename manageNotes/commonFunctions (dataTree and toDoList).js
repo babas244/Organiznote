@@ -8,7 +8,7 @@ function hackReplaceAll(sStringtoSearchAndReplace) {
 function hackReplaceDateChineseFormat() {
 	oNewDate = new Date();
 	var monthNumber = oNewDate.getMonth();
-	var sNewDate = oNewDate.getFullYear()+"-"+XX(monthNumber)+monthNameAbbreviation[monthNumber]+"-"+XX(oNewDate.getDate()); 				
+	var sNewDate = oNewDate.getFullYear()+"-"+XX(parseInt(monthNumber)+1)+monthNameAbbreviation[monthNumber]+"-"+XX(oNewDate.getDate()); 				
 	return sNewDate;
 }
 
