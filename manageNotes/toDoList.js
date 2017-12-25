@@ -322,6 +322,11 @@ function stateToDoDone () {
 	oJSONFormTemp[0].attributes = {};
 	oJSONFormTemp[0].attributes.value = dateArchive;
 	oJSONFormTemp[0].label = "Date d\'archivage (format AAAA-MM-JJ hh:mm)";
+	oJSONFormTemp[1] = {}; //mettre un var ici ?
+	oJSONFormTemp[1].name = "DateCreation";
+	oJSONFormTemp[1].attributes = {};
+	oJSONFormTemp[1].attributes.value = document.getElementById(toDoFocused[0].id).dateCreation;
+	oJSONFormTemp[1].label = "Optionnel : remodifier date de création de la note (format AAAA-MM-JJ hh:mm:ss)";
 	var sForm = JSON.stringify(oJSONFormTemp);
 	oJSONFormTemp = [];
 	superFormModale(sForm, "Confirmation de la date d'archivage", setToDoDoneAjax, "array", fCheckFormDateArchive);
@@ -332,8 +337,9 @@ function setToDoDoneAjax(aFormDateArchive) {
 		document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 		ajaxCall('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic 
 		+ '&dateArchive=' + aFormDateArchive[0]+":00" 
-		+ "&sLabels=" + toDoFocused[0].sLabels + "&position=" 
-		+ toDoFocused[0].position
+		+ '&dateCreation=' + aFormDateArchive[1]
+		+ "&sLabels=" + toDoFocused[0].sLabels 
+		+ "&position=" + toDoFocused[0].position
 		+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString)), 		
 		setToDoDoneFailed, deleteToDoAndHideContextMenu, toDoFocused[0].id);		
 	}
@@ -365,13 +371,15 @@ function handleErrorsFromServer(errorMessageFromServer) {
 }
 
 function fCheckFormDateArchive() {
-	if (/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]$/.test(oForm[0].value)) {
-		return 'ok';		
-	} 
-	else {
-		alert ('Format de date non correct, il faut AAAA-MM-JJ hh:mm, et dans des valeurs possibles')
-		return "DateArchive"
+	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]$/.test(oForm[0].value)) {
+		alert ('Le format de la date d\'archivage est non correct, il faut AAAA-MM-JJ hh:mm, et dans des valeurs possibles');
+		return "DateArchive";
 	}
+	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(oForm[1].value)) {
+		alert ('Le format de la date de création de la note est non correct, il faut AAAA-MM-JJ hh:mm:ss, et dans des valeurs possibles');
+		return "DateArchive";
+	} 
+	return "ok";
 }
 
 function editToDo() {
