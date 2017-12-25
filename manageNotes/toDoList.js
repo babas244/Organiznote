@@ -315,27 +315,22 @@ function deleteToDo () {
 }
 
 function stateToDoDone () {
-	if (confirm("Êtes-vous sûr de bien vouloir archiver comme faite la note :\n" + document.getElementById(toDoFocused[0].id).content) == true) {
-		var dateArchiveCreated = new Date()
-		var dateArchive = dateArchiveCreated.toISOString().substr(0,11)+XX(dateArchiveCreated.getHours())+dateArchiveCreated.toISOString().substr(13,3);
-		oJSONFormTemp[0] = {}; //mettre un var ici ?
-		oJSONFormTemp[0].name = "DateArchive";
-		oJSONFormTemp[0].attributes = {};
-		oJSONFormTemp[0].attributes.value = dateArchive;
-		oJSONFormTemp[0].label = "Date d\'archivage (format AAAA-MM-JJThh:mm)";
-		var sForm = JSON.stringify(oJSONFormTemp);
-		superFormModale(sForm, "Confirmation de la date d'archivage", setToDoDoneAjax, "array", fCheckFormDateArchive);
-	} 
-	else {
-		hideContextMenuToDo();
-	}
+	var dateArchiveCreated = new Date()
+	var dateArchive = dateArchiveCreated.toISOString().substr(0,10)+" "+XX(dateArchiveCreated.getHours())+dateArchiveCreated.toISOString().substr(13,3);
+	oJSONFormTemp[0] = {}; //mettre un var ici ?
+	oJSONFormTemp[0].name = "DateArchive";
+	oJSONFormTemp[0].attributes = {};
+	oJSONFormTemp[0].attributes.value = dateArchive;
+	oJSONFormTemp[0].label = "Date d\'archivage (format AAAA-MM-JJ hh:mm)";
+	var sForm = JSON.stringify(oJSONFormTemp);
+	superFormModale(sForm, "Confirmation de la date d'archivage", setToDoDoneAjax, "array", fCheckFormDateArchive);
 }
 
 function setToDoDoneAjax(aFormDateArchive) {
 	if (aFormDateArchive !== "") {
 		document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 		ajaxCall('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic 
-		+ '&dateArchive=' + aFormDateArchive[0].replace("T"," ")+":00" 
+		+ '&dateArchive=' + aFormDateArchive[0]+":00" 
 		+ "&sLabels=" + toDoFocused[0].sLabels + "&position=" 
 		+ toDoFocused[0].position
 		+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString)), 		
@@ -369,11 +364,11 @@ function handleErrorsFromServer(errorMessageFromServer) {
 }
 
 function fCheckFormDateArchive() {
-	if (/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]$/.test(oForm[0].value)) {
+	if (/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]$/.test(oForm[0].value)) {
 		return 'ok';		
 	} 
 	else {
-		alert ('Format de date non correct, il faut AAAA-MM-JJThh:mm, et dans des valeurs possibles')
+		alert ('Format de date non correct, il faut AAAA-MM-JJ hh:mm, et dans des valeurs possibles')
 		return "DateArchive"
 	}
 }
