@@ -299,6 +299,7 @@ function insertNewNoteLaunch() {
 			oJSONFormTempDataTree[0].attributes.rows="5";
 			oJSONFormTempDataTree[0].label="Entrez le nom de la nouvelle note.";
 			var sForm = JSON.stringify(oJSONFormTempDataTree);
+			oJSONFormTempDataTree = [];
 			superFormModale(sForm, "Nouvelle catégorie", insertNewNoteInDbb, "array", fCheckFormInsertOnlyTextarea);	
 		}
 		else {
@@ -327,6 +328,7 @@ function insertNewFolderLaunch() {
 			oJSONFormTempDataTree[0].attributes.rows="5";
 			oJSONFormTempDataTree[0].label="Entrez le nom de la nouvelle catégorie.";
 			var sForm = JSON.stringify(oJSONFormTempDataTree);
+			oJSONFormTempDataTree = [];
 			superFormModale(sForm, "Nouvelle catégorie", insertNewFolderInDbb, "array", fCheckFormInsertOnlyTextarea);	
 		}
 		else {
@@ -392,6 +394,7 @@ function insertNewTreeItemUpdateClient(errorMessageFromServer, sNewNote, aORb) {
 		oJSONTempDataTree[0][pathFocused][aORb][0] = [];
 		oJSONTempDataTree[0][pathFocused][aORb][0][0] = sNewNote;		
 		var sTreeItems = JSON.stringify(oJSONTempDataTree);
+		oJSONTempDataTree = [];
 		instantiateRetrievedTree(sTreeItems);			
 		if (pathFocused === oTreeNotes.openedFolder) {
 			var sNbOfItems = aORb ==="a" ? "nbOfFolders" : "nbOfNotes"; 
@@ -448,6 +451,7 @@ function editTreeItemLaunch() {
 	oJSONFormTempDataTree[0].attributes.value= oDOMFocused.content;
 	oJSONFormTempDataTree[0].label="Entrée à modifier :";
 	var sForm = JSON.stringify(oJSONFormTempDataTree);
+	oJSONFormTempDataTree = [];
 	superFormModale(sForm, "Editer", editTreeItemInDbb, "array", fCheckFormInsertOnlyTextarea);	
 }
 

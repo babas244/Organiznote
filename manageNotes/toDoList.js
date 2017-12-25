@@ -323,6 +323,7 @@ function stateToDoDone () {
 	oJSONFormTemp[0].attributes.value = dateArchive;
 	oJSONFormTemp[0].label = "Date d\'archivage (format AAAA-MM-JJ hh:mm)";
 	var sForm = JSON.stringify(oJSONFormTemp);
+	oJSONFormTemp = [];
 	superFormModale(sForm, "Confirmation de la date d'archivage", setToDoDoneAjax, "array", fCheckFormDateArchive);
 }
 
@@ -397,6 +398,7 @@ function editToDo() {
 	oJSONFormTemp[rankForm].label = oLabels.title[labelTitleRank];
 	}
 	var sForm = JSON.stringify(oJSONFormTemp);
+	oJSONFormTemp = [];
 	superFormModale(sForm, "Etiquettes", submitToDoFull, "array", fCheckFormToDo);
 }
 
@@ -422,6 +424,7 @@ function submitToDoFull(ResponseForm) {
 			oJSONTemp[sLabelsForm][0][1] = dateCreation;
 			oJSONTemp[sLabelsForm][0][2] = "";
 			var sToDoAddedJSON = JSON.stringify(oJSONTemp);
+			oJSONTemp[sLabelsForm]= [];
 			/*var sToDoAddedJSON2 = '{"'+ sLabelsForm +'":[["'+ sToDoContent +'","'+ dateCreation +'",""]]}';
 			alert (sToDoAddedJSON2 +"\n\n"+ sToDoAddedJSON);*/
 			document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
@@ -477,6 +480,7 @@ function updateToDo(errorMessageFromServer , sNewContent, sNewLabels) {
 				oJSONTemp[sNewLabels][0][1] = oDOMToDoFocused.dateCreation;
 				oJSONTemp[sNewLabels][0][2] = oDOMToDoFocused.dateExpired === undefined ? null : oDOMToDoFocused.dateExpired;
 				var sToDoNewJSON = JSON.stringify(oJSONTemp);
+				oJSONTemp[sNewLabels]= [];
 				insertToDoListBefore(sToDoNewJSON, hideContextMenuToDo, "newNote");
 			}
 		}
@@ -518,6 +522,7 @@ function submitToDoQuick(){
 		oJSONTemp['0000'][0][1] = dateCreation;
 		oJSONTemp['0000'][0][2] = null;
 		var sToDoAddedJSON = JSON.stringify(oJSONTemp);
+		oJSONTemp['0000']= [];
 		if (aLabelNbItems["0000"] === undefined) {
 			aLabelNbItems["0000"]=0;
 		}

@@ -168,6 +168,7 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 	}
 	
 	function hideSuperFormModale() {
+		oForm = [];
 		document.body.removeChild(document.getElementById("frameOfSuperForm"));
 	}
 	
