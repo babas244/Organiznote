@@ -404,6 +404,12 @@ function editToDo() {
 		}
 	oJSONFormTemp[rankForm].label = oLabels.title[labelTitleRank];
 	}
+	var nextRank = labelTitleRank + 1
+	oJSONFormTemp[nextRank] = {};
+	oJSONFormTemp[nextRank].name = "DateCreation";
+	oJSONFormTemp[nextRank].attributes = {};
+	oJSONFormTemp[nextRank].attributes.value = document.getElementById(toDoFocused[0].id).dateCreation;
+	oJSONFormTemp[nextRank].label = "Optionnel : remodifier date de création de la note (format AAAA-MM-JJ hh:mm:ss)";
 	var sForm = JSON.stringify(oJSONFormTemp);
 	oJSONFormTemp = [];
 	superFormModale(sForm, "Etiquettes", submitToDoFull, "array", fCheckFormToDo);
@@ -414,6 +420,10 @@ function fCheckFormToDo(){
 		alert('La note est vide, il faut la remplir.')
 		return 'content';
 	}
+	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(oForm[5].value)) {
+		alert ('Le format de la date de création de la note est non correct, il faut AAAA-MM-JJ hh:mm:ss, et dans des valeurs possibles');
+		return "content";
+	} 
 	else {
 		return "ok";
 	}
@@ -422,6 +432,7 @@ function fCheckFormToDo(){
 function submitToDoFull(ResponseForm) {
 	if (ResponseForm !== "") {
 		var sLabelsForm = ResponseForm[1].toString()+ResponseForm[2]+ResponseForm[3]+ResponseForm[4];
+		var sDateCreation = ResponseForm[5];
 		var sToDoContent = hackReplaceAll(ResponseForm[0]);
 		if (toDoFocused[0].id === null ) {
 			var dateCreation = sLocalDatetime(new Date());
@@ -448,9 +459,10 @@ function submitToDoFull(ResponseForm) {
 			+ "&toDoContent=" + encodeURIComponent(sToDoContent)
 			+ "&sLabels=" + toDoFocused[0].sLabels 
 			+ "&position=" + toDoFocused[0].position 
-			+ "&sNewLabels=" + sLabelsForm 
+			+ "&sNewLabels=" + sLabelsForm
+			+ "&dateCreation=" + sDateCreation
 			+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString)), 
-			updateToDoFailed, updateToDo, sToDoContent, sLabelsForm);
+			updateToDoFailed, updateToDo, sToDoContent, sLabelsForm, sDateCreation);
 		}
 	}
 	else {
@@ -470,12 +482,13 @@ function addNewToDoWithLabels(errorMessageFromServer,sToDoAddedJSON) {
 	hideContextMenuToDo();
 }
 
-function updateToDo(errorMessageFromServer , sNewContent, sNewLabels) {
+function updateToDo(errorMessageFromServer , sNewContent, sNewLabels, sDateCreation) {
 	if (errorMessageFromServer==="") {
 		var oDOMToDoFocused = document.getElementById(toDoFocused[0].id);
 		if (toDoFocused[0].sLabels === sNewLabels) { // les sLabels ne changent pas
 			oDOMToDoFocused.innerHTML = sNewContent.replace(/\n/gi, "<Br>") + '<span class="dateExpired">'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) + '</div>'
 			oDOMToDoFocused.content = sNewContent;
+			oDOMToDoFocused.dateCreation = sDateCreation;
 		}
 		else { // les sLabels changent aussi
 			deleteToDoFromDOM(toDoFocused[0].id);
@@ -484,7 +497,7 @@ function updateToDo(errorMessageFromServer , sNewContent, sNewLabels) {
 				oJSONTemp[sNewLabels]= [];
 				oJSONTemp[sNewLabels][0] = [];
 				oJSONTemp[sNewLabels][0][0] = sNewContent;
-				oJSONTemp[sNewLabels][0][1] = oDOMToDoFocused.dateCreation;
+				oJSONTemp[sNewLabels][0][1] = sDateCreation;
 				oJSONTemp[sNewLabels][0][2] = oDOMToDoFocused.dateExpired === undefined ? null : oDOMToDoFocused.dateExpired;
 				var sToDoNewJSON = JSON.stringify(oJSONTemp);
 				oJSONTemp[sNewLabels]= [];

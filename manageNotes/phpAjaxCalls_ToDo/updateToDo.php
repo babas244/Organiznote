@@ -4,9 +4,9 @@ header("Content-Type: application/json; charset=UTF-8");
 
 session_start();
 
-if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoContent"]) && isset($_GET["sLabels"]) && isset($_GET["position"]) && isset($_GET["sNewLabels"])) {
+if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoContent"]) && isset($_GET["sLabels"]) && isset($_GET["position"]) && isset($_GET["sNewLabels"]) && isset($_GET["dateCreation"])) {
 	
-	if (preg_match("#^[0-9]{4}$#", $_GET["sLabels"]) && preg_match("#^[0-9]+$#", $_GET["position"]) && preg_match("#^[0-9]{4}$#", $_GET["sNewLabels"])) {
+	if (preg_match("#^[0-9]{4}$#", $_GET["sLabels"]) && preg_match("#^[0-9]+$#", $_GET["position"]) && preg_match("#^[0-9]{4}$#", $_GET["sNewLabels"]) && preg_match("#^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$#", $_GET["dateCreation"])) {
 		
 		require '../../log_in_bdd.php';
 
@@ -17,7 +17,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 		$sLabels = htmlspecialchars($_GET["sLabels"]);
 		$aLabels = str_split($sLabels);
 		$position = htmlspecialchars($_GET["position"]);		
-		
+		$dateCreation = htmlspecialchars($_GET["dateCreation"]);		
 
 		$sNewLabels = htmlspecialchars($_GET["sNewLabels"]); // utile ??
 		//$aNewLabels = array(); //nécessaire ??
@@ -28,12 +28,13 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 		if ($aLabels[0] == $aNewLabels[0] && $aLabels[1] == $aNewLabels[1] && $aLabels[2] == $aNewLabels[2] && $aLabels[3] == $aNewLabels[3]) {
 			
 			// on n'a donc pas changé de sLabels, on udpate que le content		
-			$reqUpdateToDo = $bdd -> prepare('UPDATE todolists SET content=:newNote
+			$reqUpdateToDo = $bdd -> prepare('UPDATE todolists SET content=:newNote,dateCreation=:dateCreation
 			WHERE Iduser=:idUser AND idTopic=:idTopic AND label0=:label0 AND label1=:label1 AND label2=:label2 AND label3=:label3 AND dateArchive IS NULL AND noteRank=:NoteRank');
 				$reqUpdateToDo -> execute(array(
 				'idUser' => $_SESSION['id'],
 				'idTopic' => $idTopic,
 				'newNote' => $toDoContent,
+				'dateCreation' => $dateCreation,
 				'label0' => $aLabels[0],
 				'label1' => $aLabels[1],
 				'label2' => $aLabels[2],
@@ -62,7 +63,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 			//echo $nbOfToDoNewLabels;
 			
 			// updater les contenus, avec la nouvelle position
-			$reqUpdateToDo = $bdd -> prepare('UPDATE todolists SET noteRank=:noteRank,content=:newNote,label0=:newLabel0,label1=:newLabel1,label2=:newLabel2,label3=:newLabel3
+			$reqUpdateToDo = $bdd -> prepare('UPDATE todolists SET noteRank=:noteRank,content=:newNote,label0=:newLabel0,label1=:newLabel1,label2=:newLabel2,label3=:newLabel3,dateCreation=:dateCreation
 			WHERE Iduser=:idUser AND idTopic=:idTopic AND label0=:oldLabel0 AND label1=:oldLabel1 AND label2=:oldLabel2 AND label3=:oldLabel3 
 			AND dateArchive IS NULL AND noteRank=:oldNoteRank');
 				$reqUpdateToDo -> execute(array(
@@ -70,6 +71,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 				'idTopic' => $idTopic,
 				'noteRank' => $nbOfToDoNewLabels,
 				'newNote' => $toDoContent,
+				'dateCreation' => $dateCreation,
 				'newLabel0' => $aNewLabels[0],
 				'newLabel1' => $aNewLabels[1],
 				'newLabel2' => $aNewLabels[2],

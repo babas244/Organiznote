@@ -86,7 +86,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 				<div id="greyLayerOnFrameOfTree"><p id="ajaxLoadingImageFrameOfTree"><img src="ajaxLoadingDataTree_spiral.gif" alt="Loading..." /></p></div>
 				<div id="01" class="folder">   <!--div "racine", à mettre dans dataTree.js ?--> 
 				</div>
-				<div id="menu">
+				<!--<div id="menu">
 					<ul class="Niveau1">
 						<li>
 							<button>Affichage</button>
@@ -105,7 +105,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 								<li><button>24h</button></li>
 							</ul>	
 						</li>
-					</ul>
+					</ul>-->
 				<!--<button id="boutonTest">test</button>-->
 				</div>
 			</div>
