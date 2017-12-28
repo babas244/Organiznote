@@ -103,3 +103,26 @@ function colorParameterToHex2digits(colorParameter) {
 	var hexColor = Math.round(colorParameter * 255).toString(16);
 	return hexColor.length == 1 ? "0"+ hexColor : hexColor;
 }
+
+function displayDatesComparison (sDateBefore, sDateAfter, sDescriptionDateBefore, sDescriptionDateAfter) { // accepte dates au format "2017-11-01 22:25:00"
+	var sDeltaDisplayed;
+	var oDateBefore = new Date(sDateBefore.substr(0,4), sDateBefore.substr(5,2), sDateBefore.substr(8,2),
+			sDateBefore.substr(11,2), sDateBefore.substr(14,2), sDateBefore.substr(17,2), 0);
+
+	var oDateAfter = new Date(sDateAfter.substr(0,4), sDateAfter.substr(5,2), sDateAfter.substr(8,2),
+			sDateAfter.substr(11,2), sDateAfter.substr(14,2), sDateAfter.substr(17,2), 0);
+			
+	deltaDatesInSecondes = (oDateAfter.getTime() - oDateBefore.getTime())/1000;
+
+	var _1day = 24*3600;
+	var _1month = 30*_1day;
+	var _1year = 365*_1day;
+
+	if (deltaDatesInSecondes > 2*_1year) {sDeltaDisplayed = Math.round(deltaDatesInSecondes/_1year) + " ans"}
+	else if (deltaDatesInSecondes > 2*_1month) {sDeltaDisplayed = Math.round(deltaDatesInSecondes/_1month) + " mois"}
+	else if (deltaDatesInSecondes > _1day) {sDeltaDisplayed = Math.round(deltaDatesInSecondes/_1day) + " jour(s)"}
+	else if (deltaDatesInSecondes < 0 ) {sDeltaDisplayed =  "...bizarre, la date "+ sDescriptionDateBefore +" arrive après la date "+ sDescriptionDateAfter +"...??"}
+	else {sDeltaDisplayed = "moins de 1 jour"}
+
+	return sDeltaDisplayed;
+}

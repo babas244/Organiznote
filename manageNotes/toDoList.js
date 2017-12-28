@@ -316,6 +316,7 @@ function deleteToDo () {
 
 function stateToDoDone () {
 	var dateArchive = sLocalDatetime(new Date()).slice(0,-3);
+	var dateCreation = document.getElementById(toDoFocused[0].id).dateCreation
 	oJSONFormTemp[0] = {}; //mettre un var ici ?
 	oJSONFormTemp[0].name = "DateArchive";
 	oJSONFormTemp[0].attributes = {};
@@ -324,8 +325,9 @@ function stateToDoDone () {
 	oJSONFormTemp[1] = {}; //mettre un var ici ?
 	oJSONFormTemp[1].name = "DateCreation";
 	oJSONFormTemp[1].attributes = {};
-	oJSONFormTemp[1].attributes.value = document.getElementById(toDoFocused[0].id).dateCreation;
-	oJSONFormTemp[1].label = "Optionnel : remodifier date de création de la note (format AAAA-MM-JJ hh:mm:ss)";
+	oJSONFormTemp[1].attributes.value = dateCreation;
+	oJSONFormTemp[1].label = "Optionnel : remodifier date de création de la note (format AAAA-MM-JJ hh:mm:ss) initialement il y a "
+									+ displayDatesComparison(dateCreation, dateArchive+":00", "de création", "d'archive")+".";
 	var sForm = JSON.stringify(oJSONFormTemp);
 	oJSONFormTemp = [];
 	superFormModale(sForm, "Confirmation de la date d'archivage", setToDoDoneAjax, "array", fCheckFormDateArchive);
@@ -405,11 +407,14 @@ function editToDo() {
 	oJSONFormTemp[rankForm].label = oLabels.title[labelTitleRank];
 	}
 	var nextRank = labelTitleRank + 1
+	var dateCreation = document.getElementById(toDoFocused[0].id).dateCreation;
+	var dateNow = sLocalDatetime(new Date());
 	oJSONFormTemp[nextRank] = {};
 	oJSONFormTemp[nextRank].name = "DateCreation";
 	oJSONFormTemp[nextRank].attributes = {};
-	oJSONFormTemp[nextRank].attributes.value = document.getElementById(toDoFocused[0].id).dateCreation;
-	oJSONFormTemp[nextRank].label = "Optionnel : remodifier date de création de la note (format AAAA-MM-JJ hh:mm:ss)";
+	oJSONFormTemp[nextRank].attributes.value = dateCreation;
+	oJSONFormTemp[nextRank].label = "Optionnel : remodifier date de création de la note (format AAAA-MM-JJ hh:mm:ss) initialement il y a <b>"
+									+ displayDatesComparison(dateCreation, dateNow, "de création", "de maintenant")+"</b>.";
 	var sForm = JSON.stringify(oJSONFormTemp);
 	oJSONFormTemp = [];
 	superFormModale(sForm, "Etiquettes", submitToDoFull, "array", fCheckFormToDo);

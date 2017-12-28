@@ -45,6 +45,8 @@
 	border-radius: 5px;
 	word-wrap: break-word;
 	white-space: pre-wrap;
+	resize: horizontal;
+	overflow: auto; 
 }
 
 .note
@@ -55,6 +57,8 @@
 	border-radius: 5px;
 	word-wrap: break-word;
 	white-space: pre-wrap;
+	resize: horizontal;
+	overflow: auto; 
 }
 
 div.folder:active {background-color: #ff0000 !important;}
