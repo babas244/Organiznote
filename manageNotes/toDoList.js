@@ -322,23 +322,34 @@ function stateToDoDone () {
 	oJSONFormTemp[0].attributes = {};
 	oJSONFormTemp[0].attributes.value = dateArchive;
 	oJSONFormTemp[0].label = "Date d\'archivage (format AAAA-MM-JJ hh:mm)";
-	oJSONFormTemp[1] = {}; //mettre un var ici ?
-	oJSONFormTemp[1].name = "DateCreation";
-	oJSONFormTemp[1].attributes = {};
-	oJSONFormTemp[1].attributes.value = dateCreation;
-	oJSONFormTemp[1].label = "Optionnel : remodifier date de création de la note (format AAAA-MM-JJ hh:mm:ss) initialement il y a "
-									+ displayDatesComparison(dateCreation, dateArchive+":00", "de création", "d'archive")+".";
+	oJSONFormTemp[1]={};
+	oJSONFormTemp[1].name = "content";
+	oJSONFormTemp[1].HTMLType="textarea";
+	oJSONFormTemp[1].attributes={};
+	oJSONFormTemp[1].attributes.cols="30"
+	oJSONFormTemp[1].attributes.maxLength="1700"
+	oJSONFormTemp[1].attributes.rows="5"
+	oJSONFormTemp[1].attributes.value= document.getElementById(toDoFocused[0].id).content;
+	oJSONFormTemp[1].label="note";
+	oJSONFormTemp[2] = {};
+	oJSONFormTemp[2].name = "DateCreation";
+	oJSONFormTemp[2].attributes = {};
+	oJSONFormTemp[2].attributes.value = dateCreation;
+	oJSONFormTemp[2].label = "Optionnel : remodifier date de création de la note (format AAAA-MM-JJ hh:mm:ss) initialement il y a <b>"
+									+ displayDatesComparison(dateCreation, dateArchive+":00", "de création", "d'archive")+"</b>.";
 	var sForm = JSON.stringify(oJSONFormTemp);
 	oJSONFormTemp = [];
 	superFormModale(sForm, "Confirmation de la date d'archivage", setToDoDoneAjax, "array", fCheckFormDateArchive);
 }
 
 function setToDoDoneAjax(aFormDateArchive) {
+	var sToDoContent = hackReplaceAll(aFormDateArchive[1]);
 	if (aFormDateArchive !== "") {
 		document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 		ajaxCall('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic 
+		+ "&toDoContent=" + encodeURIComponent(sToDoContent) 
 		+ '&dateArchive=' + aFormDateArchive[0]+":00" 
-		+ '&dateCreation=' + aFormDateArchive[1]
+		+ '&dateCreation=' + aFormDateArchive[2]
 		+ "&sLabels=" + toDoFocused[0].sLabels 
 		+ "&position=" + toDoFocused[0].position
 		+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString)), 		
@@ -376,7 +387,11 @@ function fCheckFormDateArchive() {
 		alert ('Le format de la date d\'archivage est non correct, il faut AAAA-MM-JJ hh:mm, et dans des valeurs possibles');
 		return "DateArchive";
 	}
-	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(oForm[1].value)) {
+	if (oForm[1].value ==="") {
+		alert('La note est vide, il faut la remplir.')
+		return "DateArchive";
+	}
+	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(oForm[2].value)) {
 		alert ('Le format de la date de création de la note est non correct, il faut AAAA-MM-JJ hh:mm:ss, et dans des valeurs possibles');
 		return "DateArchive";
 	} 
