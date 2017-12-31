@@ -25,7 +25,7 @@ if (!isset($_SESSION['id'])) {
 			$resultat = $req->fetch();
 
 			if (!password_verify($_POST['pass'],$resultat["hashPass"])) {
-				echo 'Mauvais identifiant ou mot de passe !';
+				echo '<p  style="text-align:center;margin-top:30%">Mauvais identifiant ou mot de passe !';
 				echo '<br><br><a href="index.php"> vers la page d\'accueil </a>';
 			}
 			else { // Alors connexion car le mot de passe est correct
@@ -75,7 +75,7 @@ if (!isset($_SESSION['id'])) {
 			}
 			
 			if ($atLeastOneCaetgory) {
-				$topics = "<br><br>Vous possédez les <strong>ensembles de notes suivants</strong> :<br><br>" . $topics;
+				$topics = "<br><br>Vous possédez les <strong>sujets</strong> suivants :<br><br>" . $topics;
 			}
 			else {
 				$topics = "<br><br>Vous n'avez pas encore de Notes. <Br>Créez un nouveau sujet ci-dessous et donnez lui des couleurs pour le rendre facilement identifiable.";		

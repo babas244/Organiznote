@@ -13,11 +13,12 @@
 #frameOfTree
 {
 	position: relative;
-	height: 102%;
-	width: 98%;
+	height: 100%;
+	width: 100%;
 	left: 2%;
 	background-color: rgba(255,255,220,0.8);
 	display: block;
+	overflow : auto;
 }
 
 #greyLayerOnFrameOfTree

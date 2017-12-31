@@ -31,7 +31,7 @@
 	background-color: blue;
 	overflow: scroll;
 	/* pour le tel il faudra probablement mettre a position : fixed;*/
-	max-height: 80%;
+	height: 80%;
 }
 
 #addToDoButton
@@ -100,6 +100,14 @@ div[id^="separatorLabels"]
 	height: 100%;
 	width: 100%;
 	display: none; 
+}
+
+#frameControlsToDo
+{
+	position: absolute;
+	top:80%;
+	height:20%;
+	overflow: auto;
 }
 
 #submitToDo

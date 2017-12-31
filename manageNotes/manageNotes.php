@@ -40,8 +40,9 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		<div id="header">
 			<div id="referencesUser">
 				<a href="../logout.php" id="disconnectUser">Déconnexion</a>
+				<a href="../manageTopics.php" id="linkToTopics">Sujets</a>
 				<?php
-					echo "Bonjour <strong>".$userNameDisplayed."</strong>, vous êtes connecté sur le topic <strong>".$topicDisplayed."</strong>. ";
+					echo "<strong>".$userNameDisplayed."</strong>,connecté sur le topic <strong>".$topicDisplayed."</strong>. ";
 				?>
 			</div>
 			<div id="frameOfSwitchToTreeForMobile">
@@ -51,28 +52,38 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		</div>
 		
 		<div id="containerOfToDo">
-		<div id="transparentLayerOnContainerOfToDo"><p id="ajaxLoadingImageContainerOfToDo"><img src="ajaxLoading_box.gif" alt="Loading..." /></p></div>
+			<div id="transparentLayerOnContainerOfToDo">
+				<p id="ajaxLoadingImageContainerOfToDo">
+					<img src="ajaxLoading_box.gif" alt="Loading..." />
+				</p>
+			</div>
 			<div id="frameOfToDo">
 				<div id="noScroll">
 					<div id="greyLayerOnNoScroll">
 					</div>
 					<button id="addToDoButton">+</button>			
-						<div id="addToDoFrame">
-							<button id="cancelAddToDo"><-</button>
-							<div id="frameTextareaToDoForm">
-								<form id="addToDoForm">
-									<input type="textarea" name="toDoTextarea" id="toDoTextarea" placeholder="Ecrire ici" maxlength="1700">
-								</form>		
-							</div>
-							<button id="resetAddToDoForm">x</button>	
+					<div id="addToDoFrame">
+						<button id="cancelAddToDo"><-</button>
+						<div id="frameTextareaToDoForm">
+							<form id="addToDoForm">
+								<input type="textarea" name="toDoTextarea" id="toDoTextarea" placeholder="Ecrire ici" maxlength="1700">
+							</form>		
 						</div>
+						<button id="resetAddToDoForm">x</button>	
+					</div>
 					<div id="lastAndInvisible">...</div>
 				</div>
 			</div>
-			<div id="containerOfLabelsCheckBoxes"></div>
-			<button id="exportToDoList">Exporter les ToDos</button>
-			<button id="displayCompleteToDoList">Ouvrir tout</button>
-			<button id="selectAllToDoOrOne">All</button>
+			
+			<div id="frameControlsToDo">
+				<div id="containerOfLabelsCheckBoxes">
+				</div>
+				<div id="menuToDo">
+					<button id="exportToDoList">Exporter les ToDos</button>
+					<button id="displayCompleteToDoList">Ouvrir tout</button>
+					<button id="selectAllToDoOrOne">All</button>
+				</div>
+			</div>			
 			<div id="frameOfContextMenuToDo">
 				<button id="cancelContextMenu">&lt;-</button>	
 				<button id="deleteToDo">X</button>
@@ -83,9 +94,14 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		
 		<div id="containerOfTree">
 			<div id="frameOfTree">
-				<div id="greyLayerOnFrameOfTree"><p id="ajaxLoadingImageFrameOfTree"><img src="ajaxLoadingDataTree_spiral.gif" alt="Loading..." /></p></div>
-				<div id="01" class="folder">   <!--div "racine", à mettre dans dataTree.js ?--> 
+				<div id="greyLayerOnFrameOfTree">
+					<p id="ajaxLoadingImageFrameOfTree">
+						<img src="ajaxLoadingDataTree_spiral.gif" alt="Loading..." />
+					</p>
 				</div>
+				<div id="01" class="folder">
+				</div>   <!--div "racine", à mettre dans dataTree.js ?--> 
+					
 				<!--<div id="menu">
 					<ul class="Niveau1">
 						<li>
@@ -107,33 +123,32 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 						</li>
 					</ul>-->
 				<!--<button id="boutonTest">test</button>-->
-				</div>
 			</div>
-			<div id="fondMenuCategorie">
-				<div id="frameContextMenuTree">
-					<button id="insertNewFolder" class="contextMenu isRoot isFolder">Nouvelle catégorie fille</button>		
-					<button id="insertNewNote" class="contextMenu isRoot isFolder">Nouvelle note</button>
-					<button id="editTreeItem" class="contextMenu isFolder isNote">Editer</button>	
-					<button id="deleteFolder" class="contextMenu isFolder">Effacer catégorie</button>
-					<button id="deleteNote" class="contextMenu isNote">Effacer note</button>
-					<button id="archiveNote" class="contextMenu isFolder isNote">Archiver(maintenant/date (choisie))</button>
-					<button id="moveTreeItem" class="contextMenu isFolder isNote">Déplacer</button>
-					<button id="pasteHereTreeItem" class="contextMenu isPastingHere">Coller ici</button>
-					<button id="DisplayContentFolder" class="contextMenu isRoot isFolder">Afficher l'arbre contenu dedans</button>
-					<button id="changeCategoryIntoNote" class="contextMenu isFolder">Transformer catégorie en note</button>							
-					<button id="changeNoteIntoCategory" class="contextMenu isNote">Transformer note en catégorie</button>
-					<button id="importTreeHere" class="contextMenu isRoot isFolder">Importer ici une branche en JSON</button>
-					<button id="exportTreeFromHere" class="contextMenu isRoot isFolder">exporter d'ici en JSON</button>
-					<button id="getOutFromHere" class="contextMenu isPastingHere isCancel">Sortir d'ici</button>
-					<button id="cancel" class="contextMenu isRoot isFolder isNote isPastingHere isCancel">Annuler</button>
-				</div>	
-			</div>
-			<div id="frameOfFileLoader">
-				Charger le fichier (ou glisser-déposer) :<Br><Br>
-				<input id="loadDataTreeJSON" type="file" /><Br><Br>
-				<button id="cancelLoadFile">annuler</button>
+		</div>
+		<div id="fondMenuCategorie">
+			<div id="frameContextMenuTree">
+				<button id="insertNewFolder" class="contextMenu isRoot isFolder">Nouvelle catégorie fille</button>		
+				<button id="insertNewNote" class="contextMenu isRoot isFolder">Nouvelle note</button>
+				<button id="editTreeItem" class="contextMenu isFolder isNote">Editer</button>	
+				<button id="deleteFolder" class="contextMenu isFolder">Effacer catégorie</button>
+				<button id="deleteNote" class="contextMenu isNote">Effacer note</button>
+				<button id="archiveNote" class="contextMenu isFolder isNote">Archiver(maintenant/date (choisie))</button>
+				<button id="moveTreeItem" class="contextMenu isFolder isNote">Déplacer</button>
+				<button id="pasteHereTreeItem" class="contextMenu isPastingHere">Coller ici</button>
+				<button id="DisplayContentFolder" class="contextMenu isRoot isFolder">Afficher l'arbre contenu dedans</button>
+				<button id="changeCategoryIntoNote" class="contextMenu isFolder">Transformer catégorie en note</button>							
+				<button id="changeNoteIntoCategory" class="contextMenu isNote">Transformer note en catégorie</button>
+				<button id="importTreeHere" class="contextMenu isRoot isFolder">Importer ici une branche en JSON</button>
+				<button id="exportTreeFromHere" class="contextMenu isRoot isFolder">exporter d'ici en JSON</button>
+				<button id="getOutFromHere" class="contextMenu isPastingHere isCancel">Sortir d'ici</button>
+				<button id="cancel" class="contextMenu isRoot isFolder isNote isPastingHere isCancel">Annuler</button>
 			</div>	
 		</div>
+		<div id="frameOfFileLoader">
+			Charger le fichier (ou glisser-déposer) :<Br><Br>
+			<input id="loadDataTreeJSON" type="file" /><Br><Br>
+			<button id="cancelLoadFile">annuler</button>
+		</div>	
 		<br/>
 		
 		<script>
