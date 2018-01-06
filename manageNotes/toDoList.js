@@ -603,7 +603,7 @@ function insertGeolocationToDoInDbb(oPosition) {
 		+ "&position=" + toDoSendGeolocationPosition 
 		+ "&latitude=" + oPosition.coords.latitude 
 		+ "&longitude=" + oPosition.coords.longitude
-		+ "&sContentStart=" + document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString), 
+		+ "&sContentStart=" + document.getElementById("toDo"+toDoSendGeolocationLabels+toDoSendGeolocationPosition).content.substr(0, lengthCheckedString)
 		+ "&accuracyPosition=" + oPosition.coords.accuracy,
 		getGeolocationToDoFailed, getLocationToDoUpdateClient);	
 	}
@@ -656,7 +656,7 @@ function hideContextMenuToDo () {
 	if (document.getElementById(toDoFocused[0].id) !== null) {
 		document.getElementById(toDoFocused[0].id).style.backgroundColor = backgroundColorToDo;
 	}
-	toDoFocused = [{id:null},{sLabels:null},{position:null}];
+	resetToDoFocusedToNull();
 	document.getElementById('greyLayerOnNoScroll').style.display = 'none';
 	document.getElementById("containerOfLabelsCheckBoxes").style.display = 'block';
 	document.getElementById('cancelContextMenu').style.display = 'none';
@@ -664,6 +664,10 @@ function hideContextMenuToDo () {
 	document.getElementById('StatedToDoDone').style.display = 'none';
 	document.getElementById('editToDo').style.display = 'none';
 	
+}
+
+function resetToDoFocusedToNull() {
+	toDoFocused = [{id:null},{sLabels:null},{position:null}];
 }
 
 function addEventsDragAndDrop(DOMElement) {
