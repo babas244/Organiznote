@@ -1,4 +1,6 @@
-function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType, fCallbackCheckForm) {
+var aResponseFormArray = [];
+
+function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, fCallbackCheckForm) {
 	
 	//alert (sFormJSON);
 	
@@ -7,7 +9,7 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 		return "";
 	}
 	displayForm();
-	// il faut un test ici pour vérifier que tous les "name" reçus sont uniques
+	// il faut un test ici pour vérifier que tous les "name" reçus (autres que ceux des radios) sont uniques 
 	buildForm();
 	
 	function displayForm() {
@@ -38,15 +40,11 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 		for (var rankInForm = 0 ; rankInForm < oForm.length ; rankInForm++) {
 			var FormHTMLType = oForm[rankInForm].HTMLType ? oForm[rankInForm].HTMLType : "input"
 			
-			if (FormHTMLType === "radio") {
-				alert ("Formulaires radios pas encore pris en charge");
-			}
-			else {
-				var oDOMForm = document.createElement(FormHTMLType);				
-			}
+			var oDOMForm = document.createElement(FormHTMLType);				
+			
 			oDOMForm.name = oForm[rankInForm].name;
 
-			if (FormHTMLType === "select") {
+			if (FormHTMLType === "select") { // si de type select
 				for (var k = 0; k < oForm[rankInForm].options.length; k++) {
 					var eDOMOption = document.createElement("option");
 					eDOMOption.text = oForm[rankInForm].options[k];
@@ -60,23 +58,40 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 
 			oDOMForm.style.display = 'block';
 			
-			var oDOMFormItemLabel = document.createElement("div");
-			oDOMFormItemLabel.id = 'formItem'+ rankInForm; 
-			oDOMFormItemLabel.className = "FormItemLabel";
-			oDOMFormItemLabel.innerHTML = oForm[rankInForm].label; 
-/* 			oDOMFormItemLabel.addEventListener('click', function (e) { // à mettre en dehors de la boucle ?
-				var displayStyle = e.target.nextSibling.style.display;
-				e.target.nextSibling.style.display = displayStyle === "block" ? "none" : "block";
-			}, false);
- */			document.getElementById("superForm").appendChild(oDOMFormItemLabel);
-			document.getElementById("superForm").appendChild(oDOMForm);
-			oDOMElementBr = document.createElement("Br");
-			document.getElementById("superForm").appendChild(oDOMElementBr);
-			
+			if (oForm[rankInForm].attributes.type === undefined) { // donc si tout type de form autre que radio 
+				var oDOMFormItemLabel = document.createElement("div");
+				oDOMFormItemLabel.id = 'formItem'+ rankInForm; 
+				oDOMFormItemLabel.className = "FormItemLabel";
+				oDOMFormItemLabel.innerHTML = oForm[rankInForm].label; 
+				document.getElementById("superForm").appendChild(oDOMFormItemLabel);
+				document.getElementById("superForm").appendChild(oDOMForm);
+			}
+			else if (oForm[rankInForm].attributes.type === "radio") {
+				if (oForm[rankInForm].labelForAllRadioList !== undefined) { // on affiche le label de la liste une seule fois
+					var oDOMFormItemLabel = document.createElement("div");
+					oDOMFormItemLabel.id = 'formItem'+ rankInForm; 
+					oDOMFormItemLabel.className = "FormItemLabel";
+					oDOMFormItemLabel.innerHTML = oForm[rankInForm].labelForAllRadioList;
+					document.getElementById("superForm").appendChild(oDOMFormItemLabel);			
+				}
+				if (oForm[rankInForm].checked) {
+					oDOMForm.checked = true;
+				}
+				document.getElementById("superForm").appendChild(oDOMForm);
+				var oDOMRadioLabel = document.createElement("label");
+				oDOMRadioLabel.htmlFor = oForm[rankInForm].attributes.id; 
+				oDOMRadioLabel.className = "RadioLabelInForm";
+				oDOMRadioLabel.style.backgroundColor = oForm[rankInForm].labelBackgroundColor;
+				oDOMRadioLabel.innerHTML = oForm[rankInForm].label; 
+				
+				document.getElementById("superForm").appendChild(oDOMRadioLabel);
+			}			
 			if (rankInForm === 0 && oForm.length===1) {
 				oDOMForm.focus();
 			}
+
 		}
+		oForm = [];
 	// build commandbuttons of Form
 	oDOMFormCommand = document.createElement("button");
 	oDOMFormCommand.id = "cancelForm";
@@ -107,45 +122,44 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 		
 	function submitForm() {	
 		var oDOMsuperForm = document.getElementById("superForm");
-		var sResponseFormPhpAdress = "";
-		var aResponseFormArray = [];
-		var sResponseFormJson = '{';
-		var rankInForm;
-		var responseSuperFormModale;
-		for (var i = 0 ; i <  oDOMsuperForm.elements.length ; i++) {
+		var rankInForm = 0;
+		var sCurrentNameRadioList = "";
+		var isFirstElement = true;
+		var isValueInRadioListfound = false;
+		for (var i = 0 ; i <  oDOMsuperForm.elements.length ; i ++) { // on boucle dans la réponse du submit
 			var oDOMFormElementI = oDOMsuperForm.elements[i];
-			//alert (i + "   " + oDOMFormElementI.selectedIndex);
-			//alert (oDOMFormElementI.name); 
-			/* déterminer ici le rankInForm de name parce qu'il pourrait être différent de i ???
-			rankInForm = 0;
-			isRank = false;
-			while (!isRank) {
-			} */
 			
-			oForm[i].value = oDOMFormElementI.selectedIndex!==undefined ? oDOMFormElementI.selectedIndex : oDOMFormElementI.value; // le sript appellant peut tester les value de l'objet de son côté
-			sResponseFormPhpAdress += oDOMFormElementI.name + "=" + oForm[i].value + "&";
-			aResponseFormArray[i] = oForm[i].value;
-			sResponseFormJson += '"'+ oDOMFormElementI.name + '":"' + oForm[i].value +'",';
+			if (oDOMFormElementI.type === "radio") { // cas des boutons radio
+				if (oDOMFormElementI.name!==sCurrentNameRadioList) {
+					if  (isFirstElement) { // le premier élément n'a pas déjà un name, on lui en donne un
+						sCurrentNameRadioList = oDOMFormElementI.name;
+						isFirstElement = false;
+					}
+					else { // c'est donc une vraie nouvelle liste radio
+						isValueInRadioListfound = false;
+					}
+				}
+				if (oDOMFormElementI.checked) { // on cherche le button radio qui est celui sélectionné
+					aResponseFormArray[rankInForm] = oDOMFormElementI.value; 
+					rankInForm++;
+					isValueInRadioListfound = true;
+				}	
+			}
+			else if (oDOMFormElementI.selectedIndex!==undefined) { // cas des listes déroulantes
+				aResponseFormArray[rankInForm] = oDOMFormElementI.selectedIndex;
+				rankInForm++;
+			} 
+			else { //cas autres que button radio et element select				
+				aResponseFormArray[rankInForm] = oDOMFormElementI.value;
+				rankInForm++;
+			}
 		}
-		sResponseFormPhpAdress = sResponseFormPhpAdress.slice(0,-1);
-		sResponseFormJson = sResponseFormJson.slice(0,-1)+'}';	
-		switch (sOutputType) {
-			case "array":
-				responseSuperFormModale = aResponseFormArray;
-			break;
-			case "php":
-				responseSuperFormModale = sResponseFormPhpAdress;
-			break;
-			case "json":
-				responseSuperFormModale = sResponseFormJson;
-			break;				
-		}	
-		
+
 		if (fCallbackCheckForm) {
-			var sResponseCheck = fCallbackCheckForm();
+			var sResponseCheck = fCallbackCheckForm(aResponseFormArray);
 			if ( sResponseCheck === "ok"){ // la function fCallbackCheckForm située hors de superFormModale doit return "ok" si tout va bien et le name de du oForm si il y a un probl�me
 				hideSuperFormModale();
-				fCallbackExecute(responseSuperFormModale);
+				fCallbackExecute(aResponseFormArray);
 			}
 			else {
 				var k = -1; 
@@ -154,12 +168,12 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 						k = j - 1; 
 					}
 				}
-				oDOMsuperForm.elements[k+1].focus(); // par défaut si k est resté à 1, le focus est placé @sur l'élément[0].
+				oDOMsuperForm.elements[k+1].focus(); // par défaut si k est resté à -1, le focus est placé @sur l'élément[0].
 			}
 		}	
 		else {
 			hideSuperFormModale();
-			fCallbackExecute(responseSuperFormModale);			
+			fCallbackExecute(aResponseFormArray);			
 		}
 	}
 	
@@ -168,7 +182,6 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, sOutputType,
 	}
 	
 	function hideSuperFormModale() {
-		oForm = [];
 		document.body.removeChild(document.getElementById("frameOfSuperForm"));
 	}
 	

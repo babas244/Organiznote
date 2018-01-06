@@ -339,7 +339,7 @@ function stateToDoDone () {
 									+ displayDatesComparison(dateCreation, dateArchive+":00", "de création", "d'archive")+"</b>.";
 	var sForm = JSON.stringify(oJSONFormTemp);
 	oJSONFormTemp = [];
-	superFormModale(sForm, "Confirmation de la date d'archivage", setToDoDoneAjax, "array", fCheckFormDateArchive);
+	superFormModale(sForm, "Confirmation de la date d'archivage", setToDoDoneAjax, fCheckFormDateArchive);
 }
 
 function setToDoDoneAjax(aFormDateArchive) {
@@ -382,16 +382,16 @@ function handleErrorsFromServer(errorMessageFromServer) {
 	}
 }
 
-function fCheckFormDateArchive() {
-	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]$/.test(oForm[0].value)) {
+function fCheckFormDateArchive(aResponseFormArray) {
+	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]$/.test(aResponseFormArray[0])) {
 		alert ('Le format de la date d\'archivage est non correct, il faut AAAA-MM-JJ hh:mm, et dans des valeurs possibles');
 		return "DateArchive";
 	}
-	if (oForm[1].value ==="") {
+	if (aResponseFormArray[1] ==="") {
 		alert('La note est vide, il faut la remplir.')
 		return "DateArchive";
 	}
-	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(oForm[2].value)) {
+	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(aResponseFormArray[2])) {
 		alert ('Le format de la date de création de la note est non correct, il faut AAAA-MM-JJ hh:mm:ss, et dans des valeurs possibles');
 		return "DateArchive";
 	} 
@@ -408,20 +408,27 @@ function editToDo() {
 	oJSONFormTemp[0].attributes.rows="5"
 	oJSONFormTemp[0].attributes.value= document.getElementById(toDoFocused[0].id).content;
 	oJSONFormTemp[0].label="note";
+	var rankInForm = 1
 	for (var labelTitleRank = 0; labelTitleRank < oLabels.title.length; labelTitleRank ++) {
-		rankForm = labelTitleRank + 1;
-		oJSONFormTemp[rankForm]= {};
-		oJSONFormTemp[rankForm].name = labelTitleRank.toString();
-		oJSONFormTemp[rankForm].HTMLType = "select";
-		oJSONFormTemp[rankForm].attributes = {};
-		oJSONFormTemp[rankForm].attributes.selectedIndex = toDoFocused[0].sLabels.substr(labelTitleRank,1);
-		oJSONFormTemp[rankForm].options = []; 
-		for (var labelRank = 0 ; labelRank < oLabels.content[labelTitleRank].length; labelRank++) {
-			oJSONFormTemp[rankForm].options[labelRank] = oLabels.content[labelTitleRank][labelRank];
+		for (var labelRank = 0 ; labelRank < oLabels.content[labelTitleRank].length; labelRank++) {	
+			oJSONFormTemp[rankInForm]= {};
+			if (labelRank === 0) {
+				oJSONFormTemp[rankInForm].labelForAllRadioList = oLabels.title[labelTitleRank];				
+			}
+			oJSONFormTemp[rankInForm].name = labelTitleRank.toString();
+			oJSONFormTemp[rankInForm].attributes = {};
+			oJSONFormTemp[rankInForm].attributes.type = "radio";		
+			oJSONFormTemp[rankInForm].attributes.id = "radio"+labelTitleRank+labelRank;		
+			oJSONFormTemp[rankInForm].attributes.value = labelRank;
+			if (labelRank == toDoFocused[0].sLabels.substr(labelTitleRank,1)) {
+				oJSONFormTemp[rankInForm].checked = true;
+			}
+			oJSONFormTemp[rankInForm].label = oLabels.content[labelTitleRank][labelRank]; 
+			oJSONFormTemp[rankInForm].labelBackgroundColor = aLabelColor[labelTitleRank][labelRank];		
+			rankInForm += 1;
 		}
-	oJSONFormTemp[rankForm].label = oLabels.title[labelTitleRank];
 	}
-	var nextRank = labelTitleRank + 1
+	var nextRank = rankInForm
 	var dateCreation = document.getElementById(toDoFocused[0].id).dateCreation;
 	var dateNow = sLocalDatetime(new Date());
 	oJSONFormTemp[nextRank] = {};
@@ -432,16 +439,16 @@ function editToDo() {
 									+ displayDatesComparison(dateCreation, dateNow, "de création", "de maintenant")+"</b>.";
 	var sForm = JSON.stringify(oJSONFormTemp);
 	oJSONFormTemp = [];
-	superFormModale(sForm, "Etiquettes", submitToDoFull, "array", fCheckFormToDo);
+	superFormModale(sForm, "Etiquettes", submitToDoFull, fCheckFormToDo);
 }
 
-function fCheckFormToDo(){
-	if (oForm[0].value ==="") {
+function fCheckFormToDo(aResponseFormArray){
+	if (aResponseFormArray[0] ==="") {
 		alert('La note est vide, il faut la remplir.')
 		return 'content';
 	}
-	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(oForm[5].value)) {
-		alert ('Le format de la date de création de la note est non correct, il faut AAAA-MM-JJ hh:mm:ss, et dans des valeurs possibles');
+	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(aResponseFormArray[5])) {
+		alert (aResponseFormArray[5]+' : le format de la date de création de la note est non correct, il faut AAAA-MM-JJ hh:mm:ss, et dans des valeurs possibles');
 		return "content";
 	} 
 	else {
@@ -463,8 +470,6 @@ function submitToDoFull(ResponseForm) {
 			oJSONTemp[sLabelsForm][0][2] = "";
 			var sToDoAddedJSON = JSON.stringify(oJSONTemp);
 			oJSONTemp[sLabelsForm]= [];
-			/*var sToDoAddedJSON2 = '{"'+ sLabelsForm +'":[["'+ sToDoContent +'","'+ dateCreation +'",""]]}';
-			alert (sToDoAddedJSON2 +"\n\n"+ sToDoAddedJSON);*/
 			document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 			ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic 
 			+ "&toDoContent=" + encodeURIComponent(sToDoContent) 
@@ -598,8 +603,8 @@ function insertGeolocationToDoInDbb(oPosition) {
 		+ "&position=" + toDoSendGeolocationPosition 
 		+ "&latitude=" + oPosition.coords.latitude 
 		+ "&longitude=" + oPosition.coords.longitude
-		+ "&accuracyPosition=" + oPosition.coords.accuracy,
 		+ "&sContentStart=" + document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString), 
+		+ "&accuracyPosition=" + oPosition.coords.accuracy,
 		getGeolocationToDoFailed, getLocationToDoUpdateClient);	
 	}
 	toDoSendGeolocationLabels = null;

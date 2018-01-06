@@ -25,6 +25,33 @@
 	text-align: center;
 }
 
+input[type=radio] 
+{
+  position: absolute;
+  visibility: hidden;
+  display: none;
+}
+
+form label
+{
+  display: inline-block;
+  cursor: pointer;
+  border: solid 1px black;
+}
+
+input[type=radio]:checked + label 
+{
+	border: solid 4px white;
+	border-radius: 12px;
+}
+
+.RadioLabelInForm
+{
+	color: black;
+	padding-left: 2px;
+	padding-right: 1px;
+}
+
 .FormItemLabel
 {
 	background-color: green;

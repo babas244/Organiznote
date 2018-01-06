@@ -300,7 +300,7 @@ function insertNewNoteLaunch() {
 			oJSONFormTempDataTree[0].label="Entrez le nom de la nouvelle note.";
 			var sForm = JSON.stringify(oJSONFormTempDataTree);
 			oJSONFormTempDataTree = [];
-			superFormModale(sForm, "Nouvelle catégorie", insertNewNoteInDbb, "array", fCheckFormInsertOnlyTextarea);	
+			superFormModale(sForm, "Nouvelle catégorie", insertNewNoteInDbb, fCheckFormInsertOnlyTextarea);	
 		}
 		else {
 			alert("Pas possible d'insérer une nouvelle note dans cette catégorie.\n\nVous avez atteint la limite prévue des 99 notes !\n\nIl serait utile de mieux réorganiser les catégories.")
@@ -329,7 +329,7 @@ function insertNewFolderLaunch() {
 			oJSONFormTempDataTree[0].label="Entrez le nom de la nouvelle catégorie.";
 			var sForm = JSON.stringify(oJSONFormTempDataTree);
 			oJSONFormTempDataTree = [];
-			superFormModale(sForm, "Nouvelle catégorie", insertNewFolderInDbb, "array", fCheckFormInsertOnlyTextarea);	
+			superFormModale(sForm, "Nouvelle catégorie", insertNewFolderInDbb, fCheckFormInsertOnlyTextarea);	
 		}
 		else {
 			alert("Pas possible d'insérer une nouvelle catégorie.\n\nVous avez atteint la limite prévue des 99 sous-catégories !\n\nIl serait utile de mieux réorganiser les catégories.")
@@ -344,8 +344,8 @@ function insertNewFolderLaunch() {
 	}
 }
 
-function fCheckFormInsertOnlyTextarea(){
-	if (oForm[0].value ==="") {
+function fCheckFormInsertOnlyTextarea(aResponseFormArray){
+	if (aResponseFormArray[0] ==="") {
 		alert('La note est vide, il faut la remplir.')
 		return 'content';
 	}
@@ -452,7 +452,7 @@ function editTreeItemLaunch() {
 	oJSONFormTempDataTree[0].label="Entrée à modifier :";
 	var sForm = JSON.stringify(oJSONFormTempDataTree);
 	oJSONFormTempDataTree = [];
-	superFormModale(sForm, "Editer", editTreeItemInDbb, "array", fCheckFormInsertOnlyTextarea);	
+	superFormModale(sForm, "Editer", editTreeItemInDbb, fCheckFormInsertOnlyTextarea);	
 }
 
 function editTreeItemInDbb(aResponseForm) {
