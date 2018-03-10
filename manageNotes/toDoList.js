@@ -7,12 +7,14 @@ var toDoSendGeolocationLabels = null;
 var toDoSendGeolocationPosition = null;
 var aLabelColor = [];
 var isToDoOkToMoveRankOnServer = true; 
-var lengthCheckedString = 30;
+var lengthCheckedString = 2000;
 var isUniqueLabelChecked = false;
 var oJSONTemp = {};
 var oJSONFormTemp = [];
 
 initializePageToDo();
+
+console.log("toDoList performance time : " + performance.now());
 
 function initializePageToDo () {
 	addEventsDragAndDropToLastAndInvisible(document.getElementById("lastAndInvisible"));

@@ -66,6 +66,7 @@ function prepareInstantiateFolder(sTreeItemsWithoutPathParent, pathParent, fCall
 function displayRoot() {
 	oTreeNotes.displaySimpleTree("01");
 	document.getElementById("greyLayerOnFrameOfTree").style.display = "none";	
+	console.log("dataTree performance time : " + performance.now());
 }
 
 function displayContextMenuDataTree(path) {
@@ -203,7 +204,7 @@ function SimpleTree(openedFolder) {
 }
 
 function instantiateRetrievedTree ( sTreeItems , fCallback, path ) { // path = paramater1OfCallback ?
-	console.log ("In instantiateRetrievedTree with fCallback = " + (fCallback !== undefined ? fCallback.name : "-") + ", and sTreeItems =" + sTreeItems);
+	//console.log ("In instantiateRetrievedTree with fCallback = " + (fCallback !== undefined ? fCallback.name : "-") + ", and sTreeItems =" + sTreeItems);
 	var aTreeItems = sTreeItems == "" ? "" : JSON.parse(sTreeItems);
 	var i,j,k;
 	var nbOfFoldersAddedInPathParent;

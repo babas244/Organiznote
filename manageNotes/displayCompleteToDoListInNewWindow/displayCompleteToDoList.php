@@ -16,7 +16,7 @@ $idTopic = htmlspecialchars($_GET["idTopic"]);
 				'idUser' => $_SESSION['id'],
 				'idTopic' => $idTopic));
 				$resultat = $reqGetTopic -> fetch();
-				echo $resultat['topic'];
+				echo 'export todos '.$resultat['topic'];
 				$_SESSION['topic'] = $resultat['topic'];
 				$backgroundColorToDo = $resultat['colorBackGround'];
 				if ($reqGetTopic->rowCount() == 0) { // inutile car déjà isIdTopicSafeAndMatchUser.php non ?

@@ -5,7 +5,7 @@ if (!isset($_GET["sContentStart"])) {
 }
 else {
 	$sContentStart = htmlspecialchars($_GET["sContentStart"]);
-	$lengthCheckedString = 30;
+	$lengthCheckedString = 2000;
 	
 	// vérifier que l'on update le bon toDo 
 	$reqChecktoDoIsTheRightOne = $bdd -> prepare("SELECT COUNT(*) AS nbOfToDoMatches FROM todolists 

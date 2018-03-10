@@ -16,7 +16,7 @@ $idTopic = htmlspecialchars($_GET["idTopic"]);
 					'idUser' => $_SESSION['id'],
 					'idTopic' => $idTopic));
 					$resultat = $reqGetTopic -> fetch();
-				echo $resultat['topic'];
+				echo 'export tree '.$resultat['topic'];
 				$reqGetTopic -> closeCursor();	
 			?>
 		</title>
@@ -29,8 +29,10 @@ $idTopic = htmlspecialchars($_GET["idTopic"]);
 <?php
 
 if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sOriginPathTreeToDisplay"])) {
-	
+		
 	$sOriginPathTreeToDisplay = htmlspecialchars($_GET["sOriginPathTreeToDisplay"]);
+
+	$iLevelinTreeOriginPath = ((strlen($sOriginPathTreeToDisplay)+4)/3)-1;
 	
 	$reqRetrieveTree = $bdd -> prepare('SELECT idNote, content FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote LIKE :startWithPathParent ORDER BY IdNote');
 		$reqRetrieveTree -> execute(array(
@@ -39,15 +41,15 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sOriginPat
 		'startWithPathParent' => $sOriginPathTreeToDisplay.'%')) or die(print_r($reqRetrieveTree->errorInfo()));
 	
 	$levelInTreeItemCurrent = 9999;
+	$gapInInPx = 30; // nb de px d'espace entre deux levels consécutifs
 	
 	while ($donnees = $reqRetrieveTree->fetch()) {
 			$classOfTreeItem = (substr($donnees['idNote'],-3,1)==="b" ? 'note' : 'folder');
 			$levelInTree = (strlen($donnees['idNote'])+1)/3-1;
 			if ($levelInTree < $levelInTreeItemCurrent) {echo "<Br>";}
 			$levelInTreeItemCurrent = $levelInTree;
-			
 
-			echo ('<div class="level'.$levelInTree.' '.$classOfTreeItem.'">'.preg_replace('#\\n#', '<Br>',$donnees['content']).'</div>');
+			echo ('<div class="'.$classOfTreeItem.'" style="margin-left: '.(($levelInTree - $iLevelinTreeOriginPath +1)*$gapInInPx).'px">'.preg_replace('#\\n#', '<Br>',$donnees['content']).'</div>');
 		}
 	$reqRetrieveTree->closeCursor();		
 	
