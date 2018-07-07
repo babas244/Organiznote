@@ -1,15 +1,33 @@
 .folder
 {
 	background-color: #ffff00;
-	border: 1px black solid;
-	border-radius: 5px;
-	word-wrap: break-word;
 }
 
 .note
 {
 	background-color: #ffffff;
+}
+
+.treeItem
+{
 	border: 1px black solid;
 	border-radius: 5px;
 	word-wrap: break-word;
+	display: inline-block;
+	vertical-align: top;
+	width: 97%;	
 }
+
+.openCloseFolder
+{
+	font-size: 0.7em;
+	background-color: white;
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+	border-radius: 10px;
+	border: 1px black solid;
+	font-weight: bold;
+}
+
+

@@ -44,12 +44,19 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sOriginPat
 	$gapInInPx = 30; // nb de px d'espace entre deux levels consécutifs
 	
 	while ($donnees = $reqRetrieveTree->fetch()) {
-			$classOfTreeItem = (substr($donnees['idNote'],-3,1)==="b" ? 'note' : 'folder');
-			$levelInTree = (strlen($donnees['idNote'])+1)/3-1;
-			if ($levelInTree < $levelInTreeItemCurrent) {echo "<Br>";}
+			$idNote = $donnees['idNote'];
+			$classOfTreeItem = (substr($idNote,-3,1)==="b" ? 'note' : 'folder');
+			$levelInTree = (strlen($idNote)+1)/3-1;
+			//if ($levelInTree < $levelInTreeItemCurrent) {echo "<Br>";}
 			$levelInTreeItemCurrent = $levelInTree;
 
-			echo ('<div class="'.$classOfTreeItem.'" style="margin-left: '.(($levelInTree - $iLevelinTreeOriginPath +1)*$gapInInPx).'px">'.preg_replace('#\\n#', '<Br>',$donnees['content']).'</div>');
+			echo 	'<div class="containerOfTreeItems"  style="margin-left: '
+					.(($levelInTree - $iLevelinTreeOriginPath +1)*$gapInInPx).'px">'
+						.'<div onclick="openCloseFolder(this)" class="openCloseFolder"'
+						.($classOfTreeItem === 'note' ? ' style="visibility:hidden"' : '').'>-</div>'
+						.'<div class="treeItem '.$classOfTreeItem.'" data-idNote="'.$idNote.'">'
+						.preg_replace('#\\n#', '<Br>',$donnees['content']).'</div>
+				</div>';
 		}
 	$reqRetrieveTree->closeCursor();		
 	
