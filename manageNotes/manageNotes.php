@@ -39,6 +39,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 		<!-- -->
 		<div id="header">
 			<div id="referencesUser">
+				<!--<button id="test">test</button>-->
 				<a href="../logout.php" id="disconnectUser">Déconnexion</a>
 				<a href="../manageTopics.php" id="linkToTopics">Sujets</a>
 				<?php
