@@ -57,7 +57,8 @@
 	border: 1px black solid;
 	border-radius: 2px;
 	font-size: 1.2em;
-	word-wrap: break-word;	
+	word-wrap: break-word;
+	padding-left: 2px;
 }
 
 .toDo:active

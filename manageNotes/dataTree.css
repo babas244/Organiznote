@@ -44,6 +44,7 @@
 	background-color: #ffff00;
 	border: 1px black solid;
 	border-radius: 5px;
+	padding-left: 1px;
 	word-wrap: break-word;
 	white-space: pre-wrap;
 	resize: horizontal;
@@ -56,6 +57,7 @@
 	background-color: #ffffff;
 	border: 1px black solid;
 	border-radius: 5px;
+	padding-left: 1px;
 	word-wrap: break-word;
 	white-space: pre-wrap;
 	resize: horizontal;

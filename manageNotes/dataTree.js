@@ -777,7 +777,6 @@ document.getElementById("pasteHereTreeItem").addEventListener('click', function(
 		if (pathToPaste.substr(-3,1)==="a") {
 			if (oDOMFocused.nbOfFolders <= 98) {
 				pasteHereTreeItemInDbb(pathToPaste, pathFocused);
-				pasteHereTreeItemUpdateClient('', pathToPaste, pathFocused)
 				
 			}
 			else {
@@ -788,8 +787,7 @@ document.getElementById("pasteHereTreeItem").addEventListener('click', function(
 		}
 		else if (pathToPaste.substr(-3,1)==="b"){
 			if (oDOMFocused.nbOfNotes <= 98) {
-				pasteHereTreeItemInDbb(pathToPaste, pathFocused);	
-				pasteHereTreeItemUpdateClient('', pathToPaste, pathFocused)
+				pasteHereTreeItemInDbb(pathToPaste, pathFocused);
 			}
 			else {
 				alert("Pas possible de déplacer la note ici.\n\nVous avez atteint la limite prévue des 99 notes !\n\nIl serait utile de mieux réorganiser les notes.")
