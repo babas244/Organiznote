@@ -59,11 +59,29 @@
 	font-size: 1.2em;
 	word-wrap: break-word;
 	padding-left: 2px;
+	-webkit-animation-name: example; /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
+    animation-name: none;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+
 }
 
 .toDo:active
 {
 	background-color: #ff0000;
+}
+
+@-webkit-keyframes toDoSelected {
+    from {background-color: #ffffff;}
+    to {background-color: #999999;}
+}
+
+/* Standard syntax */
+@keyframes toDoSelected {
+    from {background-color: #ffffff;}
+    to {background-color: #999999;}
 }
 
 div[id^="separatorLabels"]

@@ -71,7 +71,7 @@ if (!isset($_SESSION['id'])) {
 			
 			while ($donnees = $req->fetch()) {
 				$atLeastOneCaetgory = true;
-				$topics .= "<div id=\"topic".$donnees['id']."\" style=\"Background-color : ".$donnees['colorBackGround'].";color : ".$donnees['colorFont']."\" onclick=\"document.location.href='manageNotes/manageNotes.php?idTopic=".$donnees['id']."'\">".$donnees['topic']."</div>";
+				$topics .= "<div id=\"topic".$donnees['id']."\" class=\"unselectable\" style=\"Background-color : ".$donnees['colorBackGround'].";color : ".$donnees['colorFont']."\" onclick=\"document.location.href='manageNotes/manageNotes.php?idTopic=".$donnees['id']."'\">".$donnees['topic']."</div>";
 			}
 			
 			if ($atLeastOneCaetgory) {

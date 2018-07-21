@@ -644,7 +644,7 @@ function displayCompleteToDoList() {
 	alert("Fait !\n\nLes toDos ont été exportés dans un autre onglet ou une fenêtre (cela dépend de votre navigateur).");
 }
 function displayContextMenuToDo() {
-	document.getElementById(toDoFocused[0].id).style.backgroundColor = '#777777';
+	document.getElementById(toDoFocused[0].id).style.animationName = 'toDoSelected';
 	document.getElementById("containerOfLabelsCheckBoxes").style.display = 'none';
 	document.getElementById('greyLayerOnNoScroll').style.display = 'block';
 	document.getElementById('cancelContextMenu').style.display = 'inline-block';
@@ -657,6 +657,7 @@ function displayContextMenuToDo() {
 function hideContextMenuToDo () {
 	if (document.getElementById(toDoFocused[0].id) !== null) {
 		document.getElementById(toDoFocused[0].id).style.backgroundColor = backgroundColorToDo;
+		document.getElementById(toDoFocused[0].id).style.animationName = 'none';
 	}
 	resetToDoFocusedToNull();
 	document.getElementById('greyLayerOnNoScroll').style.display = 'none';

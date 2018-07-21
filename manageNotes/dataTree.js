@@ -85,7 +85,7 @@ function displayContextMenuDataTree(path) {
 	}
 	document.getElementById(pathFocused).style.backgroundColor = sColorOfDivTreeItemFocused;
  */
-	document.getElementById(pathFocused).style.backgroundColor = '#cccccc';
+	document.getElementById(pathFocused).style.animationName = 'treeItemIsSelected';
 
 	openContextMenu = document.getElementById("fondMenuCategorie");
 	openContextMenu.style.display = 'block';
@@ -813,14 +813,7 @@ document.getElementById("cancel").addEventListener('click', function () {
 
 function resetColorTreeItem() {
 	if (oDOMFocused !== undefined) {
-		var sOriginalColorOfDivTreeItem;
-		if (pathFocused === "01" || pathFocused.substr(-3,1)==="a") {
-			sOriginalColorOfDivTreeItem = '#ffff00';
-		}
-		else {
-			sOriginalColorOfDivTreeItem = '#ffffff';
-		}
-		oDOMFocused.style.backgroundColor = sOriginalColorOfDivTreeItem;
+		oDOMFocused.style.animationName = 'none';
 	}
 }
 
