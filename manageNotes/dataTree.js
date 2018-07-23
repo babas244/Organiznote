@@ -16,7 +16,7 @@ document.getElementById("displayAndHideTree").addEventListener('click', function
 start();
 
 function start() {
-	ajaxCall('ajax/InstantiateRoot.php?idTopic=' + idTopic, instantiateRootFailed, instantiateRoot)
+	ajaxCall('ajax/InstantiateRoot.php?idTopic=' + idTopic, '', instantiateRootFailed, instantiateRoot)
 }
 
 function instantiateRoot(topic) {
@@ -34,7 +34,7 @@ function instantiateRoot(topic) {
 	pathFocused = "01";
 	oDOMFocused = document.getElementById("01");
 	GetWholeTreeDbCall(displayRoot);
-	//ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=01' , instantiateRootFailed, prepareInstantiateFolder, "01", displayRoot);// il faudra remettre cet appel plutôt que GetWholeTreeDbCall(displayRoot)
+	//ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=01' , '', instantiateRootFailed, prepareInstantiateFolder, "01", displayRoot);// il faudra remettre cet appel plutôt que GetWholeTreeDbCall(displayRoot)
 }
 
 function instantiateRootFailed(errorMessage) {
@@ -353,8 +353,8 @@ function instantiateRetrievedTree ( sTreeItems , fCallback, path ) {
 }
 
 function GetWholeTreeDbCall(fCallback) {
-	ajaxCall('ajax/getWholeBranchOfTree.php?idTopic=' + idTopic + '&originPath=01'
-				, GetWholeTreeDbCallFailed, InstantiateWholeTreeClient, fCallback);
+	ajaxCall('ajax/getWholeBranchOfTree.php?idTopic=' + idTopic + '&originPath=01', '',
+				GetWholeTreeDbCallFailed, InstantiateWholeTreeClient, fCallback);
 }
 
 function GetWholeTreeDbCallFailed(errorMessageFromServer) {
@@ -370,12 +370,10 @@ function InstantiateWholeTreeClient(sTreeItems, fCallback) {
 	for (i = 1 ; i < aTreeItems.length ; i++) {
 		oDOMTreeElement = document.createElement("div");
 		oDOMTreeElement.id  = aTreeItems[i][0];
-	//console.log(oDOMTreeElement.id)
 		oDOMTreeElement.content = aTreeItems[i][1];
 		oDOMTreeElement.innerHTML = oDOMTreeElement.content;
 		oDOMTreeElement.style.display = 'none';
 		pathParent = oDOMTreeElement.id.slice(0,-3)
-	//console.log(pathParent)
 		oDOMParent = document.getElementById(pathParent)
 		if (oDOMTreeElement.id.substr(-3,1) === 'a') { // si treeItem est un folder
 			oDOMTreeElement.className = 'folder unselectable';
@@ -406,7 +404,7 @@ function moveInSimpleTreeLaunch(pathRequested) {
 	oDOMRequested = document.getElementById(pathRequested);
 	if (oDOMRequested.nbOfFolders===undefined) {
 		document.getElementById("greyLayerOnFrameOfTree").style.display = "block"; 
-		ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + pathRequested, prepareInstantiateFolderFailed, prepareInstantiateFolder, pathRequested, moveInTree, pathRequested);			
+		ajaxCall('ajax/getCategoryChild.php?idTopic=' + idTopic + '&sPathParent=' + pathRequested, '', prepareInstantiateFolderFailed, prepareInstantiateFolder, pathRequested, moveInTree, pathRequested);			
 	}
 	else {
 		oTreeNotes.moveInSimpleTree(pathRequested);
@@ -501,8 +499,8 @@ function insertNewNoteInDbb(aResponseForm) {
 		var sNewNote = hackReplaceAll(aResponseForm[0]);
 		var sPathTreeItemToInsert = pathFocused + "b" + XX(parseInt(oDOMFocused.nbOfNotes)+1);
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + encodeURIComponent(sNewNote)
-				+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "b");
+		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic
+		+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, '&newNote=' + encodeURIComponent(sNewNote), insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "b");
 	}
 	else {
 		resetDataTreeReadyForEvent();	
@@ -514,8 +512,8 @@ function insertNewFolderInDbb(aResponseForm) {
 		var sNewNote = hackReplaceAll(aResponseForm[0]);
 		var sPathTreeItemToInsert = pathFocused + "a" + XX(parseInt(oDOMFocused.nbOfFolders)+1);
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic + '&newNote=' + encodeURIComponent(sNewNote)
-				+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "a");
+		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic
+				+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, '&newNote=' + encodeURIComponent(sNewNote),insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "a");
 	}
 	else {
 		resetDataTreeReadyForEvent();	
@@ -563,7 +561,7 @@ function insertGeolocationTreeItemInDbb(oPosition) {
 		ajaxCall('ajax/insertTreeItemGeolocation.php?idTopic=' + idTopic + "&pathToUpdateGeolocation=" + pathSendGeolocation 
 																	+ "&latitude=" + oPosition.coords.latitude 
 																	+ "&longitude=" + oPosition.coords.longitude
-																	+ "&accuracyPosition=" + oPosition.coords.accuracy,
+																	+ "&accuracyPosition=" + oPosition.coords.accuracy, '',
 																	getGeolocationTreeItemFailed, getLocationTreeItemUpdateClient);	
 	}
 	toDoSendGeolocationPosition = null;
@@ -601,7 +599,7 @@ function editTreeItemInDbb(aResponseForm) {
 	if (aResponseForm!=="") {
 		var sNewNote = hackReplaceAll(aResponseForm[0]);
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-		ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic + '&sPathToEdit=' + pathFocused + '&sNewNote=' + encodeURIComponent(sNewNote), editTreeItemFailed, editTreeItemUpdateClient, sNewNote);		
+		ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic +'&sPathToEdit=' + pathFocused,'sNewNote=' + encodeURIComponent(sNewNote), editTreeItemFailed, editTreeItemUpdateClient, sNewNote);		
 	}
 	else {
 		resetDataTreeReadyForEvent();	
@@ -641,7 +639,7 @@ function deleteFolderInDbb() {
 	var pathParent = pathFocused.slice(0,-3);
 	oTreeNotes.moveInSimpleTree(pathParent); // si le folder à effacer est un ancêtre de openedFolder ou openedFolder lui même, on fait un moveInSimpleTree où openedFolder est le père de pathFocused 
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-	ajaxCall('ajax/deleteFolder.php?idTopic=' + idTopic + '&sCategoryToDelete=' + pathFocused, deleteFolderInDbbFailed, deleteFolderUpdateClient);
+	ajaxCall('ajax/deleteFolder.php?idTopic=' + idTopic + '&sCategoryToDelete=' + pathFocused, '', deleteFolderInDbbFailed, deleteFolderUpdateClient);
 }
 
 function deleteFolderInDbbFailed(errorMessage) {
@@ -705,7 +703,7 @@ function deleteNoteLaunch() {
 
 function deleteNoteInDbb() {
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-	ajaxCall('ajax/deleteNote.php?idTopic=' + idTopic + '&sCategoryToDelete=' + pathFocused, deleteNoteInDbbFailed, deleteNoteUpdateClient);
+	ajaxCall('ajax/deleteNote.php?idTopic=' + idTopic + '&sCategoryToDelete=' + pathFocused, '', deleteNoteInDbbFailed, deleteNoteUpdateClient);
 }
 
 function deleteNoteInDbbFailed(errorMessage) {
@@ -823,7 +821,7 @@ function resetColorTreeItem() {
 
 function pasteHereTreeItemInDbb(sPathToMove, sPathWhereToPaste) {
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';	
-	ajaxCall('ajax/moveItem.php?idTopic=' + idTopic + '&sCutPath=' + sPathToMove	+ '&sPathWhereToPaste=' + sPathWhereToPaste,
+	ajaxCall('ajax/moveItem.php?idTopic=' + idTopic + '&sCutPath=' + sPathToMove	+ '&sPathWhereToPaste=' + sPathWhereToPaste, '',
 						pasteHereTreeItemInDbbFailed, pasteHereTreeItemUpdateClient, sPathToMove, sPathWhereToPaste);
 }
 

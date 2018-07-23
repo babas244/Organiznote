@@ -7,7 +7,6 @@ var toDoSendGeolocationLabels = null;
 var toDoSendGeolocationPosition = null;
 var aLabelColor = [];
 var isToDoOkToMoveRankOnServer = true; 
-var lengthCheckedString = 2000;
 var isUniqueLabelChecked = false;
 var oJSONTemp = {};
 var oJSONFormTemp = [];
@@ -19,7 +18,7 @@ console.log("toDoList performance time : " + performance.now());
 function initializePageToDo () {
 	addEventsDragAndDropToLastAndInvisible(document.getElementById("lastAndInvisible"));
 	document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
-	ajaxCall('phpAjaxCalls_ToDo/retrieveLabels.php?idTopic=' + idTopic, initializetoDoFailed, displayLabelsCheckboxes);
+	ajaxCall('phpAjaxCalls_ToDo/retrieveLabels.php?idTopic=' + idTopic, '', initializetoDoFailed, displayLabelsCheckboxes);
 }
 		
 function counterInsertDivSeparatorLabels() {
@@ -34,7 +33,7 @@ function counterInsertDivSeparatorLabels() {
 			} 			
 		} 
 	}
-	ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + sBuildLabelsPhp(0,0), initializetoDoFailed, insertToDoListBefore, resetToDoReadyForEvent);	
+	ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + sBuildLabelsPhp(0,0), '', initializetoDoFailed, insertToDoListBefore, resetToDoReadyForEvent);	
 }
 
 function sBuildLabelsPhp(labelTitleRankToDisplay, labelRankToDisplay) {
@@ -236,7 +235,7 @@ function displayToDoList (labelTitleRank, labelRank, isChecked) {
 		else { // on demande pas de uniqueLabel
 			aLabelsChecked[labelTitleRank][labelRank] = 1;
 		}
-	ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + sBuildLabelsPhp(labelTitleRank, labelRank), loadToDoListFailed, insertToDoListBefore, resetToDoReadyForEvent);	
+	ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + sBuildLabelsPhp(labelTitleRank, labelRank), '', loadToDoListFailed, insertToDoListBefore, resetToDoReadyForEvent);	
 	}
 }
 
@@ -307,8 +306,8 @@ function deleteToDo () {
 		document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 		ajaxCall('phpAjaxCalls_ToDo/deleteToDo.php?idTopic=' + idTopic 
 		+ "&sLabels=" + toDoFocused[0].sLabels 
-		+ "&position=" + toDoFocused[0].position
-		+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString)), 
+		+ "&position=" + toDoFocused[0].position,
+		"&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content), 
 		deleteToDoFailed, deleteToDoAndHideContextMenu, toDoFocused[0].id);	
 	}
 	else { 
@@ -349,12 +348,12 @@ function setToDoDoneAjax(aFormDateArchive) {
 	if (aFormDateArchive !== "") {
 		document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 		ajaxCall('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic 
-		+ "&toDoContent=" + encodeURIComponent(sToDoContent) 
 		+ '&dateArchive=' + aFormDateArchive[0]+":00" 
 		+ '&dateCreation=' + aFormDateArchive[2]
 		+ "&sLabels=" + toDoFocused[0].sLabels 
-		+ "&position=" + toDoFocused[0].position
-		+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString)), 		
+		+ "&position=" + toDoFocused[0].position,
+		"&toDoContent=" + encodeURIComponent(sToDoContent) 
+		+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content), 		
 		setToDoDoneFailed, deleteToDoAndHideContextMenu, toDoFocused[0].id);		
 	}
 	else {
@@ -474,21 +473,21 @@ function submitToDoFull(ResponseForm) {
 			oJSONTemp[sLabelsForm]= [];
 			document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 			ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic 
-			+ "&toDoContent=" + encodeURIComponent(sToDoContent) 
 			+ "&dateCreation=" + dateCreation 
-			+ "&sLabels=" + sLabels
-			+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString)), 
+			+ "&sLabels=" + sLabels,
+			"&toDoContent=" + encodeURIComponent(sToDoContent)
+			+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content), 
 			submitToDoFullFailed, addNewToDoWithLabels, sToDoAddedJSON);
 		}
 		else { // c'est donc un update que l'on fait
 			document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 			ajaxCall('phpAjaxCalls_ToDo/updateToDo.php?idTopic=' + idTopic 
-			+ "&toDoContent=" + encodeURIComponent(sToDoContent)
 			+ "&sLabels=" + toDoFocused[0].sLabels 
 			+ "&position=" + toDoFocused[0].position 
 			+ "&sNewLabels=" + sLabelsForm
-			+ "&dateCreation=" + sDateCreation
-			+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content.substr(0, lengthCheckedString)), 
+			+ "&dateCreation=" + sDateCreation,
+			"&toDoContent=" + encodeURIComponent(sToDoContent)
+			+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content), 
 			updateToDoFailed, updateToDo, sToDoContent, sLabelsForm, sDateCreation);
 		}
 	}
@@ -574,7 +573,9 @@ function submitToDoQuick(){
 			aLabelNbItems["0000"]=0;
 		}
 		document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
-		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&toDoContent=" + encodeURIComponent(sToDoContent) + "&dateCreation=" + dateCreation + "&sLabels=0000", submitToDoQuickFailed, submitToDoQuickCheckResponse, sToDoAddedJSON);
+		ajaxCall('phpAjaxCalls_ToDo/addToDo.php?idTopic=' + idTopic + "&dateCreation=" + dateCreation + "&sLabels=0000", 
+		"&toDoContent=" + encodeURIComponent(sToDoContent),
+		submitToDoQuickFailed, submitToDoQuickCheckResponse, sToDoAddedJSON);
 	}
 }
 
@@ -605,8 +606,8 @@ function insertGeolocationToDoInDbb(oPosition) {
 		+ "&position=" + toDoSendGeolocationPosition 
 		+ "&latitude=" + oPosition.coords.latitude 
 		+ "&longitude=" + oPosition.coords.longitude
-		+ "&sContentStart=" + document.getElementById("toDo"+toDoSendGeolocationLabels+toDoSendGeolocationPosition).content.substr(0, lengthCheckedString)
 		+ "&accuracyPosition=" + oPosition.coords.accuracy,
+		"&sContentStart=" + document.getElementById("toDo"+toDoSendGeolocationLabels+toDoSendGeolocationPosition).content,
 		getGeolocationToDoFailed, getLocationToDoUpdateClient);	
 	}
 	toDoSendGeolocationLabels = null;
@@ -730,8 +731,8 @@ function addEventsDragAndDrop(DOMElement) {
 						ajaxCall('phpAjaxCalls_ToDo/changeRankOfToDoInsideSLabels.php?idTopic=' + idTopic 
 						+ "&sLabels=" + sLabels 
 						+ "&oldRank=" + oldRank 
-						+ "&targetedRank=" + targetedRank,
-						//+ "&sContentStart=" + droppedElement.content.substr(0, lengthCheckedString), 
+						+ "&targetedRank=" + targetedRank, '',
+						//+ "&sContentStart=" + droppedElement.content, 
 						changeRankOfToDoFailed, changeRankOfToDoClient);	
 					}
 				}

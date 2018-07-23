@@ -22,10 +22,19 @@ function XX(integer) {
 	return integer>9 ? ""+integer : "0"+integer;
 }
 
-function ajaxCall(sPathPhp, fCallbackFailed, fCallback, parameter1, parameter2, parameter3, parameter4) {
+function ajaxCall(sPathPhp, sPostRequestContent, fCallbackFailed, fCallback, parameter1, parameter2, parameter3, parameter4) {
 	var xhr = new XMLHttpRequest(); 
-	xhr.open ('GET', sPathPhp);
-	xhr.send(null);
+	
+	if (sPostRequestContent==='') {
+		xhr.open ('GET', sPathPhp);
+		xhr.send(null);
+	}
+	else {
+		xhr.open ('POST', sPathPhp);
+		alert(sPathPhp + '\n\n sPostRequestContent :' + sPostRequestContent);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr.send(sPostRequestContent);		
+	}
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState == 4 && xhr.status == 200) {
 			fCallback(xhr.responseText, parameter1, parameter2, parameter3, parameter4);

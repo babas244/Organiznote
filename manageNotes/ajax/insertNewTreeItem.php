@@ -4,7 +4,7 @@ header("Content-Type: text/plain");
 
 session_start();
 
-if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["newNote"])&& isset($_GET["sPathTreeItemToInsert"])) {
+if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_POST["newNote"])&& isset($_GET["sPathTreeItemToInsert"])) {
 	
 	if ((preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sPathTreeItemToInsert"]))) {
 		
@@ -13,7 +13,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["newNote"])
 		require '../../isIdTopicSafeAndMatchUser.php';
 		
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
-		$newNote = htmlspecialchars($_GET["newNote"]);
+		$newNote = htmlspecialchars($_POST["newNote"]);
 		$sPathTreeItemToInsert = htmlspecialchars($_GET["sPathTreeItemToInsert"]);
 		
 		// inserer la note

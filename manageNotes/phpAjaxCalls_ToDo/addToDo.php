@@ -5,7 +5,7 @@ header("Content-Type: application/json; charset=UTF-8");
 session_start();
 
 if (isset($_SESSION['id'])) {
-	if (isset($_GET["idTopic"]) && isset($_GET["toDoContent"]) && isset($_GET["dateCreation"]) && isset($_GET["sLabels"])) {
+	if (isset($_GET["idTopic"]) && isset($_POST["toDoContent"]) && isset($_GET["dateCreation"]) && isset($_GET["sLabels"])) {
 	
 		if (preg_match("#^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$#", $_GET["dateCreation"]) && preg_match("#^[0-9]{4}$#", $_GET["sLabels"])) {
 			
@@ -13,7 +13,7 @@ if (isset($_SESSION['id'])) {
 
 			require '../../isIdTopicSafeAndMatchUser.php';
 
-			$toDoContent = htmlspecialchars($_GET["toDoContent"]);
+			$toDoContent = htmlspecialchars($_POST["toDoContent"]);
 			$sLabels = htmlspecialchars($_GET["sLabels"]); // utile ??
 			$idTopic = htmlspecialchars($_GET["idTopic"]);
 			$dateCreation = htmlspecialchars($_GET["dateCreation"]);

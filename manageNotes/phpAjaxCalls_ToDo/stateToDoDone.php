@@ -4,7 +4,7 @@ header("Content-Type: text/plain");
 
 session_start();
 
-if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoContent"]) && isset($_GET["dateArchive"])&& isset($_GET["dateCreation"]) && isset($_GET["sLabels"]) && isset($_GET["position"])) {
+if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_POST["toDoContent"]) && isset($_GET["dateArchive"])&& isset($_GET["dateCreation"]) && isset($_GET["sLabels"]) && isset($_GET["position"])) {
 	
 	if (preg_match("#^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:00$#", $_GET["dateArchive"]) && preg_match("#^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$#", $_GET["dateCreation"]) && preg_match("#^[0-9]{4}$#", $_GET["sLabels"]) && preg_match("#^[0-9]+$#", $_GET["position"])) {
 
@@ -13,7 +13,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["toDoConten
 		require '../../isIdTopicSafeAndMatchUser.php';
 		
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
-		$toDoContent = htmlspecialchars($_GET["toDoContent"]);
+		$toDoContent = htmlspecialchars($_POST["toDoContent"]);
 		$dateArchive = htmlspecialchars($_GET["dateArchive"]);
 		$dateCreation = htmlspecialchars($_GET["dateCreation"]);		
 		$sLabels = htmlspecialchars($_GET["sLabels"]); 
