@@ -6,7 +6,7 @@ if (!isset($_POST["sContentStart"])) {
 else {
 	$sContentStart = htmlspecialchars($_POST["sContentStart"]);
 	
-	// vérifier que l'on update le bon toDo 
+	// vérifier que l'on update le bon treeItem
 	$reqChecktreeItemIsTheRightOne = $bdd -> prepare("SELECT COUNT(*) AS nbOfTreeItemsMatches FROM notes 
 	WHERE idUser=:idUser AND idTopic=:idTopic
 	AND idNote=:sPath

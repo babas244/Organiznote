@@ -497,10 +497,10 @@ function fCheckFormInsertOnlyTextarea(aResponseFormArray){
 function insertNewNoteInDbb(aResponseForm) {
 	if (aResponseForm!=="") {
 		var sNewNote = hackReplaceAll(aResponseForm[0]);
-		var sPathTreeItemToInsert = pathFocused + "b" + XX(parseInt(oDOMFocused.nbOfNotes)+1);
+		var iGuessedClientSideRankTreeItemToInsert = XX(parseInt(oDOMFocused.nbOfNotes)+1);
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
 		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic
-		+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, '&newNote=' + encodeURIComponent(sNewNote), insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "b");
+		+ '&sPathParent=' + pathFocused + '&rankClientSide=' + iGuessedClientSideRankTreeItemToInsert + '&itemType=b', '&newNote=' + encodeURIComponent(sNewNote), insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "b");
 	}
 	else {
 		resetDataTreeReadyForEvent();	
@@ -510,10 +510,10 @@ function insertNewNoteInDbb(aResponseForm) {
 function insertNewFolderInDbb(aResponseForm) {
 	if (aResponseForm!=="") {
 		var sNewNote = hackReplaceAll(aResponseForm[0]);
-		var sPathTreeItemToInsert = pathFocused + "a" + XX(parseInt(oDOMFocused.nbOfFolders)+1);
+		var iGuessedClientSideRankTreeItemToInsert = XX(parseInt(oDOMFocused.nbOfFolders)+1);
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
 		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic
-				+ '&sPathTreeItemToInsert=' + sPathTreeItemToInsert, '&newNote=' + encodeURIComponent(sNewNote),insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "a");
+		+ '&sPathParent=' + pathFocused + '&rankClientSide=' + iGuessedClientSideRankTreeItemToInsert + '&itemType=a', '&newNote=' + encodeURIComponent(sNewNote),insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "a");
 	}
 	else {
 		resetDataTreeReadyForEvent();	
@@ -549,7 +549,12 @@ function insertNewTreeItemUpdateClient(errorMessageFromServer, sNewNote, aORb) {
 		resetDataTreeReadyForEvent();
 	}
 	else {
-		alert ("Erreur inattendue lors de l'insertion dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
+		if (errorMessageFromServer==="reload") {
+			alert ("Veuillez recharger la page, elle a dû être modifiée dans une autre page et n'est plus à jour. Si le problème persiste, contacter l'administrateur du site");
+		}
+		else {				
+			alert ("Erreur inattendue lors de l'insertion dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
+		}
 	}
 }
 
@@ -599,7 +604,7 @@ function editTreeItemInDbb(aResponseForm) {
 	if (aResponseForm!=="") {
 		var sNewNote = hackReplaceAll(aResponseForm[0]);
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-		ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic +'&sPath=' + pathFocused,'sNewNote=' + encodeURIComponent(sNewNote) +'&sContentStart='+oDOMFocused.content, editTreeItemFailed, editTreeItemUpdateClient, sNewNote);		
+		ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic +'&sPath=' + pathFocused,'sNewNote=' + encodeURIComponent(sNewNote) +'&sContentStart='+encodeURIComponent(oDOMFocused.content), editTreeItemFailed, editTreeItemUpdateClient, sNewNote);		
 	}
 	else {
 		resetDataTreeReadyForEvent();	
@@ -620,7 +625,12 @@ function editTreeItemUpdateClient(errorMessageFromServer, sNewContent) {
 		resetDataTreeReadyForEvent();
 	}
 	else {
-		alert ("Erreur inattendue lors de l'insertion dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
+		if (errorMessageFromServer==="reload") {
+			alert ("Veuillez recharger la page, elle a dû être modifiée dans une autre page et n'est plus à jour. Si le problème persiste, contacter l'administrateur du site");
+		}
+		else {				
+			alert ("Erreur inattendue lors de l'insertion dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
+		}
 	}
 }
 
@@ -639,7 +649,7 @@ function deleteFolderInDbb() {
 	var pathParent = pathFocused.slice(0,-3);
 	oTreeNotes.moveInSimpleTree(pathParent); // si le folder à effacer est un ancêtre de openedFolder ou openedFolder lui même, on fait un moveInSimpleTree où openedFolder est le père de pathFocused 
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-	ajaxCall('ajax/deleteFolder.php?idTopic=' + idTopic + '&sPath=' + pathFocused, 'sContentStart=' + oDOMFocused.content, deleteFolderInDbbFailed, deleteFolderUpdateClient);
+	ajaxCall('ajax/deleteFolder.php?idTopic=' + idTopic + '&sPath=' + pathFocused, 'sContentStart=' + encodeURIComponent(oDOMFocused.content), deleteFolderInDbbFailed, deleteFolderUpdateClient);
 }
 
 function deleteFolderInDbbFailed(errorMessage) {
@@ -703,7 +713,7 @@ function deleteNoteLaunch() {
 
 function deleteNoteInDbb() {
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-	ajaxCall('ajax/deleteNote.php?idTopic=' + idTopic + '&sPath=' + pathFocused, 'sContentStart=' + oDOMFocused.content, deleteNoteInDbbFailed, deleteNoteUpdateClient);
+	ajaxCall('ajax/deleteNote.php?idTopic=' + idTopic + '&sPath=' + pathFocused, 'sContentStart=' + encodeURIComponent(oDOMFocused.content), deleteNoteInDbbFailed, deleteNoteUpdateClient);
 }
 
 function deleteNoteInDbbFailed(errorMessage) {
