@@ -599,7 +599,7 @@ function editTreeItemInDbb(aResponseForm) {
 	if (aResponseForm!=="") {
 		var sNewNote = hackReplaceAll(aResponseForm[0]);
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-		ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic +'&sPathToEdit=' + pathFocused,'sNewNote=' + encodeURIComponent(sNewNote), editTreeItemFailed, editTreeItemUpdateClient, sNewNote);		
+		ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic +'&sPath=' + pathFocused,'sNewNote=' + encodeURIComponent(sNewNote) +'&sContentStart='+oDOMFocused.content, editTreeItemFailed, editTreeItemUpdateClient, sNewNote);		
 	}
 	else {
 		resetDataTreeReadyForEvent();	
@@ -639,7 +639,7 @@ function deleteFolderInDbb() {
 	var pathParent = pathFocused.slice(0,-3);
 	oTreeNotes.moveInSimpleTree(pathParent); // si le folder à effacer est un ancêtre de openedFolder ou openedFolder lui même, on fait un moveInSimpleTree où openedFolder est le père de pathFocused 
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-	ajaxCall('ajax/deleteFolder.php?idTopic=' + idTopic + '&sCategoryToDelete=' + pathFocused, '', deleteFolderInDbbFailed, deleteFolderUpdateClient);
+	ajaxCall('ajax/deleteFolder.php?idTopic=' + idTopic + '&sPath=' + pathFocused, 'sContentStart=' + oDOMFocused.content, deleteFolderInDbbFailed, deleteFolderUpdateClient);
 }
 
 function deleteFolderInDbbFailed(errorMessage) {
@@ -703,7 +703,7 @@ function deleteNoteLaunch() {
 
 function deleteNoteInDbb() {
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-	ajaxCall('ajax/deleteNote.php?idTopic=' + idTopic + '&sCategoryToDelete=' + pathFocused, '', deleteNoteInDbbFailed, deleteNoteUpdateClient);
+	ajaxCall('ajax/deleteNote.php?idTopic=' + idTopic + '&sPath=' + pathFocused, 'sContentStart=' + oDOMFocused.content, deleteNoteInDbbFailed, deleteNoteUpdateClient);
 }
 
 function deleteNoteInDbbFailed(errorMessage) {

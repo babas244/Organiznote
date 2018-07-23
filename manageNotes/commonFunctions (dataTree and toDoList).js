@@ -31,7 +31,7 @@ function ajaxCall(sPathPhp, sPostRequestContent, fCallbackFailed, fCallback, par
 	}
 	else {
 		xhr.open ('POST', sPathPhp);
-		alert(sPathPhp + '\n\n sPostRequestContent :' + sPostRequestContent);
+		//alert(sPathPhp + '\n\n sPostRequestContent :' + sPostRequestContent);
 		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 		xhr.send(sPostRequestContent);		
 	}

@@ -7,30 +7,31 @@ header("Content-Type: text/plain; charset=UTF-8");
 
 session_start();
 
-if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sCategoryToDelete"])) {
+if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sPath"])) {
 
-	if (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sCategoryToDelete"])) {
+	if (preg_match("#^[0-9]{2}([a-b][0-9]{2})*$#", $_GET["sPath"])) {
 
 		require '../../log_in_bdd.php';
 
 		require '../../isIdTopicSafeAndMatchUser.php';
 		
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
-		$sCategoryToDelete = htmlspecialchars($_GET["sCategoryToDelete"]);
-		$sCategoryOfDad = substr($sCategoryToDelete,0,-3);
+		$sPath = htmlspecialchars($_GET["sPath"]);
+		$sCategoryOfDad = substr($sPath,0,-3);
 		
 		// on efface la note
 		$reqDeleteNote = $bdd -> prepare('DELETE FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote=:idNoteToDelete');
 			$reqDeleteNote -> execute(array(
 			'idUser' => $_SESSION['id'],
 			'idTopic' => $idTopic, 
-			'idNoteToDelete' => $sCategoryToDelete));
+			'idNoteToDelete' => $sPath));
 		$reqDeleteNote->closeCursor();
 
+		require 'checkTreeItemIsTheRightOne.php';
 											
 		// on update toutes les notes affectés par le décalage
 		$sPathParent = $sCategoryOfDad;
-		$sRankDeleted = $sCategoryToDelete;
+		$sRankDeleted = $sPath;
 		$nRankDeleted = intval(substr($sRankDeleted,-2));
 		$lengthPathParent = strlen($sPathParent);
 		$reqUpdateSiblings = $bdd -> prepare('	UPDATE notes 
