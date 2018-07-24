@@ -86,7 +86,7 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, fCallbackChe
 				
 				document.getElementById("superForm").appendChild(oDOMRadioLabel);
 			}			
-			if (rankInForm === 0 && oForm.length===1) {
+			if (rankInForm === 0 && (oForm.length===1 || oForm.length===2)) {
 				oDOMForm.focus();
 			}
 

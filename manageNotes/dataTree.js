@@ -286,6 +286,7 @@ function instantiateRetrievedTree ( sTreeItems , fCallback, path ) {
 					var oDOMNote = document.createElement("div");
 					oDOMNote.id  = pathParent + "b" + XX(oDOMParent.nbOfNotes+k+1);
 					oDOMNote.content = aTreeItems[i][pathParent].b[k][0];
+					oDOMNote.dateCreation = aTreeItems[i][pathParent].b[k][1];
 					oDOMNote.innerHTML = oDOMNote.content;
 					oDOMNote.style.display = 'none';
 					oDOMNote.className = "note unselectable";
@@ -329,6 +330,7 @@ function instantiateRetrievedTree ( sTreeItems , fCallback, path ) {
 					oDOMFolder.id  = pathParent + "a" + XX(oDOMParent.nbOfFolders+j+1);
 					//alert ("i = " + i + "pathParent =" +pathParent +  "aTreeItems[i][pathParent].a[j][0] =" + aTreeItems[i][pathParent].a[j][0])
 					oDOMFolder.content = aTreeItems[i][pathParent].a[j][0];
+					oDOMFolder.dateCreation = aTreeItems[i][pathParent].a[j][1];
 					oDOMFolder.innerHTML = oDOMFolder.content;
 					oDOMFolder.style.display = 'none';
 					oDOMFolder.className = "folder unselectable";
@@ -371,6 +373,7 @@ function InstantiateWholeTreeClient(sTreeItems, fCallback) {
 		oDOMTreeElement = document.createElement("div");
 		oDOMTreeElement.id  = aTreeItems[i][0];
 		oDOMTreeElement.content = aTreeItems[i][1];
+		oDOMTreeElement.dateCreation = aTreeItems[i][2];
 		oDOMTreeElement.innerHTML = oDOMTreeElement.content;
 		oDOMTreeElement.style.display = 'none';
 		pathParent = oDOMTreeElement.id.slice(0,-3)
@@ -438,9 +441,15 @@ function insertNewNoteLaunch() {
 			oJSONFormTempDataTree[0].attributes.maxLength="1700"
 			oJSONFormTempDataTree[0].attributes.rows="5";
 			oJSONFormTempDataTree[0].label="Entrez le nom de la nouvelle note.";
+			var dateNow = sLocalDatetime(new Date());
+			oJSONFormTempDataTree[1] = {};
+			oJSONFormTempDataTree[1].name = "DateCreation";
+			oJSONFormTempDataTree[1].attributes = {};
+			oJSONFormTempDataTree[1].attributes.value = dateNow;
+			oJSONFormTempDataTree[1].label = "Optionnel : modifier la date de création de la note (format AAAA-MM-JJ hh:mm:ss)";		
 			var sForm = JSON.stringify(oJSONFormTempDataTree);
 			oJSONFormTempDataTree = [];
-			superFormModale(sForm, "Nouvelle catégorie", insertNewNoteInDbb, fCheckFormInsertOnlyTextarea);	
+			superFormModale(sForm, "Nouvelle catégorie", insertNewNoteInDbb, fCheckFormInsertEditTreeItem);	
 		}
 		else {
 			alert("Pas possible d'insérer une nouvelle note dans cette catégorie.\n\nVous avez atteint la limite prévue des 99 notes !\n\nIl serait utile de mieux réorganiser les catégories.")
@@ -467,9 +476,15 @@ function insertNewFolderLaunch() {
 			oJSONFormTempDataTree[0].attributes.maxLength="1700"
 			oJSONFormTempDataTree[0].attributes.rows="5";
 			oJSONFormTempDataTree[0].label="Entrez le nom de la nouvelle catégorie.";
+			var dateNow = sLocalDatetime(new Date());
+			oJSONFormTempDataTree[1] = {};
+			oJSONFormTempDataTree[1].name = "DateCreation";
+			oJSONFormTempDataTree[1].attributes = {};
+			oJSONFormTempDataTree[1].attributes.value = dateNow;
+			oJSONFormTempDataTree[1].label = "Optionnel : modifier la date de création de la note (format AAAA-MM-JJ hh:mm:ss)";
 			var sForm = JSON.stringify(oJSONFormTempDataTree);
 			oJSONFormTempDataTree = [];
-			superFormModale(sForm, "Nouvelle catégorie", insertNewFolderInDbb, fCheckFormInsertOnlyTextarea);	
+			superFormModale(sForm, "Nouvelle catégorie", insertNewFolderInDbb, fCheckFormInsertEditTreeItem);	
 		}
 		else {
 			alert("Pas possible d'insérer une nouvelle catégorie.\n\nVous avez atteint la limite prévue des 99 sous-catégories !\n\nIl serait utile de mieux réorganiser les catégories.")
@@ -484,23 +499,35 @@ function insertNewFolderLaunch() {
 	}
 }
 
-function fCheckFormInsertOnlyTextarea(aResponseFormArray){
+function fCheckFormInsertEditTreeItem(aResponseFormArray){
 	if (aResponseFormArray[0] ==="") {
 		alert('La note est vide, il faut la remplir.')
 		return 'content';
 	}
+	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(aResponseFormArray[1])) {
+		alert (aResponseFormArray[1]+' : le format de la date de création de la note est non correct, il faut AAAA-MM-JJ hh:mm:ss, et dans des valeurs possibles');
+		return "DateCreation";
+	} 
 	else {
 		return "ok";
 	}
 }
 
+
+
 function insertNewNoteInDbb(aResponseForm) {
 	if (aResponseForm!=="") {
 		var sNewNote = hackReplaceAll(aResponseForm[0]);
+		var dateCreation = aResponseForm[1];
 		var iGuessedClientSideRankTreeItemToInsert = XX(parseInt(oDOMFocused.nbOfNotes)+1);
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
 		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic
-		+ '&sPathParent=' + pathFocused + '&rankClientSide=' + iGuessedClientSideRankTreeItemToInsert + '&itemType=b', '&newNote=' + encodeURIComponent(sNewNote), insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "b");
+		+ '&sPathParent=' + pathFocused 
+		+ '&rankClientSide=' + iGuessedClientSideRankTreeItemToInsert 
+		+ '&itemType=b'
+		+ '&dateCreation=' + dateCreation,
+		'&newNote=' + encodeURIComponent(sNewNote),
+		insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "b", dateCreation);
 	}
 	else {
 		resetDataTreeReadyForEvent();	
@@ -510,10 +537,15 @@ function insertNewNoteInDbb(aResponseForm) {
 function insertNewFolderInDbb(aResponseForm) {
 	if (aResponseForm!=="") {
 		var sNewNote = hackReplaceAll(aResponseForm[0]);
+		var dateCreation = aResponseForm[1];
 		var iGuessedClientSideRankTreeItemToInsert = XX(parseInt(oDOMFocused.nbOfFolders)+1);
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
 		ajaxCall('ajax/insertNewTreeItem.php?idTopic=' + idTopic
-		+ '&sPathParent=' + pathFocused + '&rankClientSide=' + iGuessedClientSideRankTreeItemToInsert + '&itemType=a', '&newNote=' + encodeURIComponent(sNewNote),insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "a");
+		+ '&sPathParent=' + pathFocused 
+		+ '&rankClientSide=' + iGuessedClientSideRankTreeItemToInsert 
+		+ '&itemType=a'
+		+ '&dateCreation=' + dateCreation,
+		'&newNote=' + encodeURIComponent(sNewNote),insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "a", dateCreation);
 	}
 	else {
 		resetDataTreeReadyForEvent();	
@@ -526,13 +558,14 @@ function insertNewTreeItemInDbbFailed(errorMessage) {
 	resetDataTreeReadyForEvent();
 }
 
-function insertNewTreeItemUpdateClient(errorMessageFromServer, sNewNote, aORb) {
+function insertNewTreeItemUpdateClient(errorMessageFromServer, sNewNote, aORb, dateCreation) {
 	if (errorMessageFromServer==="") {
 		oJSONTempDataTree[0] = {};
 		oJSONTempDataTree[0][pathFocused] = {};
 		oJSONTempDataTree[0][pathFocused][aORb] = [];
 		oJSONTempDataTree[0][pathFocused][aORb][0] = [];
-		oJSONTempDataTree[0][pathFocused][aORb][0][0] = sNewNote;		
+		oJSONTempDataTree[0][pathFocused][aORb][0][0] = sNewNote;
+		oJSONTempDataTree[0][pathFocused][aORb][0][1] = dateCreation;
 		var sTreeItems = JSON.stringify(oJSONTempDataTree);
 		oJSONTempDataTree = [];
 		instantiateRetrievedTree(sTreeItems);			
@@ -595,16 +628,26 @@ function editTreeItemLaunch() {
 	oJSONFormTempDataTree[0].attributes.rows="5";
 	oJSONFormTempDataTree[0].attributes.value= oDOMFocused.content;
 	oJSONFormTempDataTree[0].label="Entrée à modifier :";
+	var dateCreation = document.getElementById(pathFocused).dateCreation;
+	var dateNow = sLocalDatetime(new Date());
+	oJSONFormTempDataTree[1] = {};
+	oJSONFormTempDataTree[1].name = "DateCreation";
+	oJSONFormTempDataTree[1].attributes = {};
+	oJSONFormTempDataTree[1].attributes.value = dateCreation;
+	oJSONFormTempDataTree[1].label = "Optionnel : remodifier date de création de la note (format AAAA-MM-JJ hh:mm:ss) initialement il y a <b>"
+									+ displayDatesComparison(dateCreation, dateNow, "de création", "de maintenant")+"</b>.";
 	var sForm = JSON.stringify(oJSONFormTempDataTree);
 	oJSONFormTempDataTree = [];
-	superFormModale(sForm, "Editer", editTreeItemInDbb, fCheckFormInsertOnlyTextarea);	
+	superFormModale(sForm, "Editer", editTreeItemInDbb, fCheckFormInsertEditTreeItem);	
 }
 
 function editTreeItemInDbb(aResponseForm) {
 	if (aResponseForm!=="") {
 		var sNewNote = hackReplaceAll(aResponseForm[0]);
+		var dateCreation = aResponseForm[1];
+		oDOMFocused.dateCreation = dateCreation;
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-		ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic +'&sPath=' + pathFocused,'sNewNote=' + encodeURIComponent(sNewNote) +'&sContentStart='+encodeURIComponent(oDOMFocused.content), editTreeItemFailed, editTreeItemUpdateClient, sNewNote);		
+		ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic +'&sPath=' + pathFocused + "&dateCreation=" + dateCreation,'sNewNote=' + encodeURIComponent(sNewNote) +'&sContentStart='+encodeURIComponent(oDOMFocused.content), editTreeItemFailed, editTreeItemUpdateClient, sNewNote);		
 	}
 	else {
 		resetDataTreeReadyForEvent();	
