@@ -56,6 +56,5 @@ if (isset($_SESSION['id'])) {
 }
 else {
 	echo 'disconnected';	
-}session n\'est pas ouverte !!!';	
 }
 ?>

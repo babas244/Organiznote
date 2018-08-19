@@ -5,7 +5,10 @@ require '../log_in_bdd.php';
 
 require '../sessionAuthentication.php';
 
-if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
+if (!isset($_GET["idTopic"])) {
+	header("Location: ../logout.php");
+}
+else if (isset($_SESSION['id'])) {
 	require '../isIdTopicSafeAndMatchUser.php';
 	$idTopic = htmlspecialchars($_GET['idTopic']);	
 	$reqGetTopic = $bdd -> prepare('SELECT topic, colorBackGround FROM topics WHERE idUser=:idUser AND id=:idTopic');
@@ -158,6 +161,9 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
 			echo "var idTopic = ". $idTopic.";";
 			echo "var backgroundColorToDo = '".$backgroundColorToDo."';";
 }
+			else {
+				header("Location: ../logout.php");
+			}
 			?>
 		</script>
 		
