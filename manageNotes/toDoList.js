@@ -328,7 +328,7 @@ function stateToDoDone () {
 	oJSONFormTemp[1].HTMLType="textarea";
 	oJSONFormTemp[1].attributes={};
 	oJSONFormTemp[1].attributes.cols="30"
-	oJSONFormTemp[1].attributes.maxLength="1700"
+	oJSONFormTemp[1].attributes.maxLength= textareaFormsMaxSize
 	oJSONFormTemp[1].attributes.rows="5"
 	oJSONFormTemp[1].attributes.value= document.getElementById(toDoFocused[0].id).content;
 	oJSONFormTemp[1].label="note";
@@ -390,11 +390,15 @@ function fCheckFormDateArchive(aResponseFormArray) {
 	}
 	if (aResponseFormArray[1] ==="") {
 		alert('La note est vide, il faut la remplir.')
-		return "DateArchive";
+		return 'content';
 	}
+	if (aResponseFormArray[1].length >= textareaFormsMaxSize) {
+		alert('La note a atteint sa limite en taille qui est de '+textareaFormsMaxSize+' caractères, elle a peut-être été coupée, et il faut la raccourcir.')
+		return 'content';
+	}	
 	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(aResponseFormArray[2])) {
 		alert ('Le format de la date de création de la note est non correct, il faut AAAA-MM-JJ hh:mm:ss, et dans des valeurs possibles');
-		return "DateArchive";
+		return "DateCreation";
 	} 
 	return "ok";
 }
@@ -405,7 +409,7 @@ function editToDo() {
 	oJSONFormTemp[0].HTMLType="textarea";
 	oJSONFormTemp[0].attributes={};
 	oJSONFormTemp[0].attributes.cols="30"
-	oJSONFormTemp[0].attributes.maxLength="1700"
+	oJSONFormTemp[0].attributes.maxLength= textareaFormsMaxSize
 	oJSONFormTemp[0].attributes.rows="5"
 	oJSONFormTemp[0].attributes.value= document.getElementById(toDoFocused[0].id).content;
 	oJSONFormTemp[0].label="note";
@@ -448,9 +452,13 @@ function fCheckFormToDo(aResponseFormArray){
 		alert('La note est vide, il faut la remplir.')
 		return 'content';
 	}
+	if (aResponseFormArray[0].length >= textareaFormsMaxSize) {
+		alert('La note a atteint sa limite en taille qui est de '+textareaFormsMaxSize+' caractères, elle a peut-être été coupée, et il faut la raccourcir.')
+		return 'content';
+	}	
 	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(aResponseFormArray[5])) {
 		alert (aResponseFormArray[5]+' : le format de la date de création de la note est non correct, il faut AAAA-MM-JJ hh:mm:ss, et dans des valeurs possibles');
-		return "content";
+		return 'DateCreation';
 	} 
 	else {
 		return "ok";
@@ -560,6 +568,10 @@ function initializeFormToDo() {
 
 function submitToDoQuick(){
 	var sToDoContent = hackReplaceAll(document.getElementById("toDoTextarea").value);
+	if (sToDoContent.length >= textareaFormsMaxSize) {
+		alert('La note a atteint sa limite en taille qui est de '+textareaFormsMaxSize+' caractères, elle a peut-être été coupée, et il faut la raccourcir.')	
+		return;
+	}
 	if (sToDoContent !=="") {
 		var dateCreation = sLocalDatetime(new Date());
 		oJSONTemp['0000']= [];

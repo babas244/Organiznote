@@ -70,7 +70,7 @@ else if (isset($_SESSION['id'])) {
 						<button id="cancelAddToDo"><-</button>
 						<div id="frameTextareaToDoForm">
 							<form id="addToDoForm">
-								<input type="textarea" name="toDoTextarea" id="toDoTextarea" placeholder="Ecrire ici" maxlength="1700">
+								<input type="textarea" name="toDoTextarea" id="toDoTextarea" placeholder="Ecrire ici" maxlength="16383">
 							</form>		
 						</div>
 						<button id="resetAddToDoForm">x</button>	

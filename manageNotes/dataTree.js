@@ -438,7 +438,7 @@ function insertNewNoteLaunch() {
 			oJSONFormTempDataTree[0].HTMLType="textarea";
 			oJSONFormTempDataTree[0].attributes={};
 			oJSONFormTempDataTree[0].attributes.cols="30"
-			oJSONFormTempDataTree[0].attributes.maxLength="1700"
+			oJSONFormTempDataTree[0].attributes.maxLength=textareaFormsMaxSize
 			oJSONFormTempDataTree[0].attributes.rows="5";
 			oJSONFormTempDataTree[0].label="Entrez le nom de la nouvelle note.";
 			var dateNow = sLocalDatetime(new Date());
@@ -473,7 +473,7 @@ function insertNewFolderLaunch() {
 			oJSONFormTempDataTree[0].HTMLType="textarea";
 			oJSONFormTempDataTree[0].attributes={};
 			oJSONFormTempDataTree[0].attributes.cols="30"
-			oJSONFormTempDataTree[0].attributes.maxLength="1700"
+			oJSONFormTempDataTree[0].attributes.maxLength=textareaFormsMaxSize
 			oJSONFormTempDataTree[0].attributes.rows="5";
 			oJSONFormTempDataTree[0].label="Entrez le nom de la nouvelle catégorie.";
 			var dateNow = sLocalDatetime(new Date());
@@ -502,6 +502,10 @@ function insertNewFolderLaunch() {
 function fCheckFormInsertEditTreeItem(aResponseFormArray){
 	if (aResponseFormArray[0] ==="") {
 		alert('La note est vide, il faut la remplir.')
+		return 'content';
+	}
+	if (aResponseFormArray[0].length >= textareaFormsMaxSize) {
+		alert('La note a atteint sa limite en taille qui est de '+textareaFormsMaxSize+' caractères, elle a peut-être été coupée, et il faut la raccourcir.')
 		return 'content';
 	}
 	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(aResponseFormArray[1])) {
@@ -624,7 +628,7 @@ function editTreeItemLaunch() {
 	oJSONFormTempDataTree[0].HTMLType="textarea";
 	oJSONFormTempDataTree[0].attributes={};
 	oJSONFormTempDataTree[0].attributes.cols="30"
-	oJSONFormTempDataTree[0].attributes.maxLength="1700"
+	oJSONFormTempDataTree[0].attributes.maxLength=textareaFormsMaxSize
 	oJSONFormTempDataTree[0].attributes.rows="5";
 	oJSONFormTempDataTree[0].attributes.value= oDOMFocused.content;
 	oJSONFormTempDataTree[0].label="Entrée à modifier :";

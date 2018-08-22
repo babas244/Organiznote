@@ -1,3 +1,5 @@
+var textareaFormsMaxSize = 16383;
+
 var monthNameAbbreviation=["jan","fev","mar","avr","mai","jun","jlt","aou","sep","oct","nov","dec"]; 
 var dayAbbreviation=["Di","Lu","Ma","Me","Je","Ve","Sa"];
 
