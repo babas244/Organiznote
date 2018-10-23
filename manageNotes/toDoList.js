@@ -33,7 +33,19 @@ function counterInsertDivSeparatorLabels() {
 			} 			
 		} 
 	}
-	ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + sBuildLabelsPhp(0,0), '', initializetoDoFailed, insertToDoListBefore, resetToDoReadyForEvent);	
+	ajaxCall('phpAjaxCalls_ToDo/retrieveToDoList.php?idTopic=' + idTopic + sBuildLabelsPhpAll(), '', initializetoDoFailed, insertToDoListBefore, resetToDoReadyForEvent);	
+}
+
+function sBuildLabelsPhpAll() {
+	var sLabelsPhpAll='';
+	var labelRank;
+	for (var labelTitleRank = 0 ; labelTitleRank < 4 ; labelTitleRank++) {
+		sLabelsPhpAll += '&label'+labelTitleRank+'=';
+		for (var labelRank = 0 ; labelRank < aNbOfLabels[labelTitleRank] ; labelRank++) {
+			sLabelsPhpAll += labelRank;
+		}
+	}
+	return sLabelsPhpAll;	
 }
 
 function sBuildLabelsPhp(labelTitleRankToDisplay, labelRankToDisplay) {
@@ -159,7 +171,7 @@ function displayLabelsCheckboxes(sLabelsJSON) {
 			oDOMDivLabel.innerHTML = oLabels.content[labelTitleRank][labelRank];
 			oDOMDivLabel.htmlFor = oDOMLabelCheckbox.id;
 			oDOMFrameCheckbox.appendChild(oDOMDivLabel);
-			aLabelsChecked[labelTitleRank][labelRank] = (labelTitleRank === 0 &&  labelRank > 0) ? 0 : 1;// [[1,0,0,0,0],[1,1,1],[1,1,1],[1,1,1]];
+			aLabelsChecked[labelTitleRank][labelRank] = 1;
 		}	
 		oDOMElementBr = document.createElement("Br");
 		document.getElementById("containerOfLabelsCheckBoxes").appendChild(oDOMElementBr);

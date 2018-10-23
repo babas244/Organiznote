@@ -21,6 +21,8 @@ if (isset($_SESSION['id'])) {
 			$sPath = htmlspecialchars($_GET["sPath"]);
 			$sCategoryOfDad = substr($sPath,0,-3);
 			
+			require 'checkTreeItemIsTheRightOne.php';
+
 			// on efface la note
 			$reqDeleteNote = $bdd -> prepare('DELETE FROM notes WHERE idUser=:idUser AND idTopic=:idTopic AND idNote=:idNoteToDelete');
 				$reqDeleteNote -> execute(array(
@@ -29,7 +31,6 @@ if (isset($_SESSION['id'])) {
 				'idNoteToDelete' => $sPath));
 			$reqDeleteNote->closeCursor();
 
-			require 'checkTreeItemIsTheRightOne.php';
 												
 			// on update toutes les notes affectés par le décalage
 			$sPathParent = $sCategoryOfDad;
