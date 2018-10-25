@@ -96,6 +96,17 @@ div[id^="separatorLabels"]
 	padding: 2px;
 }
 
+.displayedRowOfToDo
+{
+	background-color: blue;	
+	border-radius: 6px;
+	font-size: 0.7em;
+	color: yellow;
+	position:relative;
+	top: -3px;
+	margin-right: 2px;
+}
+
 .dateExpired
 {
 	background-color: blue;

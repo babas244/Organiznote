@@ -292,8 +292,9 @@ function insertToDoListBefore(sToDoListJSON, fCallback, sIsNew) {
 					oDOMToDo.dateCreation = oToDoListJSONParsed[sLabels][i][1];
 					oDOMToDo.dateExpired = oToDoListJSONParsed[sLabels][i][2];
 					oDOMToDo.content = sContent;
-					oDOMToDo.innerHTML = sContent.replace(/\n/gi, "<Br>")+'<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
+					oDOMToDo.innerHTML = '<span class="displayedRowOfToDo">' + (nNbOfToDoInLabels - i) +'</span>'+ sContent.replace(/\n/gi, "<Br>")+'<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
 					addEventsDragAndDrop(oDOMToDo);
+
 					document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById("separatorLabels"+sLabels).nextSibling);
 				}
 			aLabelNbItems[sLabels] += nNbOfToDoInLabels;	
@@ -532,14 +533,15 @@ function updateToDo(errorMessageFromServer , sNewContent, sNewLabels, sDateCreat
 	if (errorMessageFromServer==="") {
 		var oDOMToDoFocused = document.getElementById(toDoFocused[0].id);
 		if (toDoFocused[0].sLabels === sNewLabels) { // les sLabels ne changent pas
-			oDOMToDoFocused.innerHTML = sNewContent.replace(/\n/gi, "<Br>") + '<span class="dateExpired">'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) + '</div>'
+			oDOMToDoFocused.innerHTML = '<span class="displayedRowOfToDo">' + (aLabelNbItems[sLabels]- toDoFocused[0].position) +'</span>' + sNewContent.replace(/\n/gi, "<Br>") + '<span class="dateExpired">'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) + '</div>'
 			oDOMToDoFocused.content = sNewContent;
 			oDOMToDoFocused.dateCreation = sDateCreation;
 		}
 		else { // les sLabels changent aussi
+			shiftDisplayedRowOfToDo(aLabelNbItems[sNewLabels], 1, sNewLabels, 1);
 			deleteToDoFromDOM(toDoFocused[0].id);
 			var aLabelsOfNewToDo = sNewLabels.split("");
-			if (aLabelsChecked[0][aLabelsOfNewToDo[0]]==1 && aLabelsChecked[1][aLabelsOfNewToDo[1]]==1 && aLabelsChecked[2][aLabelsOfNewToDo[2]]==1 && aLabelsChecked[3][aLabelsOfNewToDo[3]]==1) {// afficher le nouveau toDo seulement si il a des labels d�j� demand�s � �tre affich�s
+			if (aLabelsChecked[0][aLabelsOfNewToDo[0]]==1 && aLabelsChecked[1][aLabelsOfNewToDo[1]]==1 && aLabelsChecked[2][aLabelsOfNewToDo[2]]==1 && aLabelsChecked[3][aLabelsOfNewToDo[3]]==1) {// afficher le nouveau toDo seulement si il a des labels déjà demandés à être affichés
 				oJSONTemp[sNewLabels]= [];
 				oJSONTemp[sNewLabels][0] = [];
 				oJSONTemp[sNewLabels][0][0] = sNewContent;
@@ -567,6 +569,7 @@ function deleteToDoFromDOM (idDOMToDoFocused) {
 		for (var i = parseInt(toDoFocused[0].position) + 1 ; i < aLabelNbItems[toDoFocused[0].sLabels] ; i++) {
 			document.getElementById('toDo'+toDoFocused[0].sLabels+i).id = 'toDo'+toDoFocused[0].sLabels+parseInt(i-1); // on décale les id de 1
 		}
+		shiftDisplayedRowOfToDo(parseInt(toDoFocused[0].position), 1, toDoFocused[0].sLabels, -1);
 	}
 	aLabelNbItems[toDoFocused[0].sLabels] -= 1;
 }				
@@ -606,6 +609,7 @@ function submitToDoQuick(){
 function submitToDoQuickCheckResponse(errorMessageFromServer, sToDoAddedJSON) {
 	if (errorMessageFromServer==="") {
 		hideFormEnterToDo();
+		shiftDisplayedRowOfToDo(aLabelNbItems[sLabels], 1,'0000', 1); 
 		insertToDoListBefore(sToDoAddedJSON, resetToDoReadyForEvent, "newNote");
 		toDoSendGeolocationLabels = "0000";
 		toDoSendGeolocationPosition = parseInt(aLabelNbItems["0000"]) - 1;
@@ -618,6 +622,12 @@ function submitToDoQuickCheckResponse(errorMessageFromServer, sToDoAddedJSON) {
 	else {
 		alert ("Erreur inattendue lors de l'update dans le serveur. Contactez l'administrateur. Le message est :\n" + errorMessageFromServer);		
 	}
+}
+
+function shiftDisplayedRowOfToDo(startPosition, nbOfNotes, sLabels, iIncreaseRankSign) {
+	for (var k = 0 ; k < startPosition ; k ++) {
+		document.querySelector('#toDo'+sLabels+k +' span').innerText = aLabelNbItems[sLabels] - k + nbOfNotes * iIncreaseRankSign;
+	}	
 }
 
 function insertGeolocationToDoInDbb(oPosition) {
@@ -730,6 +740,7 @@ function addEventsDragAndDrop(DOMElement) {
 					newElement.dateCreation = droppedElement.dateCreation;
 					newElement.dateExpired = droppedElement.dateExpired;
 					newElement.content = droppedElement.content;
+					newElement.innerHTML = '<span class="displayedRowOfToDo">' + (aLabelNbItems[sLabels]- targetedRank) +'</span>'+ droppedElement.content +'<span class="dateExpired">'+ (newElement.dateExpired === undefined ? "" : newElement.dateExpired) + '</div>'; 
 					this.parentNode.insertBefore(newElement, this);
 					droppedElement.parentNode.removeChild(droppedElement);
 					//alert ('targetedRank = '+ targetedRank);
@@ -750,7 +761,19 @@ function addEventsDragAndDrop(DOMElement) {
 						document.getElementById('toDo'+sLabels+i).id = 'toDo'+sLabels+parseInt(i+increase); // on décale les id de 1			
 					}
 					//alert ('newElement.id = ' + 'toDo'+sLabels+parseInt(newRank))
-					newElement.id = 'toDo'+sLabels+parseInt(newRank); // on update oldRank en newRank					
+					newElement.id = 'toDo'+sLabels+parseInt(newRank); // on update oldRank en newRank	
+	
+						if (targetedRank > oldRank) { // on réécrit les displayedRowOfToDo décalés
+							upperRank = targetedRank;
+							lowerRank = oldRank;
+						}
+						else {
+							upperRank = oldRank;
+							lowerRank = targetedRank;
+						}			
+					for (var k = lowerRank ; k <= upperRank ; k ++) {
+						document.querySelector('#toDo' + sLabels+k + ' span').innerHTML = aLabelNbItems[sLabels]-k;
+					}
 					if (isToDoOkToMoveRankOnServer) {
 						ajaxCall('phpAjaxCalls_ToDo/changeRankOfToDoInsideSLabels.php?idTopic=' + idTopic 
 						+ "&sLabels=" + sLabels 
