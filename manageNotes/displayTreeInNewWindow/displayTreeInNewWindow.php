@@ -54,7 +54,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sOriginPat
 					.(($levelInTree - $iLevelinTreeOriginPath +1)*$gapInInPx).'px">'
 						.'<div onclick="openCloseFolder(this)" class="openCloseFolder"'
 						.($classOfTreeItem === 'note' ? ' style="visibility:hidden"' : '').'>-</div>'
-						.'<div class="treeItem '.$classOfTreeItem.'" data-idNote="'.$idNote.'">'
+						.'<div class="treeItem '.$classOfTreeItem.'" id="'.$idNote.'">'
 						.preg_replace('#\\n#', '<Br>',$donnees['content']).'</div>
 				</div>';
 		}
