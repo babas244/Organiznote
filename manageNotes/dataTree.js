@@ -214,6 +214,7 @@ function SimpleTree(openedFolder) {
 function instantiateRetrievedTree ( sTreeItems , fCallback, path ) {
 	//console.log ("In instantiateRetrievedTree with fCallback = " + (fCallback !== undefined ? fCallback.name : "-") + ", and sTreeItems =" + sTreeItems);
 	var aTreeItems = sTreeItems == "" ? "" : JSON.parse(sTreeItems);
+	console.dir(aTreeItems)
 	var i,j,k;
 	var nbOfFoldersAddedInPathParent;
 	var nbOfNotesAddedInPathParent;
@@ -1194,7 +1195,7 @@ function resetDataTreeReadyForEvent() {
 }
 
 
-//document.getElementById("importTreeHere").addEventListener('click', importTreeLaunchfunction, false);
+document.getElementById("importTreeHere").addEventListener('click', importTreeLaunch, false);
 
 function importTreeLaunch() {
 	hideContextMenu();
@@ -1209,53 +1210,166 @@ document.getElementById("cancelLoadFile").addEventListener('click', function() {
 	pathFocused = null;
 }, false);
 
-/* document.getElementById("loadDataTreeJSON").addEventListener('change', function() {
+document.getElementById("loadDataTreeJSON").addEventListener('change', function() {
 	var reader = new FileReader();
 	reader.onload = function() {
-		var sErrorMessage = 'Le contenu du fichier "' + document.querySelector('#loadDataTreeJSON').files[0].name + '" n\'est pas valide : ';  
 		var isJSONError = false;
 		try {
 			JSON.parse(reader.result);
 		}
 		catch(e) {
+			var sErrorMessage = 'Le contenu du fichier "' + document.querySelector('#loadDataTreeJSON').files[0].name + '" n\'est pas valide : ';  
 			alert (sErrorMessage+'\n\nError '+e.message);
 			isJSONError = true;
 		}
 		finally {
 			if (!isJSONError) {			
 				var aTreeItems = JSON.parse(reader.result);
-				
 				if (aTreeItems[0].hasOwnProperty('error')) {
 					alert (sErrorMessage + aTreeItems[0].error);		
-				} 
+				}
 				else { //le fichier peut donc être parsé 
-					nbOfNotesInPathFocused = oDOMFocused.nbOfNotes;
-					nbOfFoldersInPathFocused = oDOMFocused.nbOfFolders;
-					ShouldBePathStart = "a01";			
-					for (var i=0; i < aTreeItems.length; i++) {
-						for (endOfPath in aTreeItems[i]) {
-							if (/^[ab][0-9]{2}([ab][0-9]{2}$/.test(endOfPath)
-							
-							if (/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(aTreeItems[i][endOfPath][1])) {// vérification du format de dateCreation
-								if (aTreeItems[i][endOfPath].susbtr(0,3) === ShouldBePathStart) {
-									aTreeItems[i][endOfPath]
-									//alert(aTreeItems[i][path][0]); 
+
+					var endOfPathPrevious = '';
+					var isDateOK = true;
+					var newPath, newEndOfPath, newRankFolder; 
+					var shiftRankFolders = oDOMFocused.nbOfFolders;
+					var shiftRankNotes = oDOMFocused.nbOfNotes;
+		console.log(shiftRankFolders)
+		console.log(shiftRankNotes)
+					for (let i=0; i < aTreeItems.length; i++) {
+						endOfPath = aTreeItems[i][0];
+						if (/^([ab][0-9]{2})+$/.test(endOfPath) && endOfPath > endOfPathPrevious) {												
+							if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(aTreeItems[i][2])) {// vérification du format de dateCreation
+								isDateOK = false;
+								console.log('date corrompue '+aTreeItems[i][2]+' pour la note '+aTreeItems[i][1])
+							} //il faut vérifier la localisation aussi
+							if (endOfPath.substr(0,1)==='a') {
+								if (shiftRankFolders > 0) {
+									newRankFolder = XX(parseInt(endOfPath.substr(1,2)) + shiftRankFolders); // vérifier que inférieur à 98
+									newEndOfPath = 'a' + newRankFolder + endOfPath.substr(3);
 								}
+								else {newEndOfPath = endOfPath;}
 							}
-							else {
-								// export ok écrire mais dates non correctes
+							else { // c'est donc une note
+								if (shiftRankNotes > 0) {
+									newRankFolder = XX(parseInt(endOfPath.substr(1,2)) + shiftRankNotes);
+									newEndOfPath = 'b' + newRankFolder;
+								}
+								else {newEndOfPath = endOfPath;}
 							}
+							newPath = pathFocused + newEndOfPath;
+							aTreeItems[i][0] = newPath;
 						}
+						else {
+							console.log('fichier corrompu au niveau de la note '+aTreeItems[i][1])
+							console.log(endOfPathPrevious + " " + endOfPath)
+						}								
+						endOfPathPrevious = endOfPath;
 					}
-				alert ("parsé !");
-				//}
+					if (!isDateOK) {
+						alert('Certaines dates ne sont pas correctes, l\'import va se faire sans elles');
+					}
+					sTreeItems = JSON.stringify(aTreeItems);
+					InstantiateWholeTreeImportedClient(sTreeItems)
+				}
 			}
-		}
+		}			
 	}
 	reader.readAsText(document.querySelector('#loadDataTreeJSON').files[0]);
-	//document.getElementById("greyLayerOnFrameOfTree").style.display = 'none';
+	document.getElementById("greyLayerOnFrameOfTree").style.display = 'none';
 }, false);
- */
+
+function InstantiateWholeTreeImportedClient(sTreeItems, fCallback) {
+	
+	var iLevelinTree 
+	var oDOMParent, oDOMTreeElement
+	var aTreeItems = sTreeItems == "" ? "" : JSON.parse(sTreeItems);
+	var oDOMInsertBefore = undefined; // valeur par défaut, avant les tests
+	var oDOMInsertBeforeNotes = undefined;
+	var isDOMFocusedHasNote = false;
+	var isParentHasFolder = false;
+	
+	// si pathFocused a une note au moins 
+	if (oDOMFocused.nbOfNotes !== undefined) { 
+		if (oDOMFocused.nbOfNotes > 0) {
+			oDOMInsertBeforeNotes = document.getElementById(pathFocused + "b01"); 
+			// si la dernière note de pathFocused a un nextElementSibling, pathFocused n'est donc pas la dernière div
+			if (document.getElementById(pathFocused + "b" + XX(oDOMFocused.nbOfNotes)).nextElementSibling!==null) {
+				// on insérera donc les note et les folders avant la div suivant la dernière note
+				oDOMInsertBefore = document.getElementById(pathFocused + "b" + XX(oDOMFocused.nbOfNotes)).nextElementSibling;
+			}
+			isDOMFocusedHasNote = true;
+			
+		}
+	}
+	
+	// si pathFocused n'a pas de notes mais un folder au moins
+	if (oDOMFocused.nbOfFolders !== undefined && !isDOMFocusedHasNote) {
+		if (oDOMFocused.nbOfFolders > 0) {
+			// si le dernier folder de pathFocused a un nextElementSibling, pathFocused n'est pas la dernière div
+			if (document.getElementById(pathFocused + "a" + XX(oDOMFocused.nbOfFolders)).nextElementSibling!==null) {
+				// on insérera donc les notes et les folders avant la div suivant le dernier folder
+				oDOMInsertBefore = document.getElementById(pathFocused + "a" + XX(oDOMFocused.nbOfFolders)).nextElementSibling;		
+			}
+			isParentHasFolder = true;
+		}
+	}
+	
+	// si pathFocused est vide
+	if (!isParentHasFolder && !isDOMFocusedHasNote) { 
+		// si pathFocused a une div le suivant, on insérera les notes et les folders avant cette div
+		if (oDOMFocused.nextElementSibling) {
+			oDOMInsertBefore = oDOMFocused.nextElementSibling;
+		}
+	}
+
+	for (let i = 0 ; i < aTreeItems.length ; i++) {
+		
+		oDOMTreeElement = document.createElement("div");
+		oDOMTreeElement.id  = aTreeItems[i][0];
+		oDOMTreeElement.content = aTreeItems[i][1];
+		oDOMTreeElement.dateCreation = aTreeItems[i][2];
+		oDOMTreeElement.innerHTML = oDOMTreeElement.content;
+		pathParent = oDOMTreeElement.id.slice(0,-3)
+		oDOMTreeElement.style.display = pathParent === pathFocused ? 'block' : 'none';
+		oDOMParent = document.getElementById(pathParent)
+		if (oDOMTreeElement.id.substr(-3,1) === 'a') { // si treeItem est un folder
+			oDOMTreeElement.className = 'folder unselectable';
+			oDOMParent.nbOfFolders === undefined ? oDOMParent.nbOfFolders = 1 : oDOMParent.nbOfFolders+=1; 
+			oDOMTreeElement.addEventListener('click', function(e) {
+				moveInSimpleTreeLaunch(e.target.id);
+			}, false);				
+		}
+		else { // treeItem est une note
+			oDOMTreeElement.className = 'note unselectable';
+			oDOMParent.nbOfNotes === undefined ? oDOMParent.nbOfNotes = 1 : oDOMParent.nbOfNotes+=1; 			
+		}
+		addContextMenuDataTree(oDOMTreeElement);		
+		iLevelinTree = ((oDOMTreeElement.id.length+1)/3)-1;
+		oDOMTreeElement.style.marginLeft = iRetraitAffichagedUneCategorie*(iLevelinTree) + 'px';
+	
+	
+		if ((oDOMTreeElement.id.substr(-3,1) !== 'b' || oDOMTreeElement.id.length-3 !== pathFocused.length) && isDOMFocusedHasNote) {//(si le treeItem n'est pas une note ou n'est pas une note enfant de oDOMFocused) et s'il y a au moins déjà une note dans pathFocused  
+				document.getElementById("frameOfTree").insertBefore(oDOMTreeElement,oDOMInsertBeforeNotes)
+		}
+		else {
+			if (oDOMInsertBefore===undefined) {
+				document.getElementById("frameOfTree").appendChild(oDOMTreeElement);
+			}
+			else {
+				document.getElementById("frameOfTree").insertBefore(oDOMTreeElement,oDOMInsertBefore);
+			}			
+		}
+	}
+	// on doit reparcourir l'arbre pour repérer les folders sans folders enfants et ou sans notes qui n'ont donc pas encore été marqués comme ayant 0 folders et 0  notes
+	for (let i = 0 ; i < aTreeItems.length ; i++) { // et si l'élément n'est pas un folder ??
+		document.getElementById(aTreeItems[i][0]).nbOfFolders = document.getElementById(aTreeItems[i][0]).nbOfFolders === undefined ? 0 : document.getElementById(aTreeItems[i][0]).nbOfFolders;
+		document.getElementById(aTreeItems[i][0]).nbOfNotes = document.getElementById(aTreeItems[i][0]).nbOfNotes === undefined ? 0 : document.getElementById(aTreeItems[i][0]).nbOfNotes;
+	}
+	if (fCallback !==undefined) {fCallback();}
+}
+
 document.getElementById("exportTreeFromHere").addEventListener('click', function () {
 	hideContextMenu();
 	exportTreeFromHere(pathFocused);

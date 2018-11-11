@@ -42,7 +42,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sParentPat
 		$lengthOfsParentPathOfTreeToExport = strlen($sParentPathOfTreeToExport);
 		
 		while ($data = $reqRetrieveTree->fetch()) {
-			$stringJSON .='{"'.substr($data['idNote'],$lengthOfsParentPathOfTreeToExport).'":["'.$data['content'].'","'.$data['dateCreation'].'","'.$data['latitude'].'","'.$data['longitude'].'","'.$data['accuracyPosition'].'"]},';
+			$stringJSON .='["'.substr($data['idNote'],$lengthOfsParentPathOfTreeToExport).'","'.$data['content'].'","'.$data['dateCreation'].'","'.$data['latitude'].'","'.$data['longitude'].'","'.$data['accuracyPosition'].'"],';
 		}
 		
 		if ($reqRetrieveTree->rowCount() == 0) {
