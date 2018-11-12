@@ -37,12 +37,21 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sParentPat
 		'startWithPathParent' => $sParentPathOfTreeToExport.'%',
 		'pathParent' => $sParentPathOfTreeToExport)) or die(print_r($reqRetrieveTree->errorInfo()));
 		
-		$stringJSON = '[';
+		$aJSON = array();
 		
 		$lengthOfsParentPathOfTreeToExport = strlen($sParentPathOfTreeToExport);
 		
+		$i=0;
+		
 		while ($data = $reqRetrieveTree->fetch()) {
-			$stringJSON .='["'.substr($data['idNote'],$lengthOfsParentPathOfTreeToExport).'","'.$data['content'].'","'.$data['dateCreation'].'","'.$data['latitude'].'","'.$data['longitude'].'","'.$data['accuracyPosition'].'"],';
+			$aJSON[$i] = array();
+			$aJSON[$i][0] = substr($data['idNote'],$lengthOfsParentPathOfTreeToExport);
+			$aJSON[$i][1] = $data['content'];
+			$aJSON[$i][2] = $data['dateCreation'];
+			$aJSON[$i][3] = $data['latitude'];
+			$aJSON[$i][4] = $data['longitude'];
+			$aJSON[$i][5] = $data['accuracyPosition'];
+			$i++;
 		}
 		
 		if ($reqRetrieveTree->rowCount() == 0) {
@@ -53,9 +62,8 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sParentPat
 
 	$reqRetrieveTree->closeCursor();		
 	
-	$stringJSON = substr($stringJSON,0,-1).']';
 	header('Content-Disposition: attachment; filename="exportDataTree_'. substr($_SESSION['user'],0,10) .'_'. substr($_SESSION['topic'],0,10) .'_'. substr($contentParent,0,10) .'_('. $sParentPathOfTreeToExport . ').json"');
-	echo $stringJSON;
+	echo json_encode($aJSON);
 }
 
 else {
