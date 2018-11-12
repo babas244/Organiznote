@@ -5,7 +5,7 @@ header("Content-Type: text/html;charset=UTF-8");
 session_start();
 
 if (isset($_SESSION['id'])) {
-	if (isset($_GET["idTopic"]) && isset($_GET["sTreeItems"])) {
+	if (isset($_GET["idTopic"]) && isset($_POST["sTreeItems"])) {
 				
 		require '../../log_in_bdd.php';
 
@@ -14,7 +14,7 @@ if (isset($_SESSION['id'])) {
 		$idTopic = htmlspecialchars($_GET["idTopic"]);
 		$idUser = $_SESSION['id'];
 		
-		$aJSON = json_decode($_GET["sTreeItems"]);
+		$aJSON = json_decode($_POST["sTreeItems"]);
 		
 		$aValuesPurified = array();
 		$rank = 0;

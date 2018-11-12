@@ -1282,7 +1282,7 @@ document.getElementById("loadDataTreeJSON").addEventListener('change', function(
 }, false);
 
 function importNewTreeInDb(sTreeItems) {
-	ajaxCall('ajax/importNewTree.php?idTopic=' + idTopic+'&sTreeItems='+sTreeItems, '', importNewTreeFailed, importNewTreeResetClient);
+	ajaxCall('ajax/importNewTree.php?idTopic=' + idTopic, 'sTreeItems='+sTreeItems, importNewTreeFailed, importNewTreeResetClient);
 }
 
 function importNewTreeFailed(errorMessage) {
