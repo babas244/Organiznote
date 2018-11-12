@@ -1211,6 +1211,7 @@ document.getElementById("cancelLoadFile").addEventListener('click', function() {
 }, false);
 
 document.getElementById("loadDataTreeJSON").addEventListener('change', function() {
+	document.getElementById('frameOfFileLoader').style.display = 'none';
 	var reader = new FileReader();
 	reader.onload = function() {
 		var isJSONError = false;
@@ -1272,13 +1273,30 @@ document.getElementById("loadDataTreeJSON").addEventListener('change', function(
 					}
 					sTreeItems = JSON.stringify(aTreeItems);
 					InstantiateWholeTreeImportedClient(sTreeItems)
+					importNewTreeInDb(sTreeItems)
 				}
 			}
 		}			
 	}
 	reader.readAsText(document.querySelector('#loadDataTreeJSON').files[0]);
-	document.getElementById("greyLayerOnFrameOfTree").style.display = 'none';
 }, false);
+
+function importNewTreeInDb(sTreeItems) {
+	ajaxCall('ajax/importNewTree.php?idTopic=' + idTopic+'&sTreeItems='+sTreeItems, '', importNewTreeFailed, importNewTreeResetClient);
+}
+
+function importNewTreeFailed(errorMessage) {
+	alert("Une erreur s'est produite : " + errorMessage);
+}
+
+function importNewTreeResetClient(errorMessageFromServer) {
+	if (errorMessageFromServer==='') {
+		resetDataTreeReadyForEvent();
+	}
+	else {
+		alert ("Erreur sur le serveur : "+errorMessageFromServer)
+	}
+}	
 
 function InstantiateWholeTreeImportedClient(sTreeItems, fCallback) {
 	
