@@ -62,20 +62,24 @@ else if (isset($_SESSION['id'])) {
 				</p>
 			</div>
 			<div id="frameOfToDo">
-				<div id="noScroll">
-					<div id="greyLayerOnNoScroll">
-					</div>
-					<button id="addToDoButton">+</button>			
-					<div id="addToDoFrame">
-						<button id="cancelAddToDo"><-</button>
-						<div id="frameTextareaToDoForm">
-							<form id="addToDoForm">
-								<input type="textarea" name="toDoTextarea" id="toDoTextarea" placeholder="Ecrire ici" maxlength="16383">
-							</form>		
+				<div id="divFixHeight">
+					<div id="noScroll">
+						<div id="greyLayerOnNoScroll">
 						</div>
-						<button id="resetAddToDoForm">x</button>	
+						<button id="addToDoButton">+</button>			
+						<div id="addToDoFrame">
+							<button id="cancelAddToDo"><-</button>
+							<div id="frameTextareaToDoForm">
+								<form id="addToDoForm">
+									<input type="textarea" name="toDoTextarea" id="toDoTextarea" placeholder="Ecrire ici" maxlength="16383">
+								</form>		
+							</div>
+							<button id="resetAddToDoForm">x</button>	
+						</div>
+						<div id="lastAndInvisible">...</div>
 					</div>
-					<div id="lastAndInvisible">...</div>
+					<div id="handScroller">
+					</div>
 				</div>
 			</div>
 			

@@ -154,7 +154,7 @@ function displayLabelsCheckboxes(sLabelsJSON) {
 			var oDOMFrameCheckbox = document.createElement("span");
 			oDOMFrameCheckbox.className = 'frameCheckbox';
 			//alert ('h = ' + labelTitleRank/oLabels.title.length + '    s = ' + labelRank/oLabels.content[labelTitleRank].length);
-			aLabelColor[labelTitleRank][labelRank] = HSVtoHex(labelTitleRank/oLabels.title.length,(labelRank)/oLabels.content[labelTitleRank].length, 1)
+			aLabelColor[labelTitleRank][labelRank] = HSVtoHex(labelTitleRank/oLabels.title.length,(labelRank+0.5)/oLabels.content[labelTitleRank].length, 1)
 			oDOMFrameCheckbox.style.backgroundColor = aLabelColor[labelTitleRank][labelRank];
 			document.getElementById("containerOfLabelsCheckBoxes").appendChild(oDOMFrameCheckbox);
 			var oDOMLabelCheckbox = document.createElement("input");

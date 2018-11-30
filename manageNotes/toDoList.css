@@ -27,22 +27,49 @@
 
 #frameOfToDo
 {
-	position: relative;
-	background-color: blue;
+	position: absolute;
+	background-color: white;
 	overflow: scroll;
-	/* pour le tel il faudra probablement mettre a position : fixed;*/
 	height: 80%;
+	left: 0%;
+	top: 0%;
+	width: 100%;
+}
+
+#divFixHeight
+{
+	position: relative;
+	height: auto;
+	width: auto;
+}
+
+#noScroll
+{
+	position : relative;
+	background-color: white;
+	width: 100%;
+}
+
+#handScroller
+{
+	position: absolute;
+	right: 0%;
+	width: 20%;
+	top: 0%;
+	height: 100%;
+	z-index: 1;
+	background-color: rgba(255,255,255,0.3); 
 }
 
 #addToDoButton
 {
-	background-color:  green;
+	background-color:  #819f81;
 }
 
 #addToDoFrame
 {
 	display : none;
-	background-color:  red;	
+	background-color: #c37878;	
 }
 
 #cancelAddToDo, #frameTextareaToDoForm, #resetAddToDoForm
@@ -55,7 +82,7 @@
 {
 	background-color: #eeaaee;
 	border: 1px black solid;
-	border-radius: 2px;
+	border-radius: 10px;
 	font-size: 1.2em;
 	word-wrap: break-word;
 	padding-left: 2px;
@@ -113,13 +140,6 @@ div[id^="separatorLabels"]
 	border-radius: 3px;
 	font-size: 15px;
 	display: none;
-}
-
-#noScroll
-{
-	position : relative;
-	background-color: yellow;
-	width: 80%;
 }
 
 #greyLayerOnNoScroll
