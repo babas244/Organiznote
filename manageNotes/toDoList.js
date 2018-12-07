@@ -95,7 +95,7 @@ document.getElementById("editToDo").addEventListener('click', editToDo, false);
 document.getElementById("cancelContextMenu").addEventListener('click', hideContextMenuToDo, false);
 document.getElementById("exportToDoList").addEventListener('click', exportToDoList, false);
 document.getElementById("displayCompleteToDoList").addEventListener('click', displayCompleteToDoList, false);
-document.getElementById("selectAllToDoOrOne").addEventListener('click', selectAllToDoOrOne, false);
+document.getElementById("selectAllToDoOrOne").addEventListener('change', selectAllToDoOrOne, false);
 
 document.getElementById("noScroll").addEventListener('touchmove', function(event) {
 	event.preventDefault();
@@ -575,7 +575,7 @@ function deleteToDoFromDOM (idDOMToDoFocused) {
 }				
 
 function initializeFormToDo() {
-	document.getElementById('addToDoButton').style.display = 'none';
+	document.getElementById('iconsToDo').style.display = 'none';
 	document.getElementById('addToDoFrame').style.display = 'block';
 	document.getElementById("toDoTextarea").focus();
 }
@@ -662,7 +662,7 @@ function getLocationToDoUpdateClient(errorMessageFromServer) {
 function hideFormEnterToDo() {
 	document.getElementById("addToDoForm").reset();
 	document.getElementById('addToDoFrame').style.display = 'none';
-	document.getElementById('addToDoButton').style.display = 'block';
+	document.getElementById('iconsToDo').style.display = 'block';
 } 
 
 function resetFormToDo() {

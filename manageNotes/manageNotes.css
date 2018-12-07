@@ -3,6 +3,20 @@ body {
   padding: 0px;
 }
 
+button
+{
+	padding: 0px;
+	cursor: pointer;
+}
+
+.feather
+{
+	width: 15px;
+	height: 12px;
+	margin-left: 7px;
+	margin-right: 7px;
+}
+
 #header
 {
 	font-size: 0.8em;
@@ -26,6 +40,14 @@ body {
 	position: absolute;
 	left: 0%;
 	width: 100%;
+	top: 1%;
+}
+
+.containerHeader
+{
+	border: 2px black solid;
+	border-radius: 30%;
+	padding: 2px;
 }
 
 #frameOfSwitchToTreeForMobile
@@ -49,11 +71,6 @@ div#menu
 	left: 0px;
 	font-size : 22px;
 }
-
-ul {padding: 0px;} /* il y a un padding par défaut des ul sinon !!*/
-ul ul {display: none; position: absolute; left: 0px; bottom: 0px; margin: 0px; padding: 0px;}
-li {list-style-type: none; position: relative; left: 0px; bottom: 20px; width: 100px; border: 1px black solid}
-li:hover ul.Niveau2 {display: block;}
 
 li button, li
 {
