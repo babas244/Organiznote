@@ -88,11 +88,14 @@
 .toDo
 {
 	background-color: #eeaaee;
-	border: 1px black solid;
 	border-radius: 10px;
-	font-size: 1.2em;
+	font-size: 0.9em;
 	word-wrap: break-word;
-	padding-left: 2px;
+	padding-left: 9px;
+	padding-right: 9px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	margin: 1px;
 	-webkit-animation-name: example; /* Safari 4.0 - 8.0 */
     -webkit-animation-duration: 1s; /* Safari 4.0 - 8.0 */
     animation-name: none;
@@ -137,7 +140,7 @@ div[id^="separatorLabels"]
 	font-size: 0.7em;
 	color: yellow;
 	position:relative;
-	top: -3px;
+	top: -2px;
 	margin-right: 2px;
 }
 

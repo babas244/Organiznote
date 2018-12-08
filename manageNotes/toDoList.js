@@ -715,16 +715,16 @@ function addEventsDragAndDrop(DOMElement) {
 	
 	DOMElement.addEventListener('dragover', function(e) {
 		e.preventDefault(); // Annule l'interdiction de drop
-		this.style.borderTop = "10px blue solid";
+		this.style.borderTop = "2px blue solid";
 	}, false);
 					
 	DOMElement.addEventListener('dragleave', function(e) {
-		this.style.borderTop = "1px black solid";
+		this.style.borderTop = "0px";
 	}, false);
 	
 	DOMElement.addEventListener('drop', function(e){
 		e.preventDefault();
-		this.style.borderTop = "1px black solid";
+		this.style.borderTop = "0px";
 		var idDroppedElement = e.dataTransfer.getData("text");
 		//alert ('idDroppedElement = ' + idDroppedElement);
 		if (idDroppedElement.startsWith('toDo')) {
@@ -803,7 +803,7 @@ function changeRankOfToDoClient(errorMessageFromServer) {
 function addEventsDragAndDropToLastAndInvisible(DOMElement) {
 	DOMElement.addEventListener('dragover', function(e) {
 		e.preventDefault(); // Annule l'interdiction de drop
-		this.style.borderTop = "10px blue solid";
+		this.style.borderTop = "2px blue solid";
 	}, false);
 
 	DOMElement.addEventListener('dragleave', function(e) {
