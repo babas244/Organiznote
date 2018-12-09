@@ -288,7 +288,7 @@ function instantiateRetrievedTree ( sTreeItems , fCallback, path ) {
 					oDOMNote.id  = pathParent + "b" + XX(oDOMParent.nbOfNotes+k+1);
 					oDOMNote.content = aTreeItems[i][pathParent].b[k][0];
 					oDOMNote.dateCreation = aTreeItems[i][pathParent].b[k][1];
-					oDOMNote.innerHTML = oDOMNote.content;
+					oDOMNote.innerHTML = hackDisplayLinks(oDOMNote.content);
 					oDOMNote.style.display = 'none';
 					oDOMNote.className = "note unselectable";
 					addContextMenuDataTree(oDOMNote);		
@@ -332,7 +332,7 @@ function instantiateRetrievedTree ( sTreeItems , fCallback, path ) {
 					//alert ("i = " + i + "pathParent =" +pathParent +  "aTreeItems[i][pathParent].a[j][0] =" + aTreeItems[i][pathParent].a[j][0])
 					oDOMFolder.content = aTreeItems[i][pathParent].a[j][0];
 					oDOMFolder.dateCreation = aTreeItems[i][pathParent].a[j][1];
-					oDOMFolder.innerHTML = oDOMFolder.content;
+					oDOMFolder.innerHTML = hackDisplayLinks(oDOMFolder.content);
 					oDOMFolder.style.display = 'none';
 					oDOMFolder.className = "folder unselectable";
 					addContextMenuDataTree(oDOMFolder);
@@ -375,7 +375,7 @@ function InstantiateWholeTreeClient(sTreeItems, fCallback) {
 		oDOMTreeElement.id  = aTreeItems[i][0];
 		oDOMTreeElement.content = aTreeItems[i][1];
 		oDOMTreeElement.dateCreation = aTreeItems[i][2];
-		oDOMTreeElement.innerHTML = oDOMTreeElement.content;
+		oDOMTreeElement.innerHTML = hackDisplayLinks(oDOMTreeElement.content);
 		oDOMTreeElement.style.display = 'none';
 		pathParent = oDOMTreeElement.id.slice(0,-3)
 		oDOMParent = document.getElementById(pathParent)
@@ -668,7 +668,7 @@ function editTreeItemFailed(errorMessage) {
 function editTreeItemUpdateClient(errorMessageFromServer, sNewContent) {
 	if (errorMessageFromServer==="") {
 		oDOMFocused.content = sNewContent;
-		oDOMFocused.innerHTML = oDOMFocused.content;
+		oDOMFocused.innerHTML = hackDisplayLinks(oDOMFocused.content);
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'none';
 		resetDataTreeReadyForEvent();
 	}
@@ -1348,7 +1348,7 @@ function InstantiateWholeTreeImportedClient(sTreeItems, fCallback) {
 		oDOMTreeElement.id  = aTreeItems[i][0];
 		oDOMTreeElement.content = aTreeItems[i][1];
 		oDOMTreeElement.dateCreation = aTreeItems[i][2];
-		oDOMTreeElement.innerHTML = oDOMTreeElement.content;
+		oDOMTreeElement.innerHTML = hackDisplayLinks(oDOMTreeElement.content);
 		pathParent = oDOMTreeElement.id.slice(0,-3)
 		oDOMTreeElement.style.display = pathParent === pathFocused ? 'block' : 'none';
 		oDOMParent = document.getElementById(pathParent)

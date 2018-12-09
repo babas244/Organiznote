@@ -20,6 +20,12 @@ function hackReplaceDate() {
 	return sNewDate;
 }
 
+function hackDisplayLinks(str) {
+	return str.replace(/[-a-z0-9+&@#\/%?=~_|!:,.;]+\.[-a-z0-9+&@#\/%?=~_|!:,.;]+/g, function (x) {
+		return '<a href="'+(x.startsWith('http') ? '' : 'http://')+x+'" target="_blank">'+x+'</a>';
+	});
+}
+
 function XX(integer) {
 	return integer>9 ? ""+integer : "0"+integer;
 }

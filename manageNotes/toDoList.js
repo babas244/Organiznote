@@ -292,7 +292,7 @@ function insertToDoListBefore(sToDoListJSON, fCallback, sIsNew) {
 					oDOMToDo.dateCreation = oToDoListJSONParsed[sLabels][i][1];
 					oDOMToDo.dateExpired = oToDoListJSONParsed[sLabels][i][2];
 					oDOMToDo.content = sContent;
-					oDOMToDo.innerHTML = '<span class="displayedRowOfToDo">' + (nNbOfToDoInLabels - i) +'</span>'+ sContent.replace(/\n/gi, "<Br>")+'<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
+					oDOMToDo.innerHTML = '<span class="displayedRowOfToDo">' + (nNbOfToDoInLabels - i) +'</span>'+ hackDisplayLinks(sContent.replace(/\n/gi, "<Br>"))+'<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
 					addEventsDragAndDrop(oDOMToDo);
 
 					document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById("separatorLabels"+sLabels).nextSibling);
@@ -533,7 +533,7 @@ function updateToDo(errorMessageFromServer , sNewContent, sNewLabels, sDateCreat
 	if (errorMessageFromServer==="") {
 		var oDOMToDoFocused = document.getElementById(toDoFocused[0].id);
 		if (toDoFocused[0].sLabels === sNewLabels) { // les sLabels ne changent pas
-			oDOMToDoFocused.innerHTML = '<span class="displayedRowOfToDo">' + (aLabelNbItems[sLabels]- toDoFocused[0].position) +'</span>' + sNewContent.replace(/\n/gi, "<Br>") + '<span class="dateExpired">'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) + '</div>'
+			oDOMToDoFocused.innerHTML = '<span class="displayedRowOfToDo">' + (aLabelNbItems[sLabels]- toDoFocused[0].position) +'</span>' + hackDisplayLinks(sNewContent.replace(/\n/gi, "<Br>")) + '<span class="dateExpired">'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) + '</div>'
 			oDOMToDoFocused.content = sNewContent;
 			oDOMToDoFocused.dateCreation = sDateCreation;
 		}

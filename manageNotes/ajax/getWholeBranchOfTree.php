@@ -29,7 +29,7 @@ if (isset($_SESSION['id'])) {
 				while ($donnees = $reqRetrieveTree->fetch()) {
 					 $arrayJSON[$i] = array();
 					 $arrayJSON[$i][0] = $donnees['idNote'];
-					 $arrayJSON[$i][1] = $donnees['content'];
+					 $arrayJSON[$i][1] = htmlspecialchars_decode($donnees['content']);
 					 $arrayJSON[$i][2] = $donnees['dateCreation'];
 					 $i += 1;
 				}
