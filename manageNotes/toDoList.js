@@ -13,7 +13,13 @@ var oJSONFormTemp = [];
 
 initializePageToDo();
 
+document.getElementById('curtainOnLayerNoScroll').addEventListener('click', function(e) {
+	e.stopPropagation(); // marche pas ? 
+	e.target.style.display = 'none'; 
+});
+
 console.log("toDoList performance time : " + performance.now());
+
 
 function initializePageToDo () {
 	addEventsDragAndDropToLastAndInvisible(document.getElementById("lastAndInvisible"));
@@ -678,6 +684,7 @@ function displayCompleteToDoList() {
 	window.open('displayCompleteToDoListInNewWindow/displayCompleteToDoList.php?idTopic='+idTopic);		
 	alert("Fait !\n\nLes toDos ont été exportés dans un autre onglet ou une fenêtre (cela dépend de votre navigateur).");
 }
+
 function displayContextMenuToDo() {
 	document.getElementById(toDoFocused[0].id).style.animationName = 'toDoSelected';
 	document.getElementById("containerOfLabelsCheckBoxes").style.display = 'none';
@@ -703,6 +710,10 @@ function hideContextMenuToDo () {
 	document.getElementById('editToDo').style.display = 'none';
 	
 }
+
+document.getElementById('displayCurtainOnLayerNoScroll').addEventListener('click', function() {
+	document.getElementById('curtainOnLayerNoScroll').style.display = 'block';
+});
 
 function resetToDoFocusedToNull() {
 	toDoFocused = [{id:null},{sLabels:null},{position:null}];

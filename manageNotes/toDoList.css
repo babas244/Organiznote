@@ -25,11 +25,13 @@
 	top: 35%;
 }
 
-#frameIconsToDo
+#iconsToDo
 {
 	position: absolute;
 	top: 0%;
 	height: 4%;
+	width: 100%;
+	overflow: hidden;
 }
 
 #frameOfToDo
@@ -135,13 +137,14 @@ div[id^="separatorLabels"]
 
 .displayedRowOfToDo
 {
-	background-color: blue;	
+	background-color: #5757f6;	
 	border-radius: 6px;
 	font-size: 0.7em;
 	color: yellow;
 	position:relative;
 	top: -2px;
 	margin-right: 2px;
+	padding: 2px;
 }
 
 .dateExpired
@@ -160,6 +163,15 @@ div[id^="separatorLabels"]
 	height: 100%;
 	width: 100%;
 	display: none; 
+}
+
+#curtainOnLayerNoScroll
+{
+	position: absolute;
+	z-index: 1000;
+	background-color: #DFDFDF; 
+	height: 100%;
+	width: 100%;
 }
 
 #frameControlsToDo
@@ -194,6 +206,12 @@ div[id^="separatorLabels"]
 	top: 28%;
 	left: 20%;
 	z-index: 1;
+}
+
+.contextMenuIcon
+{
+	width: 30px;
+	height: 27px;
 }
 
 #cancelContextMenu

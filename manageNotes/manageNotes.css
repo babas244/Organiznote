@@ -22,6 +22,12 @@ button
 	font-size: 0.8em;
 }	
 
+.headerMenu
+{
+	position: relative;
+	top: 2px;
+}
+
 #disconnectUser
 {
 	background-color: red;
