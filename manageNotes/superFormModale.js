@@ -1,6 +1,6 @@
 var aResponseFormArray = [];
 
-function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, fCallbackCheckForm) {
+function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, fCallbackCheckForm, rankInFormToBeCheckedForCopyToClipboard, messageToAppendToCopiedClipboard) {
 	
 	//alert (sFormJSON);
 	
@@ -157,7 +157,14 @@ function superFormModale(sFormJSON, sTitleOfForm, fCallbackExecute, fCallbackChe
 
 		if (fCallbackCheckForm) {
 			var sResponseCheck = fCallbackCheckForm(aResponseFormArray);
-			if ( sResponseCheck === "ok"){ // la function fCallbackCheckForm située hors de superFormModale doit return "ok" si tout va bien et le name de du oForm si il y a un probl�me
+			if ( sResponseCheck === "ok"){ // la function fCallbackCheckForm située hors de superFormModale doit return "ok" si tout va bien et le name de du oForm si il y a un problème
+			console.dir(aResponseFormArray)
+				if (document.getElementById('formItemToCopyToClipboard') !== null && aResponseFormArray[rankInFormToBeCheckedForCopyToClipboard] ==="1") {
+					var oDOMInputToCopy = document.getElementById('formItemToCopyToClipboard');
+					oDOMInputToCopy.value = oDOMInputToCopy.value + messageToAppendToCopiedClipboard;
+					oDOMInputToCopy.select();
+					document.execCommand('copy');
+				}
 				hideSuperFormModale();
 				fCallbackExecute(aResponseFormArray);
 			}

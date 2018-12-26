@@ -350,16 +350,36 @@ function stateToDoDone () {
 	oJSONFormTemp[1].attributes.maxLength= textareaFormsMaxSize
 	oJSONFormTemp[1].attributes.rows="5"
 	oJSONFormTemp[1].attributes.value= document.getElementById(toDoFocused[0].id).content;
+	oJSONFormTemp[1].attributes.id = "formItemToCopyToClipboard";
 	oJSONFormTemp[1].label="note";
 	oJSONFormTemp[2] = {};
-	oJSONFormTemp[2].name = "DateCreation";
+	oJSONFormTemp[2].name = "isPasteInClipboard";
+	oJSONFormTemp[2].labelForAllRadioList = "Mettre dans la presse-papier avec la date ?";
 	oJSONFormTemp[2].attributes = {};
-	oJSONFormTemp[2].attributes.value = dateCreation;
-	oJSONFormTemp[2].label = "Optionnel : remodifier date de création de la note (format AAAA-MM-JJ hh:mm:ss) initialement il y a <b>"
+	oJSONFormTemp[2].attributes.type = "radio";		
+	oJSONFormTemp[2].attributes.id = "radioIsPasteYes";		
+	oJSONFormTemp[2].attributes.value = 1;
+	oJSONFormTemp[2].label = "Oui";
+	oJSONFormTemp[2].labelBackgroundColor = 'rgb(136, 169, 114)';		
+	oJSONFormTemp[3] = {};
+	oJSONFormTemp[3].name = "isPasteInClipboard";
+	oJSONFormTemp[3].attributes = {};
+	oJSONFormTemp[3].attributes.type = "radio";		
+	oJSONFormTemp[3].attributes.id = "radioIsPasteNo";		
+	oJSONFormTemp[3].attributes.value = 0;
+	oJSONFormTemp[3].label = "Non";
+	oJSONFormTemp[3].labelBackgroundColor = '#cf6060';		
+	oJSONFormTemp[3].checked = true;
+	oJSONFormTemp[4] = {};
+	oJSONFormTemp[4].name = "DateCreation";
+	oJSONFormTemp[4].attributes = {};
+	oJSONFormTemp[4].attributes.value = dateCreation;
+	oJSONFormTemp[4].label = "Optionnel : remodifier date de création de la note (format AAAA-MM-JJ hh:mm:ss) initialement il y a <b>"
 									+ displayDatesComparison(dateCreation, dateArchive+":00", "de création", "d'archive")+"</b>.";
 	var sForm = JSON.stringify(oJSONFormTemp);
 	oJSONFormTemp = [];
-	superFormModale(sForm, "Confirmation de la date d'archivage", setToDoDoneAjax, fCheckFormDateArchive);
+	var messageToAppendToCopiedClipboard = '\n\n(*** Note todo archivée le ' + dateArchive.slice(0,-6) + ' et crée le ' + dateCreation.slice(0,-9) + ' ***)';
+	superFormModale(sForm, "Confirmation de la date d'archivage", setToDoDoneAjax, fCheckFormDateArchive, 2, messageToAppendToCopiedClipboard);
 }
 
 function setToDoDoneAjax(aFormDateArchive) {
@@ -368,7 +388,7 @@ function setToDoDoneAjax(aFormDateArchive) {
 		document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 		ajaxCall('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic 
 		+ '&dateArchive=' + aFormDateArchive[0]+":00" 
-		+ '&dateCreation=' + aFormDateArchive[2]
+		+ '&dateCreation=' + aFormDateArchive[3]
 		+ "&sLabels=" + toDoFocused[0].sLabels 
 		+ "&position=" + toDoFocused[0].position,
 		"&toDoContent=" + encodeURIComponent(sToDoContent) 
@@ -415,7 +435,7 @@ function fCheckFormDateArchive(aResponseFormArray) {
 		alert('La note a atteint sa limite en taille qui est de '+textareaFormsMaxSize+' caractères, elle a peut-être été coupée, et il faut la raccourcir.')
 		return 'content';
 	}	
-	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(aResponseFormArray[2])) {
+	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(aResponseFormArray[3])) {
 		alert ('Le format de la date de création de la note est non correct, il faut AAAA-MM-JJ hh:mm:ss, et dans des valeurs possibles');
 		return "DateCreation";
 	} 
