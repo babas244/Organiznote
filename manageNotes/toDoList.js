@@ -353,28 +353,54 @@ function stateToDoDone () {
 	oJSONFormTemp[1].attributes.id = "formItemToCopyToClipboard";
 	oJSONFormTemp[1].label="note";
 	oJSONFormTemp[2] = {};
-	oJSONFormTemp[2].name = "isPasteInClipboard";
-	oJSONFormTemp[2].labelForAllRadioList = "Mettre dans la presse-papier avec la date ?";
+	oJSONFormTemp[2].name = "archiveStatus";
+	oJSONFormTemp[2].labelForAllRadioList = "Statut de l'archive";
 	oJSONFormTemp[2].attributes = {};
 	oJSONFormTemp[2].attributes.type = "radio";		
-	oJSONFormTemp[2].attributes.id = "radioIsPasteYes";		
-	oJSONFormTemp[2].attributes.value = 1;
-	oJSONFormTemp[2].label = "Oui";
-	oJSONFormTemp[2].labelBackgroundColor = 'rgb(136, 169, 114)';		
+	oJSONFormTemp[2].attributes.id = "statusNone";		
+	oJSONFormTemp[2].attributes.value = "";
+	oJSONFormTemp[2].label = "sans";
+	oJSONFormTemp[2].labelBackgroundColor = 'rgb(227, 204, 236)';		
+	oJSONFormTemp[2].checked = true;
 	oJSONFormTemp[3] = {};
-	oJSONFormTemp[3].name = "isPasteInClipboard";
+	oJSONFormTemp[3].name = "archiveStatus";
 	oJSONFormTemp[3].attributes = {};
 	oJSONFormTemp[3].attributes.type = "radio";		
-	oJSONFormTemp[3].attributes.id = "radioIsPasteNo";		
-	oJSONFormTemp[3].attributes.value = 0;
-	oJSONFormTemp[3].label = "Non";
-	oJSONFormTemp[3].labelBackgroundColor = '#cf6060';		
-	oJSONFormTemp[3].checked = true;
+	oJSONFormTemp[3].attributes.id = "statusDone";	
+	oJSONFormTemp[3].attributes.value = " : fait";
+	oJSONFormTemp[3].label = "fait";
+	oJSONFormTemp[3].labelBackgroundColor = 'rgb(151, 233, 97)';		
 	oJSONFormTemp[4] = {};
-	oJSONFormTemp[4].name = "DateCreation";
+	oJSONFormTemp[4].name = "archiveStatus";
 	oJSONFormTemp[4].attributes = {};
-	oJSONFormTemp[4].attributes.value = dateCreation;
-	oJSONFormTemp[4].label = "Optionnel : remodifier date de création de la note (format AAAA-MM-JJ hh:mm:ss) initialement il y a <b>"
+	oJSONFormTemp[4].attributes.type = "radio";			
+	oJSONFormTemp[4].attributes.id = "statusGivenUp";		
+	oJSONFormTemp[4].attributes.value = " : abandonné";
+	oJSONFormTemp[4].label = "abandonné";
+	oJSONFormTemp[4].labelBackgroundColor = 'rgb(239, 141, 141)';		
+	oJSONFormTemp[5] = {};
+	oJSONFormTemp[5].name = "isPasteInClipboard";
+	oJSONFormTemp[5].labelForAllRadioList = "Mettre dans la presse-papier avec la date ?";
+	oJSONFormTemp[5].attributes = {};
+	oJSONFormTemp[5].attributes.type = "radio";		
+	oJSONFormTemp[5].attributes.id = "radioIsPasteYes";		
+	oJSONFormTemp[5].attributes.value = 1;
+	oJSONFormTemp[5].label = "Oui";
+	oJSONFormTemp[5].labelBackgroundColor = 'rgb(136, 169, 114)';		
+	oJSONFormTemp[6] = {};
+	oJSONFormTemp[6].name = "isPasteInClipboard";
+	oJSONFormTemp[6].attributes = {};
+	oJSONFormTemp[6].attributes.type = "radio";		
+	oJSONFormTemp[6].attributes.id = "radioIsPasteNo";		
+	oJSONFormTemp[6].attributes.value = 0;
+	oJSONFormTemp[6].label = "Non";
+	oJSONFormTemp[6].labelBackgroundColor = '#cf6060';		
+	oJSONFormTemp[6].checked = true;
+	oJSONFormTemp[7] = {};
+	oJSONFormTemp[7].name = "DateCreation";
+	oJSONFormTemp[7].attributes = {};
+	oJSONFormTemp[7].attributes.value = dateCreation;
+	oJSONFormTemp[7].label = "Optionnel : remodifier date de création de la note (format AAAA-MM-JJ hh:mm:ss) initialement il y a <b>"
 									+ displayDatesComparison(dateCreation, dateArchive+":00", "de création", "d'archive")+"</b>.";
 	var sForm = JSON.stringify(oJSONFormTemp);
 	oJSONFormTemp = [];
@@ -383,12 +409,12 @@ function stateToDoDone () {
 }
 
 function setToDoDoneAjax(aFormDateArchive) {
-	var sToDoContent = hackReplaceAll(aFormDateArchive[1]);
+	var sToDoContent = hackReplaceAll(aFormDateArchive[1])+aFormDateArchive[2];
 	if (aFormDateArchive !== "") {
 		document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
 		ajaxCall('phpAjaxCalls_ToDo/stateToDoDone.php?idTopic=' + idTopic 
 		+ '&dateArchive=' + aFormDateArchive[0]+":00" 
-		+ '&dateCreation=' + aFormDateArchive[3]
+		+ '&dateCreation=' + aFormDateArchive[4]
 		+ "&sLabels=" + toDoFocused[0].sLabels 
 		+ "&position=" + toDoFocused[0].position,
 		"&toDoContent=" + encodeURIComponent(sToDoContent) 
@@ -435,7 +461,7 @@ function fCheckFormDateArchive(aResponseFormArray) {
 		alert('La note a atteint sa limite en taille qui est de '+textareaFormsMaxSize+' caractères, elle a peut-être été coupée, et il faut la raccourcir.')
 		return 'content';
 	}	
-	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(aResponseFormArray[3])) {
+	if (!/^[12][09][0-9]{2}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/.test(aResponseFormArray[4])) {
 		alert ('Le format de la date de création de la note est non correct, il faut AAAA-MM-JJ hh:mm:ss, et dans des valeurs possibles');
 		return "DateCreation";
 	} 
