@@ -30,6 +30,28 @@ function XX(integer) {
 	return integer>9 ? ""+integer : "0"+integer;
 }
 
+setInterval(checkConnection,5*60*1000);
+
+document.getElementById('checkConnection').addEventListener('click',checkConnection);
+
+function checkConnection() {
+	var rand = Math.floor((1 + Math.random()) * 1000);
+	ajaxCall('../checkConnection.php?rand='+rand,'',fAlertOffline, fCheckSessionStatus)
+}
+
+function fAlertOffline(errorMessage) {
+	document.getElementById('checkConnection').style.color = '#C3C3C3';
+	alert('Vous êtes hors-ligne.'+errorMessage)
+}
+
+function fCheckSessionStatus(errorMessageFromServer) {
+	document.getElementById('checkConnection').style.color = 'black';
+	if (errorMessageFromServer === 'disconnected') {
+		document.getElementById('header').style.color = '#C3C3C3';
+		alert('La session sous votre nom d\'utilisateur a été terminée. \nPlus aucune action en ligne n\'est possible.\n\nVeuillez vous reconnecter.')
+	}
+}
+
 function ajaxCall(sPathPhp, sPostRequestContent, fCallbackFailed, fCallback, parameter1, parameter2, parameter3, parameter4) {
 	var xhr = new XMLHttpRequest(); 
 	

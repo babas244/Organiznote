@@ -118,36 +118,18 @@ function initializetoDoFailed(errorMessage) {
 }
 
 function loadToDoListFailed(errorMessage) {
-	alert ("La liste ne peut pas être chargée depuis le serveur. Vérifiez votre connexion Internet et recommencez." + errorMessage);
+	fAlertOffline(errorMessage);
 	resetToDoReadyForEvent();
 }
 
-function deleteToDoFailed(errorMessage) {
-	alert ("Impossible d'effacer la note sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
-	hideContextMenuToDo();
-	resetToDoReadyForEvent();
-}
-
-function setToDoDoneFailed(errorMessage) {
-	alert ("Impossible d'accéder à la note sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
-	hideContextMenuToDo();
-	resetToDoReadyForEvent();
-}
-
-function submitToDoFullFailed(errorMessage) {
-	alert ("Impossible d'accéder à la note sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
-	hideContextMenuToDo();
-	resetToDoReadyForEvent();
-}
-
-function updateToDoFailed(errorMessage) {
-	alert ("Impossible d'accéder à la note sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
+function ajaxFailedToDo(errorMessage) {
+	fAlertOffline(errorMessage);
 	hideContextMenuToDo();
 	resetToDoReadyForEvent();
 }
 	
 function submitToDoQuickFailed(errorMessage) {
-	alert ("Impossible d'accéder à la note sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage);
+	fAlertOffline(errorMessage);
 }
 
 function displayLabelsCheckboxes(sLabelsJSON) {
@@ -327,7 +309,7 @@ function deleteToDo () {
 		+ "&sLabels=" + toDoFocused[0].sLabels 
 		+ "&position=" + toDoFocused[0].position,
 		"&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content), 
-		deleteToDoFailed, deleteToDoAndHideContextMenu, toDoFocused[0].id);	
+		ajaxFailedToDo, deleteToDoAndHideContextMenu, toDoFocused[0].id);	
 	}
 	else { 
 		hideContextMenuToDo();
@@ -419,7 +401,7 @@ function setToDoDoneAjax(aFormDateArchive) {
 		+ "&position=" + toDoFocused[0].position,
 		"&toDoContent=" + encodeURIComponent(sToDoContent) 
 		+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content), 		
-		setToDoDoneFailed, deleteToDoAndHideContextMenu, toDoFocused[0].id);		
+		ajaxFailedToDo, deleteToDoAndHideContextMenu, toDoFocused[0].id);		
 	}
 	else {
 		hideContextMenuToDo();
@@ -550,7 +532,7 @@ function submitToDoFull(ResponseForm) {
 			+ "&sLabels=" + sLabels,
 			"&toDoContent=" + encodeURIComponent(sToDoContent)
 			+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content), 
-			submitToDoFullFailed, addNewToDoWithLabels, sToDoAddedJSON);
+			ajaxFailedToDo, addNewToDoWithLabels, sToDoAddedJSON);
 		}
 		else { // c'est donc un update que l'on fait
 			document.getElementById("transparentLayerOnContainerOfToDo").style.display = 'block';
@@ -561,7 +543,7 @@ function submitToDoFull(ResponseForm) {
 			+ "&dateCreation=" + sDateCreation,
 			"&toDoContent=" + encodeURIComponent(sToDoContent)
 			+ "&sContentStart=" + encodeURIComponent(document.getElementById(toDoFocused[0].id).content), 
-			updateToDoFailed, updateToDo, sToDoContent, sLabelsForm, sDateCreation);
+			ajaxFailedToDo, updateToDo, sToDoContent, sLabelsForm, sDateCreation);
 		}
 	}
 	else {

@@ -42,7 +42,7 @@ function instantiateRootFailed(errorMessage) {
 }
 
 function prepareInstantiateFolderFailed(errorMessage) {
-	alert("La catégorie ne peut pas être chargée depuis le serveur, vérifiez votre connexion Internet et recommencez." + errorMessage);
+	fAlertOffline(errorMessage);
 	resetDataTreeReadyForEvent();
 }
 
@@ -361,7 +361,7 @@ function GetWholeTreeDbCall(fCallback) {
 }
 
 function GetWholeTreeDbCallFailed(errorMessageFromServer) {
-	alert ("La récupération de l'arbre n'a pas fonctionnée. \n\nMessage d'erreur : " + errorMessageFromServer);
+	alert ("La récupération de l'arbre n'a pas fonctionné. \n\nMessage d'erreur : " + errorMessageFromServer);
 }
 
 function InstantiateWholeTreeClient(sTreeItems, fCallback) {
@@ -532,7 +532,7 @@ function insertNewNoteInDbb(aResponseForm) {
 		+ '&itemType=b'
 		+ '&dateCreation=' + dateCreation,
 		'&newNote=' + encodeURIComponent(sNewNote),
-		insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "b", dateCreation);
+		ajaxFailedDataTree, insertNewTreeItemUpdateClient, sNewNote, "b", dateCreation);
 	}
 	else {
 		resetDataTreeReadyForEvent();	
@@ -550,15 +550,15 @@ function insertNewFolderInDbb(aResponseForm) {
 		+ '&rankClientSide=' + iGuessedClientSideRankTreeItemToInsert 
 		+ '&itemType=a'
 		+ '&dateCreation=' + dateCreation,
-		'&newNote=' + encodeURIComponent(sNewNote),insertNewTreeItemInDbbFailed, insertNewTreeItemUpdateClient, sNewNote, "a", dateCreation);
+		'&newNote=' + encodeURIComponent(sNewNote),ajaxFailedDataTree, insertNewTreeItemUpdateClient, sNewNote, "a", dateCreation);
 	}
 	else {
 		resetDataTreeReadyForEvent();	
 	}
 }
 
-function insertNewTreeItemInDbbFailed(errorMessage) {
-	alert ("Impossible d'insérer la catégorie sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
+function ajaxFailedDataTree(errorMessage) {
+	fAlertOffline(errorMessage);
 	hideContextMenu();
 	resetDataTreeReadyForEvent();
 }
@@ -652,17 +652,11 @@ function editTreeItemInDbb(aResponseForm) {
 		var dateCreation = aResponseForm[1];
 		oDOMFocused.dateCreation = dateCreation;
 		document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-		ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic +'&sPath=' + pathFocused + "&dateCreation=" + dateCreation,'sNewNote=' + encodeURIComponent(sNewNote) +'&sContentStart='+encodeURIComponent(oDOMFocused.content), editTreeItemFailed, editTreeItemUpdateClient, sNewNote);		
+		ajaxCall('ajax/editTreeItem.php?idTopic=' + idTopic +'&sPath=' + pathFocused + "&dateCreation=" + dateCreation,'sNewNote=' + encodeURIComponent(sNewNote) +'&sContentStart='+encodeURIComponent(oDOMFocused.content), ajaxFailedDataTree, editTreeItemUpdateClient, sNewNote);		
 	}
 	else {
 		resetDataTreeReadyForEvent();	
 	}
-}
-
-function editTreeItemFailed(errorMessage) {
-	alert ("Impossible d'accéder à l'élément sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
-	hideContextMenu();
-	resetDataTreeReadyForEvent();
 }
 
 function editTreeItemUpdateClient(errorMessageFromServer, sNewContent) {
@@ -697,13 +691,7 @@ function deleteFolderInDbb() {
 	var pathParent = pathFocused.slice(0,-3);
 	oTreeNotes.moveInSimpleTree(pathParent); // si le folder à effacer est un ancêtre de openedFolder ou openedFolder lui même, on fait un moveInSimpleTree où openedFolder est le père de pathFocused 
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-	ajaxCall('ajax/deleteFolder.php?idTopic=' + idTopic + '&sPath=' + pathFocused, 'sContentStart=' + encodeURIComponent(oDOMFocused.content), deleteFolderInDbbFailed, deleteFolderUpdateClient);
-}
-
-function deleteFolderInDbbFailed(errorMessage) {
-	alert ("Impossible d'effacer l'élément sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
-	hideContextMenu();
-	resetDataTreeReadyForEvent();
+	ajaxCall('ajax/deleteFolder.php?idTopic=' + idTopic + '&sPath=' + pathFocused, 'sContentStart=' + encodeURIComponent(oDOMFocused.content), ajaxFailedDataTree, deleteFolderUpdateClient);
 }
 
 function deleteFolderUpdateClient(errorMessageFromServer) {
@@ -761,13 +749,7 @@ function deleteNoteLaunch() {
 
 function deleteNoteInDbb() {
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';
-	ajaxCall('ajax/deleteNote.php?idTopic=' + idTopic + '&sPath=' + pathFocused, 'sContentStart=' + encodeURIComponent(oDOMFocused.content), deleteNoteInDbbFailed, deleteNoteUpdateClient);
-}
-
-function deleteNoteInDbbFailed(errorMessage) {
-	alert ("Impossible d'effacer l'élément sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
-	hideContextMenu();
-	resetDataTreeReadyForEvent();
+	ajaxCall('ajax/deleteNote.php?idTopic=' + idTopic + '&sPath=' + pathFocused, 'sContentStart=' + encodeURIComponent(oDOMFocused.content), ajaxFailedDataTree, deleteNoteUpdateClient);
 }
 
  function deleteNoteUpdateClient(errorMessageFromServer) {
@@ -880,13 +862,7 @@ function resetColorTreeItem() {
 function pasteHereTreeItemInDbb(sPathToMove, sPathWhereToPaste) {
 	document.getElementById("greyLayerOnFrameOfTree").style.display = 'block';	
 	ajaxCall('ajax/moveItem.php?idTopic=' + idTopic + '&sCutPath=' + sPathToMove	+ '&sPathWhereToPaste=' + sPathWhereToPaste, '',
-						pasteHereTreeItemInDbbFailed, pasteHereTreeItemUpdateClient, sPathToMove, sPathWhereToPaste);
-}
-
-function pasteHereTreeItemInDbbFailed(errorMessage) {
-	alert ("Impossible de déplacer l'élément sur le serveur car celui-ci est inaccessible. Vérifiez votre connexion Internet et recommencez." + errorMessage); 
-	hideContextMenu();
-	resetDataTreeReadyForEvent();
+						ajaxFailedDataTree, pasteHereTreeItemUpdateClient, sPathToMove, sPathWhereToPaste);
 }
 
 /*
