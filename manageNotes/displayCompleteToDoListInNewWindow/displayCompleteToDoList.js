@@ -4,6 +4,7 @@ var aLabelsChecked = [];
 var aLabelNbItems = {}; 
 var aLabelColor = [];
 
+document.getElementById('contentToDoHtmlArchived').innerHTML = hackDisplayLinks(contentToDoHtmlArchived);
 initializePageToDo();
 
 function initializePageToDo () {
@@ -98,7 +99,7 @@ function insertToDoListBefore(sToDoListJSON) {
 					oDOMToDo.style.backgroundColor = backgroundColorToDo;
 					oDOMToDo.className = 'toDo';
 					oDOMToDo.content = sContent;
-					oDOMToDo.innerHTML = sContent.replace(/\n/gi, "<Br>")+'<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
+					oDOMToDo.innerHTML = hackDisplayLinks(sContent).replace(/\n/gi, "<Br>")+'<span class="dateExpired">'+ (oDOMToDo.dateExpired === undefined ? "" : oDOMToDo.dateExpired) + '</div>'; 
 					document.getElementById("noScroll").insertBefore(oDOMToDo , document.getElementById("separatorLabels"+sLabels).nextSibling);
 				}
 			aLabelNbItems[sLabels] += nNbOfToDoInLabels;	
@@ -180,4 +181,10 @@ function HSVtoHex(h, s, v) { // 0 <= (h et s et v) <= 1, inspired by http://stac
 function colorParameterToHex2digits(colorParameter) {
 	var hexColor = Math.round(colorParameter * 255).toString(16);
 	return hexColor.length == 1 ? "0"+ hexColor : hexColor;
+}
+
+function hackDisplayLinks(str) {
+	return str.replace(/([-a-z0-9+&@#\/%?=~_|!:,;]+\.)+[-a-z0-9+&@#\/%?=~_|!:,;]+/gi, function (x) {
+		return '<a href="'+(x.startsWith('http') ? '' : 'http://')+x+'" target="_blank">'+x+'</a>';
+	});
 }

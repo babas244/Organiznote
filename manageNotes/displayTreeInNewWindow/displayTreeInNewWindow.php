@@ -42,6 +42,7 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sOriginPat
 	
 	$levelInTreeItemCurrent = 9999;
 	$gapInInPx = 30; // nb de px d'espace entre deux levels consécutifs
+	$contentTreeHtml = "";
 	
 	while ($donnees = $reqRetrieveTree->fetch()) {
 			$idNote = $donnees['idNote'];
@@ -50,13 +51,12 @@ if (isset($_SESSION['id']) && isset($_GET["idTopic"]) && isset($_GET["sOriginPat
 			//if ($levelInTree < $levelInTreeItemCurrent) {echo "<Br>";}
 			$levelInTreeItemCurrent = $levelInTree;
 
-			echo 	'<div class="containerOfTreeItems"  style="margin-left: '
+			$contentTreeHtml .= 	'<div class="containerOfTreeItems"  style="margin-left: '
 					.(($levelInTree - $iLevelinTreeOriginPath +1)*$gapInInPx).'px">'
 						.'<div onclick="openCloseFolder(this)" class="openCloseFolder"'
 						.($classOfTreeItem === 'note' ? ' style="visibility:hidden"' : '').'>-</div>'
 						.'<div class="treeItem '.$classOfTreeItem.'" id="'.$idNote.'">'
-						.preg_replace('#\\n#', '<Br>',$donnees['content']).'</div>
-				</div>';
+						.preg_replace('#\\n#', '<Br>',$donnees['content']).'</div></div>';
 		}
 	$reqRetrieveTree->closeCursor();		
 	
@@ -67,7 +67,7 @@ else {
 }
 	
 ?>
-		
+		<script>var contentTreeHtml = '<?php echo preg_replace('#\'#',"\'",$contentTreeHtml);?>'</script>
 		<script src="script_displayTreeInNewWindow.js"></script> <!--il n'y aura pas de j dans cette page non ? -->
 	</body>
 </html>

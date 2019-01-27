@@ -30,11 +30,13 @@ $idTopic = htmlspecialchars($_GET["idTopic"]);
 			<link rel="stylesheet" href="displayCompleteToDoList.css"/>
 	</head>
     <body>
-	<div id="noScroll"></div>
+ 	<div id="noScroll"></div>
 	<Br><Br>
 	<p>Todos archivés</p>
+	<div id="contentToDoHtmlArchived"></div>
 	<?php
 	if (isset($_SESSION['id']) && isset($_GET["idTopic"])) {
+		$contentToDoHtmlArchived = "";
 		$reqDisplayToDoListArchived = $bdd -> prepare("SELECT content, dateCreation, dateArchive 
 		FROM todolists 
 		WHERE idUser=:idUser AND idTopic=:idTopic AND dateArchive IS NOT NULL 
@@ -44,7 +46,7 @@ $idTopic = htmlspecialchars($_GET["idTopic"]);
 					'idTopic' => $idTopic)) or die(print_r($reqDisplayToDoListArchived->errorInfo()));
 							
 				while ($data = $reqDisplayToDoListArchived->fetch()) {
-					echo '<div id="containerOfArchived"><div class="dateArchived">'.$data['dateArchive'].'</div><div class="toDo">'.$data['content'].'</div><div class="dateCreation">crée le : '.$data['dateCreation'].'</div></div>';
+					$contentToDoHtmlArchived .=  '<div id="containerOfArchived"><div class="dateArchived">'.$data['dateArchive'].'</div><div class="toDo">'.preg_replace('#\\n#', '<Br>',$data['content']).'</div><div class="dateCreation">crée le : '.$data['dateCreation'].'</div></div>';
 				}
 		$reqDisplayToDoListArchived -> closeCursor();					
 	?>	
@@ -52,7 +54,8 @@ $idTopic = htmlspecialchars($_GET["idTopic"]);
 			<?php
 			echo "var idUser = ".$_SESSION['id'].";"; 
 			echo "var idTopic = ". $idTopic.";";
-			echo "var backgroundColorToDo = '".$backgroundColorToDo."';";	
+			echo "var backgroundColorToDo = '".$backgroundColorToDo."';";
+			echo "var contentToDoHtmlArchived = '".preg_replace('#\'#',"\'",$contentToDoHtmlArchived)."';";
 			?>
 		</script>
 	<?php

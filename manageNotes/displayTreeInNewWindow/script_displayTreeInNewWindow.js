@@ -1,3 +1,5 @@
+document.body.innerHTML = hackDisplayLinks(contentTreeHtml);
+
 function openCloseFolder(e) {
 	isOpening = e.textContent === '+';
 	var oDOMFolderToOpenClose = e.nextElementSibling;
@@ -42,3 +44,8 @@ document.addEventListener('mouseover', function (e) {
 	}
 }, false);
 
+function hackDisplayLinks(str) {
+	return str.replace(/([-a-z0-9+&@#\/%?=~_|!:,;]+\.)+[-a-z0-9+&@#\/%?=~_|!:,;]+/gi, function (x) {
+		return '<a href="'+(x.startsWith('http') ? '' : 'http://')+x+'" target="_blank">'+x+'</a>';
+	});
+}
