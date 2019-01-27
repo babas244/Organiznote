@@ -21,7 +21,7 @@ function hackReplaceDate() {
 }
 
 function hackDisplayLinks(str) {
-	return str.replace(/[-a-z0-9+&@#\/%?=~_|!:,.;]+\.[-a-z0-9+&@#\/%?=~_|!:,.;]+/gi, function (x) {
+	return str.replace(/([-a-z0-9+&@#\/%?=~_|!:,;]+\.)+[-a-z0-9+&@#\/%?=~_|!:,;]+/gi, function (x) {
 		return '<a href="'+(x.startsWith('http') ? '' : 'http://')+x+'" target="_blank">'+x+'</a>';
 	});
 }

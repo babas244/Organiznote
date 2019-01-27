@@ -567,7 +567,7 @@ function updateToDo(errorMessageFromServer , sNewContent, sNewLabels, sDateCreat
 	if (errorMessageFromServer==="") {
 		var oDOMToDoFocused = document.getElementById(toDoFocused[0].id);
 		if (toDoFocused[0].sLabels === sNewLabels) { // les sLabels ne changent pas
-			oDOMToDoFocused.innerHTML = '<span class="displayedRowOfToDo">' + (aLabelNbItems[sLabels]- toDoFocused[0].position) +'</span>' + hackDisplayLinks(sNewContent.replace(/\n/gi, "<Br>")) + '<span class="dateExpired">'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) + '</div>'
+			oDOMToDoFocused.innerHTML = '<span class="displayedRowOfToDo">' + (aLabelNbItems[sNewLabels]- toDoFocused[0].position) +'</span>' + hackDisplayLinks(sNewContent.replace(/\n/gi, "<Br>")) + '<span class="dateExpired">'+ (oDOMToDoFocused.dateExpired === undefined ? "" : oDOMToDoFocused.dateExpired) + '</div>'
 			oDOMToDoFocused.content = sNewContent;
 			oDOMToDoFocused.dateCreation = sDateCreation;
 		}
