@@ -168,7 +168,7 @@ div[id^="separatorLabels"]
 #curtainOnLayerNoScroll
 {
 	position: absolute;
-	z-index: 1000;
+	z-index: 2;
 	background-color: #DFDFDF; 
 	height: 100%;
 	width: 100%;
