@@ -438,9 +438,8 @@ function insertNewNoteLaunch() {
 			oJSONFormTempDataTree[0].name = "content";
 			oJSONFormTempDataTree[0].HTMLType="textarea";
 			oJSONFormTempDataTree[0].attributes={};
-			oJSONFormTempDataTree[0].attributes.cols="30"
 			oJSONFormTempDataTree[0].attributes.maxLength=textareaFormsMaxSize
-			oJSONFormTempDataTree[0].attributes.rows="5";
+			oJSONFormTempDataTree[0].attributes.rows="12";
 			oJSONFormTempDataTree[0].label="Entrez le nom de la nouvelle note.";
 			var dateNow = sLocalDatetime(new Date());
 			oJSONFormTempDataTree[1] = {};
@@ -473,9 +472,8 @@ function insertNewFolderLaunch() {
 			oJSONFormTempDataTree[0].name = "content";
 			oJSONFormTempDataTree[0].HTMLType="textarea";
 			oJSONFormTempDataTree[0].attributes={};
-			oJSONFormTempDataTree[0].attributes.cols="30"
 			oJSONFormTempDataTree[0].attributes.maxLength=textareaFormsMaxSize
-			oJSONFormTempDataTree[0].attributes.rows="5";
+			oJSONFormTempDataTree[0].attributes.rows="12";
 			oJSONFormTempDataTree[0].label="Entrez le nom de la nouvelle catégorie.";
 			var dateNow = sLocalDatetime(new Date());
 			oJSONFormTempDataTree[1] = {};
@@ -628,9 +626,8 @@ function editTreeItemLaunch() {
 	oJSONFormTempDataTree[0].name = "content";
 	oJSONFormTempDataTree[0].HTMLType="textarea";
 	oJSONFormTempDataTree[0].attributes={};
-	oJSONFormTempDataTree[0].attributes.cols="30"
 	oJSONFormTempDataTree[0].attributes.maxLength=textareaFormsMaxSize
-	oJSONFormTempDataTree[0].attributes.rows="5";
+	oJSONFormTempDataTree[0].attributes.rows="12";
 	oJSONFormTempDataTree[0].attributes.value= oDOMFocused.content;
 	oJSONFormTempDataTree[0].label="Entrée à modifier :";
 	var dateCreation = document.getElementById(pathFocused).dateCreation;

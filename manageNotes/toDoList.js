@@ -328,7 +328,6 @@ function stateToDoDone () {
 	oJSONFormTemp[1].name = "content";
 	oJSONFormTemp[1].HTMLType="textarea";
 	oJSONFormTemp[1].attributes={};
-	oJSONFormTemp[1].attributes.cols="30"
 	oJSONFormTemp[1].attributes.maxLength= textareaFormsMaxSize
 	oJSONFormTemp[1].attributes.rows="5"
 	oJSONFormTemp[1].attributes.value= document.getElementById(toDoFocused[0].id).content;
@@ -455,9 +454,8 @@ function editToDo() {
 	oJSONFormTemp[0].name = "content";
 	oJSONFormTemp[0].HTMLType="textarea";
 	oJSONFormTemp[0].attributes={};
-	oJSONFormTemp[0].attributes.cols="30"
 	oJSONFormTemp[0].attributes.maxLength= textareaFormsMaxSize
-	oJSONFormTemp[0].attributes.rows="5"
+	oJSONFormTemp[0].attributes.rows="6"
 	oJSONFormTemp[0].attributes.value= document.getElementById(toDoFocused[0].id).content;
 	oJSONFormTemp[0].label="note";
 	var rankInForm = 1
@@ -643,7 +641,7 @@ function submitToDoQuick(){
 function submitToDoQuickCheckResponse(errorMessageFromServer, sToDoAddedJSON) {
 	if (errorMessageFromServer==="") {
 		hideFormEnterToDo();
-		shiftDisplayedRowOfToDo(aLabelNbItems[sLabels], 1,'0000', 1); 
+		shiftDisplayedRowOfToDo(aLabelNbItems['0000'], 1,'0000', 1); 
 		insertToDoListBefore(sToDoAddedJSON, resetToDoReadyForEvent, "newNote");
 		toDoSendGeolocationLabels = "0000";
 		toDoSendGeolocationPosition = parseInt(aLabelNbItems["0000"]) - 1;
